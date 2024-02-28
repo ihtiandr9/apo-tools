@@ -15,6 +15,7 @@ src/main.c
 src/globals.c
 src/errors.c
 src/lexer.c
+src/parser.c
 src/symbols.c
 src/inbuf.c
 )

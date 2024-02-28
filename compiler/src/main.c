@@ -36,21 +36,10 @@ int main(int argc, char *argv[])
         exitNicely();
     }
     m_lexer = lexer_create(fd_in);
+    pParser m_parser = parser_create();
+    m_parser->parse(m_lexer);   
 
-    while (m_lexer->next_tok(m_lexer))
-    {
-        if (m_lexer->token.type == L_EOF)
-            break;
-        if (m_lexer->token.type == SPACE 
-	    || m_lexer->token.type == DOTCOMMA 
-	    || m_lexer->token.type == COMMA 
-	    || m_lexer->token.type == L_EOL)
-        {
-            m_lexer->ch = NONE;
-        }
-        lexerPrintToken(m_lexer->token);
-    }
-
+    parser_free(m_parser);
     lexer_free(m_lexer);
     m_lexer = 0;
     close(fd_in);
