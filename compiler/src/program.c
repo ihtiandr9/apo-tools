@@ -14,7 +14,7 @@ void program_generate(pParser parser)
         return;
     if (OP_INSTRUCTION != m_statement->type)
         return;
-    Operation m_operation = *(Operation*)m_statement;
+    Instruction m_instruction = *(Instruction *)m_statement;
     free(parser->statement);
     if (last)
     {
@@ -23,5 +23,5 @@ void program_generate(pParser parser)
     }
     else
         last = &program;
-    last->operation =m_operation;
+    last->instruction = m_instruction;
 }

@@ -1,5 +1,5 @@
-project(bkasm)
 cmake_minimum_required(VERSION 3.0)
+project(bkasm)
 if(COMMAND cmake_policy)
 cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
@@ -19,6 +19,7 @@ src/parser.c
 src/symbols.c
 src/inbuf.c
 src/program.c
+src/nodes.c
 )
 
 ##target_link_libraries(nonestl curl json-c)

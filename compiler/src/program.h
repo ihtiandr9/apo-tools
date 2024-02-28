@@ -29,7 +29,7 @@ TODO define it
 
 typedef struct _Program
 {
-    Operation operation;
+    Instruction instruction;
     struct _Program *next;
 } Program;
 

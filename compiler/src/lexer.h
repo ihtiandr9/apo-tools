@@ -54,7 +54,7 @@ typedef struct t_lexer
   int fd_in;
   Lexema *symbols;
   Lexema *words;
-  char ch;
+  unsigned char ch;
   Lexema token;
   int (*nextTok)(struct t_lexer *self);
   void (*printTok)(Lexema token);

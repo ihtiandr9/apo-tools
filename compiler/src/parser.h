@@ -6,14 +6,11 @@
 
 typedef struct _Parser
 {
-
     Node *statement;
-
     void (*parse)(struct _Parser *self, pLexer lexer);
+} *pParser, Parser;
 
-} Parser, *pParser;
-
+// exports
 pParser parser_create(void);
 void parser_free(pParser parser);
-
 #endif

@@ -61,23 +61,15 @@ static void parse_param(pParser self, pLexer lexer)
     switch (m_token.kind)
     {
     case REG:
+        expr = createRegister(m_token.type);
         printf("    < REGISTER >: %s\n", m_token.ident);
-        /* FIXME */
-        // expr = createRegexpr));
-        expr = (Node *)malloc(sizeof(Regexpr));
-        expr->type = REG;
-        expr->val.value = m_token.type;
         break;
     case CONST:
         switch (m_token.type)
         {
         case TOK_NUM:
+            expr = createConstExpr(m_token.value);
             printf("    < VALUE >: %d\n", m_token.value);
-            /* FIXME */
-            // expr = createPrimaryNumExpr));
-            expr = (Node *)malloc(sizeof(ConstExpr));
-            expr->type = OP_CONST;
-            expr->val.value = m_token.value;
             break;
         default:
             throw_error(E_UNKIDENT, m_token.ident);
@@ -94,15 +86,13 @@ static void parse_op(pParser self, pLexer lexer)
     Lexema op_token = lexer->token;
     /* FIXME */
     // Node *op = 0
-    Node *expr = (Node *)malloc(sizeof(Operation));
-    expr->type = OP_INSTRUCTION;
-    expr->op.opcode = op_token.type;
+    Node *expr = createInstruction(op_token.type);
     printf("    < OPERATION >: %s\n", op_token.ident);
 
     switch (op_token.type)
     {
     case TOK_MVI:;
-        Operation *op = (Operation *)expr;
+        Instruction *op = (Instruction *)expr;
         op->paramCount = 2;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -121,7 +111,7 @@ static void parse_op(pParser self, pLexer lexer)
         free(self->statement);
         break;
     case TOK_MOV:
-        op = (Operation *)expr;
+        op = (Instruction *)expr;
         op->paramCount = 2;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);

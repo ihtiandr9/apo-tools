@@ -11,45 +11,48 @@ typedef enum _exprOp
     OP_INSTRUCTION,
     OP_CONST,
     OP_REG,
-}eExprOp;
+} eExprOp;
 
 typedef struct _Expr
 {
     eExprOp type;
-    ExprValue (*evaluate)(struct _Expr expr);
     ExprValue value;
+    ExprValue (*evaluate)(struct _Expr *self);
 } Expr;
 
-typedef struct _InstructionType
+typedef struct _InstructionExpr
 {
     eExprOp type;
-    ExprValue (*evaluate)(struct _InstructionType expr);
     ExprValue opcode;
-} InstructionType;
+    ExprValue (*evaluate)(struct _InstructionExpr *self);
+} InstructionExpr;
 
 typedef union _Node
 {
     eExprOp type;
-    InstructionType op;
-    Expr val;
+    InstructionExpr op;
+    Expr num;
 } Node;
 
-typedef struct _RegExpr
+typedef struct _Register
 {
     Expr super;
-} Regexpr;
+} Register;
 
 typedef struct _ConstExpr
 {
     Expr super;
 } ConstExpr;
 
-typedef struct _Operation
+typedef struct _Instruction
 {
-    InstructionType super;
+    InstructionExpr super;
     Node lparam;
     Node rparam;
     int paramCount;
-} Operation;
+} Instruction;
 
+Node *createRegister(ExprValue reg);
+Node *createConstExpr(ExprValue num);
+Node *createInstruction(ExprValue opcode);
 #endif
