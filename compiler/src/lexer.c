@@ -29,7 +29,8 @@ static const Lexema words[] =
 
 static const Lexema symbols[] =
     {
-        {DOTCOMMA, ";", 0, 1},
+        {COLON, ":", 0, 1},
+        {SEMICOLON, ";", 0, 1},
         {COMMA, ",", 0, 1},
         {EQ, "=", 0, 1},
         {GT, ">", 0, 1},
