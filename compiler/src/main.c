@@ -1,27 +1,14 @@
 #include <fcntl.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
-#include <lexer.h>
+#include <globals.h>
 
-static int fd_in;
-static int fd_out;
-static Lexer *m_lexer;
 static const int default_fd_in = 1;
 static const int default_fd_out = 1;
 
-void exitNicely()
-{
-    close(fd_in);
-    close(fd_out);
-    lexer_free(m_lexer);
-    exit(-1);
-}
-
 int main(int argc, char *argv[])
 {
-
+	
     fd_in = default_fd_in;
     fd_out = default_fd_out;
 

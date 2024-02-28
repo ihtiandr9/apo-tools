@@ -12,6 +12,8 @@ link_directories(/usr/local/lib)
 ## forktest
 add_executable(bkasm
 src/main.c
+src/globals.c
+src/errors.c
 src/lexer.c
 )
 
