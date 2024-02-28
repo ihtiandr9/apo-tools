@@ -1,14 +1,18 @@
+#include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <globals.h>
+
+// imports
+void exitNicely();
 
 static const int default_fd_in = 1;
 static const int default_fd_out = 1;
 
 int main(int argc, char *argv[])
 {
-	
+
     fd_in = default_fd_in;
     fd_out = default_fd_out;
 
@@ -37,10 +41,14 @@ int main(int argc, char *argv[])
     {
         if (m_lexer->token.type == L_EOF)
             break;
-        if (m_lexer->token.type == SPACE || m_lexer->token.type == COMMA || m_lexer->token.type == L_EOL)
+        if (m_lexer->token.type == SPACE 
+	    || m_lexer->token.type == DOTCOMMA 
+	    || m_lexer->token.type == COMMA 
+	    || m_lexer->token.type == L_EOL)
         {
             m_lexer->ch = NONE;
         }
+        lexerPrintToken(m_lexer->token);
     }
 
     lexer_free(m_lexer);

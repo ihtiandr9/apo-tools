@@ -1,4 +1,5 @@
 #include <symbols.h>
+#include <inbuf.h>
 #include <lexer.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -28,6 +29,7 @@ static const Lexema words[] =
 
 static const Lexema symbols[] =
     {
+	{DOTCOMMA, ";", 0, 1},
         {COMMA, ",", 0, 1},
         {EQ, "=", 0, 1},
         {GT, ">", 0, 1},
@@ -40,7 +42,6 @@ static const Lexema symbols[] =
 int lexer_next_tok(Lexer *lexer)
 {
     char m_ch = lexer->ch;
-    int readed;
     int f_result = 1;
     lexer->token.type = NONE;
     lexer->token.value = 0;
@@ -50,12 +51,11 @@ int lexer_next_tok(Lexer *lexer)
     {
         if (m_ch == NONE)
         {
-            readed = read(lexer->fd_in, &m_ch, 1);
-            if (!readed)
+            m_ch = inbufNextChar();
+            if (m_ch == eof_sym)
             {
-                m_ch = eof_sym;
                 lexer->token.type = L_EOF;
-                lexer->token.ident = &eof_sym;
+                lexer->token.ident = (char *)&eof_sym;
             }
         }
         else
@@ -82,10 +82,9 @@ int lexer_next_tok(Lexer *lexer)
                 while (isDigit(m_ch))
                 {
                     ident = (char *)realloc(ident, len + 2);
-                    ident[len] = m_ch;
-                    ident[len + 1] = 0;
-                    len++;
-                    readed = read(lexer->fd_in, &m_ch, 1);
+                    ident[len++] = m_ch;
+                    ident[len] = 0;
+                    m_ch = inbufNextChar();
                 }
                 lexer->token.len = len;
                 lexer->token.ident = 0;
@@ -101,10 +100,9 @@ int lexer_next_tok(Lexer *lexer)
                 while (isAlfa(m_ch))
                 {
                     ident = (char *)realloc(ident, len + 2);
-                    ident[len] = m_ch;
-                    ident[len + 1] = 0;
-                    len++;
-                    readed = read(lexer->fd_in, &m_ch, 1);
+                    ident[len++] = m_ch;
+                    ident[len] = 0;
+                    m_ch = inbufNextChar();
                 }
                 m_sym = lexer->words;
                 while (m_sym->len != 0)
@@ -121,7 +119,7 @@ int lexer_next_tok(Lexer *lexer)
                     free(ident);
                     continue;
                 }
-                if (len < 10)
+                if (len < 255)
                 {
                     lexer->token.type = ID;
                     lexer->token.ident = ident;
@@ -151,10 +149,27 @@ pLexer lexer_create(int fd_in)
     m_lexer->next_tok = lexer_next_tok;
     m_lexer->token.type = NONE;
     m_lexer->token.ident = 0;
+    inbufInit(fd_in);
     return m_lexer;
 }
 
 void lexer_free(pLexer lexer)
 {
     free(lexer);
+}
+
+void lexerPrintToken(Lexema token)
+{
+    switch(token.type)
+    {
+      case L_EOF:
+      case L_EOL:
+	break;	
+      case NUM:
+	printf("Token: %d \n", token.value);
+	break;
+      case ID:
+      default:
+ 	printf("Token: %s\n", token.ident);
+    }
 }

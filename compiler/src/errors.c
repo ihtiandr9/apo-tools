@@ -1,4 +1,5 @@
 #include <globals.h>
+#include <unistd.h>
 
 void exitNicely()
 {

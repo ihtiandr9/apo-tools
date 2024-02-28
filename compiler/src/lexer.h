@@ -8,6 +8,7 @@ typedef enum
   MOV,
   MVI,
   LXI,
+  DOTCOMMA,
   COMMA,
   EQ,
   GT,
@@ -48,6 +49,8 @@ typedef struct t_lexer
   int (*next_tok)(struct t_lexer *lexer);
 } Lexer, *pLexer;
 
+// exports
+void lexerPrintToken(Lexema token);
 pLexer lexer_create(int fd_in);
 void lexer_free(pLexer lexer);
 #endif
