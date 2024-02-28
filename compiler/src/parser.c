@@ -1,14 +1,10 @@
+
+#include <program.h>
+#include <stdlib.h>
 #include <globals.h>
 #include <errors.h>
-#include <symbols.h>
-#include <inbuf.h>
-#include <lexer.h>
-#include <parser.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
 #include <stdio.h>
-#include <program.h>
+#include <parser.h>
 
 static void parse_op(pParser self, pLexer lexer);
 
@@ -18,7 +14,7 @@ static void parse_var(pParser self, pLexer lexer)
     char *m_ident = m_token.ident;
     lexer->nextTok(lexer);
     m_token = lexer->token;
-    if (m_token.type == COLON)
+    if (m_token.type == TOK_COLON)
     {
         printf("< LABEL >: %s\n", m_ident);
         lexer->skipWhile(lexer, ':');
@@ -40,9 +36,9 @@ static void parse_comment(pParser self, pLexer lexer)
         {
         case L_EOL:
         case L_EOF:
-            lexer->ch = NONE;
+            lexer->ch = TOK_NONE;
             return;
-        case SEMICOLON:
+        case TOK_SEMICOLON:
             printf("< COMMENT >: skip until eol\n");
             lexer->skipUntil(lexer, 10);
             break;
@@ -60,25 +56,28 @@ static void parse_comment(pParser self, pLexer lexer)
 
 static void parse_param(pParser self, pLexer lexer)
 {
-    ValueType *n = (ValueType *)malloc(sizeof(ValueType));
-    n->type = NONE;
-    n->value = 0;
+    Node *expr = 0;
     Lexema m_token = lexer->token;
     switch (m_token.kind)
     {
     case REG:
         printf("    < REGISTER >: %s\n", m_token.ident);
-        n->type = REG;
-        n->value = m_token.type;
+        /* FIXME */
+        // expr = createRegexpr));
+        expr = (Node *)malloc(sizeof(Regexpr));
+        expr->type = REG;
+        expr->val.value = m_token.type;
         break;
-    case VAR:
+    case CONST:
         switch (m_token.type)
         {
-        case NUM:
+        case TOK_NUM:
             printf("    < VALUE >: %d\n", m_token.value);
-            n->type = VAR;
-            n->value = m_token.value;
-            self->statement = (Node *)n;
+            /* FIXME */
+            // expr = createPrimaryNumExpr));
+            expr = (Node *)malloc(sizeof(ConstExpr));
+            expr->type = OP_CONST;
+            expr->val.value = m_token.value;
             break;
         default:
             throw_error(E_UNKIDENT, m_token.ident);
@@ -87,21 +86,23 @@ static void parse_param(pParser self, pLexer lexer)
     default:
         throw_error(E_UNEXPTOKEN, m_token.ident);
     }
-    self->statement = (Node *)n;
+    self->statement = expr;
 }
 
 static void parse_op(pParser self, pLexer lexer)
 {
     Lexema op_token = lexer->token;
-    Operation *op = (Operation *)malloc(sizeof(Operation));
-    op->super.type = op_token.kind;
-    op->super.opcode = op_token.type;
-
+    /* FIXME */
+    // Node *op = 0
+    Node *expr = (Node *)malloc(sizeof(Operation));
+    expr->type = OP_INSTRUCTION;
+    expr->op.opcode = op_token.type;
     printf("    < OPERATION >: %s\n", op_token.ident);
 
     switch (op_token.type)
     {
-    case MVI:
+    case TOK_MVI:;
+        Operation *op = (Operation *)expr;
         op->paramCount = 2;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -119,7 +120,8 @@ static void parse_op(pParser self, pLexer lexer)
         op->rparam = *(self->statement);
         free(self->statement);
         break;
-    case MOV:
+    case TOK_MOV:
+        op = (Operation *)expr;
         op->paramCount = 2;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -134,30 +136,32 @@ static void parse_op(pParser self, pLexer lexer)
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         parse_param(self, lexer);
-        op->rparam = *(self->statement);
+        if (self->statement)
+            op->rparam = *(self->statement);
         free(self->statement);
         break;
-    case SEMICOLON: // no operation pass-throw comment
+    case TOK_SEMICOLON: // no operation pass-throw comment
         break;
     default:
         throw_error(E_UNKKEYWORD, op_token.ident);
         lexer->skipUntil(lexer, 10);
         break;
     }
-    self->statement = (Node *)op;
+    self->statement = expr;
 }
 
 static void parse_statement(pParser self, pLexer lexer)
 {
     Lexema m_token = lexer->token;
+    self->statement = 0;
     // lexer->printTok(lexer->token); // debug
 
     switch (m_token.kind)
     {
-    case VAR:
+    case CONST:
         switch (m_token.type)
         {
-        case IDENT:
+        case TOK_IDENT:
             parse_var(self, lexer);
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
@@ -171,16 +175,16 @@ static void parse_statement(pParser self, pLexer lexer)
     case SYM:
         switch (m_token.type)
         {
-        case SEMICOLON:
+        case TOK_SEMICOLON:
             parse_comment(self, lexer);
             break;
         case L_EOL:
             printf("    < EOL >\n");
-            lexer->ch = NONE;
+            lexer->ch = TOK_NONE;
             break;
         case L_EOF:
             printf("    < EOF >\n");
-            lexer->ch = NONE;
+            lexer->ch = TOK_NONE;
             break;
         default:
             throw_error(E_UNEXPSYM, m_token.ident);
@@ -202,7 +206,7 @@ static void parser_parse(pParser self, pLexer lexer)
 {
     while (lexer->nextTok(lexer))
     {
-        if (SPACE == lexer->token.type)
+        if (TOK_SPACE == lexer->token.type)
         {
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);

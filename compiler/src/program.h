@@ -24,6 +24,9 @@ TODO define it
 #ifndef H_PROGRAM_H
 #define H_PROGRAM_H
 
+#include <parser.h>
+#include <nodes.h>
+
 typedef struct _Program
 {
     Operation operation;

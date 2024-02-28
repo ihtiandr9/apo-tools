@@ -1,6 +1,5 @@
 #ifndef H_LEXER_H
 #define H_LEXER_H
-#include <stdlib.h>
 
 typedef enum _eIdentKind
 {
@@ -8,35 +7,35 @@ typedef enum _eIdentKind
   OP,
   REG,
   SYM,
-  VAR
+  CONST
 } eIdentKind;
 
 typedef enum _eIdentType
 {
-  NONE = 0,
-  MOV,
-  MVI,
-  LXI,
-  COLON,
-  SEMICOLON,
-  COMMA,
-  EQ,
-  GT,
-  LT,
-  PLUS,
-  MINUS,
-  SPACE,
-  NUM,
-  IDENT,
-  REGA,
-  REGB,
-  REGC,
-  REGD,
-  REGE,
-  REGH,
-  REGL,
-  REGM,
-  REGSP,
+  TOK_NONE = 0,
+  TOK_MOV,
+  TOK_MVI,
+  TOK_LXI,
+  TOK_COLON,
+  TOK_SEMICOLON,
+  TOK_COMMA,
+  TOK_EQ,
+  TOK_GT,
+  TOK_LT,
+  TOK_PLUS,
+  TOK_MINUS,
+  TOK_SPACE,
+  TOK_NUM,
+  TOK_IDENT,
+  TOK_REGA,
+  TOK_REGB,
+  TOK_REGC,
+  TOK_REGD,
+  TOK_REGE,
+  TOK_REGH,
+  TOK_REGL,
+  TOK_REGM,
+  TOK_REGSP,
   L_EOL,
   L_EOF
 } eIdentType;

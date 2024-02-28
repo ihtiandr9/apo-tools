@@ -1,6 +1,7 @@
 
-#include <parser.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <parser.h>
 #include <program.h>
 
 static Program program, *last = 0;
@@ -11,7 +12,7 @@ void program_generate(pParser parser)
     parser->statement = 0;
     if (!m_statement)
         return;
-    if (OP != m_statement->type)
+    if (OP_INSTRUCTION != m_statement->type)
         return;
     Operation m_operation = *(Operation*)m_statement;
     free(parser->statement);

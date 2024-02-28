@@ -1,12 +1,12 @@
+
+#include <stdio.h>
 #include <globals.h>
 #include <errors.h>
+#include <string.h>
+#include <stdlib.h>
 #include <symbols.h>
 #include <inbuf.h>
 #include <lexer.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
 
 // imports
 extern const char eof_sym;
@@ -14,31 +14,31 @@ extern const char eol_sym;
 
 static const Lexema words[] =
     {
-        {OP, MOV, "MOV", 0, 3},
-        {OP, MVI, "MVI", 0, 3},
-        {OP, LXI, "LXI", 0, 3},
-        {REG, REGA, "A", 0, 1},
-        {REG, REGB, "B", 0, 1},
-        {REG, REGC, "C", 0, 1},
-        {REG, REGD, "D", 0, 1},
-        {REG, REGE, "E", 0, 1},
-        {REG, REGH, "H", 0, 1},
-        {REG, REGL, "L", 0, 1},
-        {REG, REGM, "M", 0, 1},
-        {REG, REGSP, "SP", 0, 1},
+        {OP, TOK_MOV, "MOV", 0, 3},
+        {OP, TOK_MVI, "MVI", 0, 3},
+        {OP, TOK_LXI, "LXI", 0, 3},
+        {REG, TOK_REGA, "A", 0, 1},
+        {REG, TOK_REGB, "B", 0, 1},
+        {REG, TOK_REGC, "C", 0, 1},
+        {REG, TOK_REGD, "D", 0, 1},
+        {REG, TOK_REGE, "E", 0, 1},
+        {REG, TOK_REGH, "H", 0, 1},
+        {REG, TOK_REGL, "L", 0, 1},
+        {REG, TOK_REGM, "M", 0, 1},
+        {REG, TOK_REGSP, "SP", 0, 1},
         {0, 0, 0, 0, 0}};
 
 static const Lexema symbols[] =
     {
-        {SYM, COLON, ":", 0, 1},
-        {SYM, SEMICOLON, ";", 0, 1},
-        {SYM, COMMA, ",", 0, 1},
-        {SYM, EQ, "=", 0, 1},
-        {SYM, GT, ">", 0, 1},
-        {SYM, LT, "<", 0, 1},
-        {SYM, PLUS, "+", 0, 1},
-        {SYM, MINUS, "-", 0, 1},
-        {SYM, SPACE, " ", 0, 1},
+        {SYM, TOK_COLON, ":", 0, 1},
+        {SYM, TOK_SEMICOLON, ";", 0, 1},
+        {SYM, TOK_COMMA, ",", 0, 1},
+        {SYM, TOK_EQ, "=", 0, 1},
+        {SYM, TOK_GT, ">", 0, 1},
+        {SYM, TOK_LT, "<", 0, 1},
+        {SYM, TOK_PLUS, "+", 0, 1},
+        {SYM, TOK_MINUS, "-", 0, 1},
+        {SYM, TOK_SPACE, " ", 0, 1},
         {SYM, L_EOL, (char *)&eol_sym, 0, 1},
         {SYM, L_EOF, (char *)&eof_sym, 0, 1},
         {0, 0, 0, 0, 0}};
@@ -47,17 +47,17 @@ static int lexer_next_tok(Lexer *self)
 {
     char m_ch = self->ch;
     int f_result = 1;
-    self->token.type = NONE;
+    self->token.type = TOK_NONE;
     self->token.value = 0;
     self->token.len = 0;
     self->token.ident = 0;
 
-    while (self->token.type == NONE)
+    while (self->token.type == TOK_NONE)
     {
-        if (m_ch == NONE)
+        if (m_ch == TOK_NONE)
             m_ch = inbuf_next_char();
         else
-            self->ch = NONE;
+            self->ch = TOK_NONE;
         if (m_ch == eof_sym)
         {
             self->token.type = L_EOF;
@@ -75,7 +75,7 @@ static int lexer_next_tok(Lexer *self)
             }
             m_sym++;
         }
-        if (m_sym->type != NONE) // is symbol
+        if (m_sym->type != TOK_NONE) // is symbol
         {
             self->token = *m_sym;
             continue;
@@ -95,8 +95,8 @@ static int lexer_next_tok(Lexer *self)
             }
             self->token.len = len;
             self->token.ident = 0;
-            self->token.type = NUM;
-            self->token.kind = VAR;
+            self->token.type = TOK_NUM;
+            self->token.kind = CONST;
             self->token.value = atoi(ident);
             free(ident);
             continue;
@@ -121,7 +121,7 @@ static int lexer_next_tok(Lexer *self)
                 }
                 m_sym++;
             }
-            if (m_sym->type != NONE) // is keyword
+            if (m_sym->type != TOK_NONE) // is keyword
             {
                 self->token = *m_sym;
                 free(ident);
@@ -129,8 +129,8 @@ static int lexer_next_tok(Lexer *self)
             }
             if (len < 255) // default is ident
             {
-                self->token.kind = VAR;
-                self->token.type = IDENT;
+                self->token.kind = CONST;
+                self->token.type = TOK_IDENT;
                 self->token.ident = ident;
                 continue;
             }
@@ -153,12 +153,12 @@ static void lexer_print_tok(Lexema token)
     {
     case L_EOF:
     case L_EOL:
-    case SPACE:
+    case TOK_SPACE:
         break;
-    case NUM:
+    case TOK_NUM:
         printf("Token: %d \n", token.value);
         break;
-    case IDENT:
+    case TOK_IDENT:
     default:
         printf("Token: %s\n", token.ident);
     }
@@ -176,10 +176,10 @@ static void lexer_skip_until(Lexer *self, unsigned char symbol)
 {
     while (self->ch != symbol && self->ch != 0xff)
     {
-        self->ch = NONE;
+        self->ch = TOK_NONE;
         self->nextTok(self);
     }
-    self->ch = NONE;
+    self->ch = TOK_NONE;
 }
 
 pLexer lexer_create(int fd_in)
@@ -188,12 +188,12 @@ pLexer lexer_create(int fd_in)
     m_lexer->fd_in = fd_in;
     m_lexer->words = (Lexema *)words;
     m_lexer->symbols = (Lexema *)symbols;
-    m_lexer->ch = NONE;
+    m_lexer->ch = TOK_NONE;
     m_lexer->nextTok = lexer_next_tok;
     m_lexer->printTok = lexer_print_tok;
     m_lexer->skipWhile = lexer_skip_while;
     m_lexer->skipUntil = lexer_skip_until;
-    m_lexer->token.type = NONE;
+    m_lexer->token.type = TOK_NONE;
     m_lexer->token.ident = 0;
     inbuf_init(fd_in);
     return m_lexer;
