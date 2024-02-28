@@ -1,5 +1,4 @@
 ; COMMENT
-START:
- MVI A , 16
+START:MVI A , 16
  MOV B , A
 exit MOVA, 9

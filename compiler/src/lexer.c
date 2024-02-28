@@ -151,6 +151,7 @@ static void lexer_print_tok(Lexema token)
     {
     case L_EOF:
     case L_EOL:
+    case SPACE:
         break;
     case NUM:
         printf("Token: %d \n", token.value);

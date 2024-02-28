@@ -1,8 +1,9 @@
 /*  Program grammar
 <program> ::= <statement>
 <statement> ::= { <space> } <semicolon> {...} |
+                { <space> } <label> |
                 { <space> } <label> <semicolon> {...} |
-                { <space> } <label> <space> { <space> } <keyword> <space> { <space> } <operands> { <space> } <semicolon> {...} |
+                { <space> } <label> { <space> } <keyword> <space> { <space> } <operands> { <space> } <semicolon> {...} |
                 { <space> } <keyword> <space> { <space> } <operands> { <space> } <semicolon> {...} |
                 { <space> } <keyword> <space> { <space> } <operands> |
                 { <statment> }

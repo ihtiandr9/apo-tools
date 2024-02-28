@@ -9,6 +9,51 @@
 #include <string.h>
 #include <stdio.h>
 
+static void parse_op(pLexer m_lexer)
+{
+    Lexema op_token = m_lexer->token;
+    printf("    < OPERATION >: %s\n", op_token.ident);
+    m_lexer->ch = NONE;
+    while (m_lexer->next_tok(m_lexer))
+    {
+        Lexema m_token = m_lexer->token;
+        m_lexer->print_tok(m_token);
+        switch (m_token.kind)
+        {
+        case SYM:
+            switch (m_token.type)
+            {
+            case L_EOL:
+                return;
+            case SPACE:
+                m_lexer->skip_while(m_lexer, ' ');
+                break;
+            case COMMA:
+                m_lexer->ch = NONE;
+                break;
+            default:
+                throw_error(E_UNEXPSYM, m_token.ident);
+                exitNicely();
+            }
+            break;
+        case REG:
+            printf("    < REGISTER >: %s\n", m_token.ident);
+            m_lexer->ch = NONE;
+            break;
+        case VARIABLE:
+            switch (m_token.type)
+            {
+            default:
+                printf("    < VALUE >: %d\n", m_token.value);
+            }
+            break;
+        default:
+            throw_error(E_UNEXPTOKEN, m_token.ident);
+            break;
+        }
+    }
+}
+
 static void parser_parse(pLexer m_lexer)
 {
     while (m_lexer->next_tok(m_lexer))
@@ -39,41 +84,27 @@ static void parser_parse(pLexer m_lexer)
                     exitNicely();
                 }
                 break;
-            case L_EOL: case COMMA: 
+            case L_EOL:
+                printf("    < EOL >\n");
                 m_lexer->ch = NONE;
-                break;                
+                break;
             case SPACE:
+                printf("    < SPACE >\n");
                 m_lexer->skip_while(m_lexer, ' ');
                 break;
             default:
                 throw_error(E_UNEXPSYM, m_token.ident);
+                exitNicely();
             }
             break;
         case OP:
-            printf("    < OPERATION >: %s\n", m_token.ident);
-            m_lexer->ch=NONE;
-            break;
-        case REG:
-            printf("    < REGISTER >: %s\n", m_token.ident);
-            m_lexer->ch=NONE;
-            break;
-
-        case VARIABLE:
-            switch (m_token.type)
-            {
-            default:
-                printf("    < VALUE >: %d\n", m_token.value);
-            }
+            parse_op(m_lexer);
             break;
         default:
             throw_error(E_UNEXPTOKEN, m_token.ident);
             break;
         }
     }
-}
-
-static void parse_line(pLexer m_lexer)
-{
 }
 
 pParser parser_create()
