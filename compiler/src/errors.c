@@ -20,16 +20,16 @@ static void default_error_dispatcher(Error *e)
         break;
     default:
         printf("Unknown error\n");
-        exitNicely();
+        exit_nicely();
         break;
     }
 }
 
-void throw_error(ErrorType etype, void *data)
+void throw_error(eErrorType type, void *data)
 {
     Error e;
     e.data = data;
-    e.type = etype;
+    e.type = type;
     if (!error_dispatcher)
         default_error_dispatcher(&e);
     else

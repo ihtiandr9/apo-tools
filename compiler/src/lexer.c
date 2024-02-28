@@ -43,29 +43,29 @@ static const Lexema symbols[] =
         {SYM, L_EOF, (char *)&eof_sym, 0, 1},
         {0, 0, 0, 0, 0}};
 
-static int lexer_next_tok(Lexer *lexer)
+static int lexer_next_tok(Lexer *self)
 {
-    char m_ch = lexer->ch;
+    char m_ch = self->ch;
     int f_result = 1;
-    lexer->token.type = NONE;
-    lexer->token.value = 0;
-    lexer->token.len = 0;
-    lexer->token.ident = 0;
+    self->token.type = NONE;
+    self->token.value = 0;
+    self->token.len = 0;
+    self->token.ident = 0;
 
-    while (lexer->token.type == NONE)
+    while (self->token.type == NONE)
     {
         if (m_ch == NONE)
-            m_ch = inbufNextChar();
+            m_ch = inbuf_next_next_char();
         else
-            lexer->ch = NONE;
+            self->ch = NONE;
         if (m_ch == eof_sym)
         {
-            lexer->token.type = L_EOF;
-            lexer->token.ident = (char *)&eof_sym;
+            self->token.type = L_EOF;
+            self->token.ident = (char *)&eof_sym;
             continue;
         }
 
-        Lexema *m_sym = lexer->symbols;
+        Lexema *m_sym = self->symbols;
         while (m_sym->len != 0)
         {
             if (*(m_sym->ident) == m_ch)
@@ -76,42 +76,42 @@ static int lexer_next_tok(Lexer *lexer)
         }
         if (m_sym->type != NONE) // is symbol
         {
-            lexer->token = *m_sym;
+            self->token = *m_sym;
             continue;
         }
 
-        if (isDigit(m_ch)) // is digit returns number
+        if (is_digit(m_ch)) // is digit returns number
         {
             char *ident = 0;
             int len = 0;
             int value = 0;
-            while (isDigit(m_ch))
+            while (is_digit(m_ch))
             {
                 ident = (char *)realloc(ident, len + 2);
                 ident[len++] = m_ch;
                 ident[len] = 0;
-                m_ch = inbufNextChar();
+                m_ch = inbuf_next_next_char();
             }
-            lexer->token.len = len;
-            lexer->token.ident = 0;
-            lexer->token.type = NUM;
-            lexer->token.kind = VARIABLE;
-            lexer->token.value = atoi(ident);
+            self->token.len = len;
+            self->token.ident = 0;
+            self->token.type = NUM;
+            self->token.kind = VARIABLE;
+            self->token.value = atoi(ident);
             free(ident);
             continue;
         }
-        if (isAlfa(m_ch)) // try read keyword or ident
+        if (is_alfa(m_ch)) // try read keyword or ident
         {
             char *ident = 0;
             int len = 0;
-            while (isAlfa(m_ch))
+            while (is_alfa(m_ch))
             {
                 ident = (char *)realloc(ident, len + 2);
                 ident[len++] = m_ch;
                 ident[len] = 0;
-                m_ch = inbufNextChar();
+                m_ch = inbuf_next_next_char();
             }
-            m_sym = lexer->words;
+            m_sym = self->words;
             while (m_sym->len != 0)
             {
                 if (!strcmp(ident, m_sym->ident))
@@ -122,24 +122,24 @@ static int lexer_next_tok(Lexer *lexer)
             }
             if (m_sym->type != NONE) // is keyword
             {
-                lexer->token = *m_sym;
+                self->token = *m_sym;
                 free(ident);
                 continue;
             }
             if (len < 255) // default is ident
             {
-                lexer->token.type = IDENT;
-                lexer->token.ident = ident;
+                self->token.type = IDENT;
+                self->token.ident = ident;
                 continue;
             }
             throw_error(E_UNKIDENT, ident);
-            exitNicely();
+            exit_nicely();
         }
         throw_error(E_UNEXPSYM, &m_ch);
-        exitNicely();
+        exit_nicely();
     }
-    lexer->ch = m_ch;
-    if (lexer->token.type == L_EOF)
+    self->ch = m_ch;
+    if (self->token.type == L_EOF)
         f_result = 0;
 
     return f_result;
@@ -162,20 +162,20 @@ static void lexer_print_tok(Lexema token)
     }
 }
 
-static void lexer_skip_while(Lexer *lexer, unsigned char symbol)
+static void lexer_skip_while(Lexer *self, unsigned char symbol)
 {
-    while (lexer->ch == symbol && lexer->ch != 0xff)
+    while (self->ch == symbol && self->ch != 0xff)
     {
-        lexer->ch = inbufNextChar();
+        self->ch = inbuf_next_next_char();
     }
 }
 
-static void lexer_skip_until(Lexer *lexer, unsigned char symbol)
+static void lexer_skip_until(Lexer *self, unsigned char symbol)
 {
-    while (lexer->ch != symbol && lexer->ch != 0xff)
+    while (self->ch != symbol && self->ch != 0xff)
     {
-        lexer->ch = NONE;
-        lexer->next_tok(lexer);
+        self->ch = NONE;
+        self->nextTok(self);
     }
 }
 
@@ -186,17 +186,17 @@ pLexer lexer_create(int fd_in)
     m_lexer->words = (Lexema *)words;
     m_lexer->symbols = (Lexema *)symbols;
     m_lexer->ch = NONE;
-    m_lexer->next_tok = lexer_next_tok;
-    m_lexer->print_tok = lexer_print_tok;
-    m_lexer->skip_while = lexer_skip_while;
-    m_lexer->skip_until = lexer_skip_until;
+    m_lexer->nextTok = lexer_next_tok;
+    m_lexer->printTok = lexer_print_tok;
+    m_lexer->skipWhile = lexer_skip_while;
+    m_lexer->skipUntil = lexer_skip_until;
     m_lexer->token.type = NONE;
     m_lexer->token.ident = 0;
-    inbufInit(fd_in);
+    inbuf_init(fd_in);
     return m_lexer;
 }
 
-void lexer_free(pLexer lexer)
+void lexer_free(pLexer self)
 {
-    free(lexer);
+    free(self);
 }

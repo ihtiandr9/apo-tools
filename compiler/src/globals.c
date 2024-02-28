@@ -6,7 +6,7 @@
 int fd_in;
 int fd_out;
 
-void exitNicely()
+void exit_nicely()
 {
     close(fd_in);
     close(fd_out);

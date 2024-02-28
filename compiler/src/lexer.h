@@ -2,7 +2,7 @@
 #define H_LEXER_H
 #include <stdlib.h>
 
-typedef enum
+typedef enum _eIdentKind
 {
   KIND_NONE = 0,
   OP,
@@ -41,7 +41,7 @@ typedef enum _eIdentType
   L_EOF
 } eIdentType;
 
-typedef struct t_Lexema
+typedef struct _Lexema
 {
   eIdentKind kind;
   eIdentType type;
@@ -57,13 +57,13 @@ typedef struct t_lexer
   Lexema *words;
   char ch;
   Lexema token;
-  int (*next_tok)(struct t_lexer *lexer);
-  void (*print_tok)(Lexema token);
-  void (*skip_until)(struct t_lexer *lexer, unsigned char symbol);
-  void (*skip_while)(struct t_lexer *lexer, unsigned char symbol);
+  int (*nextTok)(struct t_lexer *self);
+  void (*printTok)(Lexema token);
+  void (*skipUntil)(struct t_lexer *self, unsigned char symbol);
+  void (*skipWhile)(struct t_lexer *self, unsigned char symbol);
 } Lexer, *pLexer;
 
 // exports
 pLexer lexer_create(int fd_in);
-void lexer_free(pLexer lexer);
+void lexer_free(pLexer self);
 #endif

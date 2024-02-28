@@ -6,9 +6,6 @@
 #include <lexer.h>
 #include <parser.h>
 
-// imports
-void exitNicely();
-
 static const int default_fd_in = 1;
 static const int default_fd_out = 1;
 
@@ -30,17 +27,17 @@ int main(int argc, char *argv[])
     if (fd_in < 0)
     {
         printf("file not exist");
-        exitNicely();
+        exit_nicely();
     }
     if (fd_in < 0)
     {
         printf("file not create");
-        exitNicely();
+        exit_nicely();
     }
     Lexer *m_lexer = lexer_create(fd_in);
     Parser *m_parser = parser_create();
     if (m_parser)
-        m_parser->parse(m_lexer);
+        m_parser->parse(m_parser, m_lexer);
 
     parser_free(m_parser);
     lexer_free(m_lexer);

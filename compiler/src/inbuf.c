@@ -10,7 +10,7 @@ static int bufsize;
 static int cursym;
 static int fd;
 
-unsigned char inbufNextChar()
+unsigned char inbuf_next_next_char()
 {
 	if(cursym < bufsize)
 		return inbuf[cursym++];
@@ -22,7 +22,7 @@ unsigned char inbufNextChar()
 		return 0xff;
 }
 
-void inbufInit( int _fd)
+void inbuf_init( int _fd)
 {
 	fd = _fd;
 	bufsize = read(fd, inbuf, 512);

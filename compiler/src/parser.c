@@ -9,15 +9,16 @@
 #include <string.h>
 #include <stdio.h>
 
-static void parse_op(pLexer m_lexer)
+static void parse_op(pParser self, pLexer m_lexer)
 {
+    
     Lexema op_token = m_lexer->token;
     printf("    < OPERATION >: %s\n", op_token.ident);
     m_lexer->ch = NONE;
-    while (m_lexer->next_tok(m_lexer))
+    while (m_lexer->nextTok(m_lexer))
     {
         Lexema m_token = m_lexer->token;
-        m_lexer->print_tok(m_token);
+        m_lexer->printTok(m_token);
         switch (m_token.kind)
         {
         case SYM:
@@ -26,14 +27,14 @@ static void parse_op(pLexer m_lexer)
             case L_EOL:
                 return;
             case SPACE:
-                m_lexer->skip_while(m_lexer, ' ');
+                m_lexer->skipWhile(m_lexer, ' ');
                 break;
             case COMMA:
                 m_lexer->ch = NONE;
                 break;
             default:
                 throw_error(E_UNEXPSYM, m_token.ident);
-                exitNicely();
+                exit_nicely();
             }
             break;
         case REG:
@@ -54,12 +55,12 @@ static void parse_op(pLexer m_lexer)
     }
 }
 
-static void parser_parse(pLexer m_lexer)
+static void parser_parse(pParser self, pLexer m_lexer)
 {
-    while (m_lexer->next_tok(m_lexer))
+    while (m_lexer->nextTok(m_lexer))
     {
         Lexema m_token = m_lexer->token;
-        m_lexer->print_tok(m_token);
+        m_lexer->printTok(m_token);
         switch (m_token.kind)
         {
         case SYM:
@@ -67,11 +68,11 @@ static void parser_parse(pLexer m_lexer)
             {
             case SEMICOLON:
                 printf("    < COMMENT >: skip until eol\n");
-                m_lexer->skip_until(m_lexer, 10);
+                m_lexer->skipUntil(m_lexer, 10);
                 break;
             case IDENT:;
                 char *m_ident = m_token.ident;
-                m_lexer->next_tok(m_lexer);
+                m_lexer->nextTok(m_lexer);
                 m_token = m_lexer->token;
                 if (m_token.type == COLON)
                 {
@@ -81,7 +82,7 @@ static void parser_parse(pLexer m_lexer)
                 else
                 {
                     throw_error(E_UNKIDENT, m_ident);
-                    exitNicely();
+                    exit_nicely();
                 }
                 break;
             case L_EOL:
@@ -90,15 +91,15 @@ static void parser_parse(pLexer m_lexer)
                 break;
             case SPACE:
                 printf("    < SPACE >\n");
-                m_lexer->skip_while(m_lexer, ' ');
+                m_lexer->skipWhile(m_lexer, ' ');
                 break;
             default:
                 throw_error(E_UNEXPSYM, m_token.ident);
-                exitNicely();
+                exit_nicely();
             }
             break;
         case OP:
-            parse_op(m_lexer);
+            parse_op(self, m_lexer);
             break;
         default:
             throw_error(E_UNEXPTOKEN, m_token.ident);

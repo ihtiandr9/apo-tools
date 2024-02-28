@@ -1,5 +1,5 @@
 #ifndef H_SYMBOLS_H
 #define H_SYMBOLS_H
-int isDigit(char ch);
-int isAlfa(char ch);
+int is_digit(char ch);
+int is_alfa(char ch);
 #endif

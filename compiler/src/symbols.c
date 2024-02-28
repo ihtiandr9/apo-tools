@@ -6,7 +6,7 @@ const char eol_sym = 0x0A;
 static const char digits[] = "0123456789";
 static const char alfas[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-int isDigit(char ch)
+int is_digit(char ch)
 {
     int i = 0;
     for (i = 0; i < sizeof(digits) - 1; i++)
@@ -17,7 +17,7 @@ int isDigit(char ch)
     return (ch == digits[i]);
 }
 
-int isAlfa(char ch)
+int is_alfa(char ch)
 {
     int i = 0;
     // printf("Size of alfa: %d ", sizeof(alfa));
