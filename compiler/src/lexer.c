@@ -13,31 +13,30 @@ static const char lexer_eol = 0x0A;
 
 static const Lexema words[] =
     {
-        {MOV, "MOV"},
-        {MVI, "MVI"},
-        {LXI, "LXI"},
-        {REGA, "A"},
-        {REGB, "B"},
-        {REGC, "C"},
-        {REGD, "D"},
-        {REGE, "E"},
-        {REGH, "H"},
-        {REGL, "L"},
-        {REGM, "M"},
-        {REGSP, "SP"},
-
-        {0, 0}};
+        {MOV, "MOV", 0, 3},
+        {MVI, "MVI", 0, 3},
+        {LXI, "LXI", 0, 3},
+        {REGA, "A", 0, 1},
+        {REGB, "B", 0, 1},
+        {REGC, "C", 0, 1},
+        {REGD, "D", 0, 1},
+        {REGE, "E", 0, 1},
+        {REGH, "H", 0, 1},
+        {REGL, "L", 0, 1},
+        {REGM, "M", 0, 1},
+        {REGSP, "SP", 0, 1},
+        {0, 0, 0, 0}};
 
 static const Lexema symbols[] =
     {
-        {COMMA, ","},
-        {EQ, "="},
-        {GT, ">"},
-        {LT, "<"},
-        {SPACE, " "},
-        {L_EOL, (char *)&lexer_eol},
-        {L_EOF, (char *)&lexer_eof},
-        {0, 0}};
+        {COMMA, ",", 0, 1},
+        {EQ, "=" , 0, 1},
+        {GT, ">" , 0, 1},
+        {LT, "<" , 0, 1},
+        {SPACE, " ", 0, 1},
+        {L_EOL, (char *)&lexer_eol, 0, 1},
+        {L_EOF, (char *)&lexer_eof, 0, 1},
+        {0, 0, 0, 0}};
 int isDigit(char ch)
 {
     const char digit[] = "0123456789";
@@ -86,7 +85,7 @@ int lexer_next_tok(Lexer *lexer)
         else
         {
             Lexema *m_sym = lexer->symbols;
-            while (m_sym->ident != 0)
+            while (m_sym->len != 0)
             {
                 if (*(m_sym->ident) == m_ch)
                 {
@@ -131,7 +130,7 @@ int lexer_next_tok(Lexer *lexer)
                     readed = read(lexer->fd_in, &m_ch, 1);
                 }
                 m_sym = lexer->words;
-                while (m_sym->ident != 0)
+                while (m_sym->len != 0)
                 {
                     if (!strcmp(ident, m_sym->ident))
                     {
@@ -153,12 +152,6 @@ int lexer_next_tok(Lexer *lexer)
                 }
                 printf("Unknown identifier %s\n", ident);
                 exitNicely();
-                /*elif len(ident) == 1:
-                    self.sym = Lexer.ID
-                    self.value = ord(ident) - ord('a')
-                else:
-                    self.error('Unknown identifier: ' + ident)
-                    */
             }
             printf("unexpected symbol %c\n", m_ch);
             exitNicely();
