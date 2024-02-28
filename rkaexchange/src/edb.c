@@ -8,18 +8,28 @@
 
 wchar_t getUnicodeSymbol(uint8_t chr)
 {
-        static wchar_t *c_apogeySymbols = // koi7
-            L" ▘▝▀▗▚▐▜ ★⬯↑⬮ ↣↓▖▌▞▛▄▙▟█∼≈╋┃━↢✿▕"
+        static const wchar_t *const c_apogeySymbols = // koi7
+            L" ▘▝▀▗▚▐▜ ★⬯↑⬮ ↣↓"
+            L"▖▌▞▛▄▙▟█∼≈╋┃━↢✿▕"
             L" !\"#¤%&'()*+,-./0123456789:;<=>?"
-            L"@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
-            L"ЮАБЦДЕФГХИЙКЛМНОПЯРСТУЖВЬЫЗШЭЩЧ▒";
+            L"@ABCDEFGHIJKLMNO"
+            L"PQRSTUVWXYZ[\\]^_"
+            L"ЮАБЦДЕФГХИЙКЛМНО"
+            L"ПЯРСТУЖВЬЫЗШЭЩЧ▒";
         return c_apogeySymbols[chr];
 }
 
 char charCodeAt(uint8_t chr)
 {
-        static const unsigned char const *c_asciiSymbols =
-            "abwgdegzijklmnoprstufhc~{}xyx|`q";
+        static const unsigned char *const c_asciiSymbols =
+            " ▘▝▀▗▚▐▜ ★⬯↑⬮ ↣↓"
+            "▖▌▞▛▄▙▟█∼≈╋┃━↢✿▕"
+            " !\"#¤%&'()*+,-./"
+            "0123456789:;<=>?"
+            "@ABCDEFGHIJKLMNO"
+            "PQRSTUVWXYZ[\\]^_"
+            "abwgdevzijklmnop"
+            "rstufhc~{}.yx|`q";
         unsigned char res;
         if (chr < 128)
         {
@@ -27,7 +37,7 @@ char charCodeAt(uint8_t chr)
         }
         else
         {
-                res = c_asciiSymbols[chr - 0x90];
+                res = c_asciiSymbols[chr + 11];
         }
         return res;
 }
@@ -46,7 +56,7 @@ static int pack(int fd_in, int fd_out)
                         continue;
                 }
                 res = charCodeAt(ch);
-                  write(fd_out, &res, 1);
+                write(fd_out, &res, 1);
         }
         return 0;
 }
