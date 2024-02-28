@@ -16,6 +16,7 @@ src/globals.c
 src/errors.c
 src/lexer.c
 src/symbols.c
+src/inbuf.c
 )
 
 ##target_link_libraries(nonestl curl json-c)

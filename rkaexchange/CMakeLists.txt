@@ -14,6 +14,7 @@ add_executable(rkaexchange
 src/main.c
 src/edb.c
 src/errors.c
+src/inbuf.c
 )
 
 ##target_link_libraries(nonestl curl json-c)

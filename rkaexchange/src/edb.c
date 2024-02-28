@@ -1,5 +1,6 @@
 
 #include <edb.h>
+#include <inbuf.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -65,70 +66,61 @@ static int unpack(int fd_in, int fd_out)
 {
         assert(fd_in > 0 && fd_out > 0);
         static char const utfRu = 0xd0;
-        unsigned char buf[256];
         wchar_t uniSym;
         unsigned char outSym;
-        char textStarted;
+        char textStarted = 0;
         int totalSize = 0;
-        for (int readed = read(fd_in, buf, 254); readed > 0; readed = read(fd_in, buf, 254))
+        inbufInit(fd_in);
+        unsigned char curSym = inbufNextChar();
+        while (0xff != curSym)
         {
-                assert(readed > 0);
-                unsigned char *curSym = buf;
-                while ((curSym - buf < readed) && 0xff != (*curSym))
+                if (!totalSize && (curSym != 0xe6))
                 {
-                        if (!totalSize && (*curSym != 0xe6))
+                        printf("unsupported format\n");
+                        exit(-1);
+                }
+                if (!textStarted && (curSym == 0xe6))
+                {
+                        curSym = inbufNextChar();
+                        totalSize++;
+                        continue;
+                };
+                if (!textStarted && (curSym == 0))
+                {
+                        while (!curSym)
+                                curSym = inbufNextChar();
+                        curSym = inbufNextChar();
+                        curSym = inbufNextChar();
+                        curSym = inbufNextChar();
+                        textStarted = 1;
+                        continue;
+                }
+                if (curSym == 13)
+                {
+                        curSym = 10;
+                        write(fd_out, &curSym, 1);
+                        curSym = inbufNextChar();
+                        continue;
+                }
+                if (curSym < 32)
+                {
+                        curSym = 10;
+                        write(fd_out, &curSym, 1);
+                }
+                else
+                {
+                        uniSym = getUnicodeSymbol(curSym);
+                        outSym = uniSym;
+                        if (uniSym > 0x400)
                         {
-                                printf("unsupported format\n");
-                                exit(-1);
-                        }
-                        if (!textStarted && (*curSym == 0xe6))
-                        {
-                                curSym += 16;
-                                totalSize += 16;
-                                while (*curSym == 0 && (curSym - buf < readed))
-                                {
-                                        curSym++;
-                                        totalSize++;
-                                }
-                                continue;
-                        };
-                        if (!textStarted && (*curSym == 0))
-                        {
-                                while (*curSym == 0 && (curSym - buf < readed))
-                                        curSym++;
-                                if (curSym - buf == readed)
-                                        continue;
-                                curSym += 3;
-                                textStarted = 1;
-                                continue;
-                        }
-                        if (*curSym == 13)
-                        {
-                                *curSym = 10;
-                                write(fd_out, curSym, 1);
-                                curSym++;
-                                continue;
-                        }
-                        if (*curSym < 32)
-                        {
-                                *curSym = 10;
-                                write(fd_out, curSym, 1);
+                                outSym += 0x80;
+                                write(fd_out, &utfRu, 1);
+                                write(fd_out, &outSym, 1);
                         }
                         else
-                        {
-                                uniSym = getUnicodeSymbol(*curSym);
-                                outSym = uniSym;
-                                if (uniSym > 0x400)
-                                {
-                                        outSym += 0x80;
-                                        write(fd_out, &utfRu, 1);
-                                        write(fd_out, &outSym, 1);
-                                }
-                                else
-                                        write(fd_out, &uniSym, 1);
-                        }
-                        curSym++;
+                                write(fd_out, &uniSym, 1);
                 }
+                curSym = inbufNextChar();
         }
         return 0;
 }
