@@ -1,3 +1,5 @@
 ; COMMENT
-MVI A , 16
-MOVA, 9
+START:
+ MVI A , 16
+ MOV B , A
+exit MOVA, 9

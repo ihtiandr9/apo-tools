@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <globals.h>
+#include <lexer.h>
+#include <parser.h>
 
 // imports
 void exitNicely();
@@ -35,13 +37,13 @@ int main(int argc, char *argv[])
         printf("file not create");
         exitNicely();
     }
-    m_lexer = lexer_create(fd_in);
-    pParser m_parser = parser_create();
-    m_parser->parse(m_lexer);   
+    Lexer *m_lexer = lexer_create(fd_in);
+    Parser *m_parser = parser_create();
+    if (m_parser)
+        m_parser->parse(m_lexer);
 
     parser_free(m_parser);
     lexer_free(m_lexer);
-    m_lexer = 0;
     close(fd_in);
     close(fd_out);
     return 0;

@@ -1,3 +1,5 @@
+#include <globals.h>
+#include <errors.h>
 #include <symbols.h>
 #include <inbuf.h>
 #include <lexer.h>
@@ -7,42 +9,41 @@
 #include <stdio.h>
 
 // imports
-void exitNicely();
 extern const char eof_sym;
 extern const char eol_sym;
 
 static const Lexema words[] =
     {
-        {MOV, "MOV", 0, 3},
-        {MVI, "MVI", 0, 3},
-        {LXI, "LXI", 0, 3},
-        {REGA, "A", 0, 1},
-        {REGB, "B", 0, 1},
-        {REGC, "C", 0, 1},
-        {REGD, "D", 0, 1},
-        {REGE, "E", 0, 1},
-        {REGH, "H", 0, 1},
-        {REGL, "L", 0, 1},
-        {REGM, "M", 0, 1},
-        {REGSP, "SP", 0, 1},
-        {0, 0, 0, 0}};
+        {OP, MOV, "MOV", 0, 3},
+        {OP, MVI, "MVI", 0, 3},
+        {OP, LXI, "LXI", 0, 3},
+        {REG, REGA, "A", 0, 1},
+        {REG, REGB, "B", 0, 1},
+        {REG, REGC, "C", 0, 1},
+        {REG, REGD, "D", 0, 1},
+        {REG, REGE, "E", 0, 1},
+        {REG, REGH, "H", 0, 1},
+        {REG, REGL, "L", 0, 1},
+        {REG, REGM, "M", 0, 1},
+        {REG, REGSP, "SP", 0, 1},
+        {0, 0, 0, 0, 0}};
 
 static const Lexema symbols[] =
     {
-        {COLON, ":", 0, 1},
-        {SEMICOLON, ";", 0, 1},
-        {COMMA, ",", 0, 1},
-        {EQ, "=", 0, 1},
-        {GT, ">", 0, 1},
-        {LT, "<", 0, 1},
-        {PLUS, "+", 0, 1},
-        {MINUS, "-", 0, 1},
-        {SPACE, " ", 0, 1},
-        {L_EOL, (char *)&eol_sym, 0, 1},
-        {L_EOF, (char *)&eof_sym, 0, 1},
-        {0, 0, 0, 0}};
+        {SYM, COLON, ":", 0, 1},
+        {SYM, SEMICOLON, ";", 0, 1},
+        {SYM, COMMA, ",", 0, 1},
+        {SYM, EQ, "=", 0, 1},
+        {SYM, GT, ">", 0, 1},
+        {SYM, LT, "<", 0, 1},
+        {SYM, PLUS, "+", 0, 1},
+        {SYM, MINUS, "-", 0, 1},
+        {SYM, SPACE, " ", 0, 1},
+        {SYM, L_EOL, (char *)&eol_sym, 0, 1},
+        {SYM, L_EOF, (char *)&eof_sym, 0, 1},
+        {0, 0, 0, 0, 0}};
 
-int lexer_next_tok(Lexer *lexer)
+static int lexer_next_tok(Lexer *lexer)
 {
     char m_ch = lexer->ch;
     int f_result = 1;
@@ -94,6 +95,7 @@ int lexer_next_tok(Lexer *lexer)
             lexer->token.len = len;
             lexer->token.ident = 0;
             lexer->token.type = NUM;
+            lexer->token.kind = VARIABLE;
             lexer->token.value = atoi(ident);
             free(ident);
             continue;
@@ -126,14 +128,14 @@ int lexer_next_tok(Lexer *lexer)
             }
             if (len < 255) // default is ident
             {
-                lexer->token.type = ID;
+                lexer->token.type = IDENT;
                 lexer->token.ident = ident;
                 continue;
             }
-            printf("Unknown identifier %s\n", ident);
+            throw_error(E_UNKIDENT, ident);
             exitNicely();
         }
-        printf("unexpected symbol %c\n", m_ch);
+        throw_error(E_UNEXPSYM, &m_ch);
         exitNicely();
     }
     lexer->ch = m_ch;
@@ -141,6 +143,39 @@ int lexer_next_tok(Lexer *lexer)
         f_result = 0;
 
     return f_result;
+}
+
+static void lexer_print_tok(Lexema token)
+{
+    switch (token.type)
+    {
+    case L_EOF:
+    case L_EOL:
+        break;
+    case NUM:
+        printf("Token: %d \n", token.value);
+        break;
+    case IDENT:
+    default:
+        printf("Token: %s\n", token.ident);
+    }
+}
+
+static void lexer_skip_while(Lexer *lexer, unsigned char symbol)
+{
+    while (lexer->ch == symbol && lexer->ch != 0xff)
+    {
+        lexer->ch = inbufNextChar();
+    }
+}
+
+static void lexer_skip_until(Lexer *lexer, unsigned char symbol)
+{
+    while (lexer->ch != symbol && lexer->ch != 0xff)
+    {
+        lexer->ch = NONE;
+        lexer->next_tok(lexer);
+    }
 }
 
 pLexer lexer_create(int fd_in)
@@ -151,6 +186,9 @@ pLexer lexer_create(int fd_in)
     m_lexer->symbols = (Lexema *)symbols;
     m_lexer->ch = NONE;
     m_lexer->next_tok = lexer_next_tok;
+    m_lexer->print_tok = lexer_print_tok;
+    m_lexer->skip_while = lexer_skip_while;
+    m_lexer->skip_until = lexer_skip_until;
     m_lexer->token.type = NONE;
     m_lexer->token.ident = 0;
     inbufInit(fd_in);
@@ -160,20 +198,4 @@ pLexer lexer_create(int fd_in)
 void lexer_free(pLexer lexer)
 {
     free(lexer);
-}
-
-void lexerPrintToken(Lexema token)
-{
-    switch (token.type)
-    {
-    case L_EOF:
-    case L_EOL:
-        break;
-    case NUM:
-        printf("Token: %d \n", token.value);
-        break;
-    case ID:
-    default:
-        printf("Token: %s\n", token.ident);
-    }
 }

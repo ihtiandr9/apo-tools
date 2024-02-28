@@ -4,6 +4,15 @@
 
 typedef enum
 {
+  KIND_NONE = 0,
+  OP,
+  REG,
+  SYM,
+  VARIABLE
+} eIdentKind;
+
+typedef enum _eIdentType
+{
   NONE = 0,
   MOV,
   MVI,
@@ -18,7 +27,7 @@ typedef enum
   MINUS,
   SPACE,
   NUM,
-  ID,
+  IDENT,
   REGA,
   REGB,
   REGC,
@@ -28,14 +37,13 @@ typedef enum
   REGL,
   REGM,
   REGSP,
-  E_UNEXP,
-  E_UNKID,
   L_EOL,
   L_EOF
 } eIdentType;
 
 typedef struct t_Lexema
 {
+  eIdentKind kind;
   eIdentType type;
   char *ident;
   int value;
@@ -50,10 +58,12 @@ typedef struct t_lexer
   char ch;
   Lexema token;
   int (*next_tok)(struct t_lexer *lexer);
+  void (*print_tok)(Lexema token);
+  void (*skip_until)(struct t_lexer *lexer, unsigned char symbol);
+  void (*skip_while)(struct t_lexer *lexer, unsigned char symbol);
 } Lexer, *pLexer;
 
 // exports
-void lexerPrintToken(Lexema token);
 pLexer lexer_create(int fd_in);
 void lexer_free(pLexer lexer);
 #endif

@@ -18,6 +18,7 @@ src/lexer.c
 src/parser.c
 src/symbols.c
 src/inbuf.c
+src/program.c
 )
 
 ##target_link_libraries(nonestl curl json-c)

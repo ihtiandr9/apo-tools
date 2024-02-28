@@ -1,10 +1,42 @@
 #include <globals.h>
-#include <unistd.h>
+#include <errors.h>
+#include <stdio.h>
 
-void exitNicely()
+static  fn_error_dispatecher error_dispatcher = 0;
+
+static void default_error_dispatcher(Error *e)
 {
-    close(fd_in);
-    close(fd_out);
-    lexer_free(m_lexer);
-    exit(-1);
+    printf("Error: ");
+    switch (e->type)
+    {
+    case E_UNKIDENT:
+        printf("Unknown identifier: %s\n", (char *)e->data);
+        break;
+    case E_UNEXPSYM:
+        printf("Unexpected symbol: %c (may be in lowercase)\n", *(char*)e->data);
+        break;
+    case E_UNEXPTOKEN:
+        printf("Unexpected token: %s\n", (char*)e->data);
+        break;
+    default:
+        printf("Unknown error\n");
+        exitNicely();
+        break;
+    }
+}
+
+void throw_error(ErrorType etype, void *data)
+{
+    Error e;
+    e.data = data;
+    e.type = etype;
+    if (!error_dispatcher)
+        default_error_dispatcher(&e);
+    else
+        error_dispatcher(&e);
+}
+
+void set_error_dipatcher(void(*_error_dispatcher)(Error*))
+{
+    error_dispatcher = _error_dispatcher;
 }
