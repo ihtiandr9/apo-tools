@@ -1,2 +1,3 @@
 ; COMMENT
-MVI A, 16
+MVI A , 16
+MOVA, 9

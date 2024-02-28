@@ -13,6 +13,8 @@ typedef enum
   EQ,
   GT,
   LT,
+  PLUS,
+  MINUS,
   SPACE,
   NUM,
   ID,
