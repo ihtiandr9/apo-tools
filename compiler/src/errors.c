@@ -18,6 +18,9 @@ static void default_error_dispatcher(Error *e)
     case E_UNEXPTOKEN:
         printf("Unexpected token: %s\n", (char*)e->data);
         break;
+    case E_UNKKEYWORD:
+        printf("Unexpected keyword: %s\n", (char*)e->data);
+        break;
     default:
         printf("Unknown error\n");
         exit_nicely();

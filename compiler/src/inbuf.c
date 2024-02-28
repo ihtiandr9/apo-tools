@@ -10,7 +10,7 @@ static int bufsize;
 static int cursym;
 static int fd;
 
-unsigned char inbuf_next_next_char()
+unsigned char inbuf_next_char()
 {
 	if(cursym < bufsize)
 		return inbuf[cursym++];

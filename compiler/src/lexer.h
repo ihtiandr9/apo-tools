@@ -8,7 +8,7 @@ typedef enum _eIdentKind
   OP,
   REG,
   SYM,
-  VARIABLE
+  VAR
 } eIdentKind;
 
 typedef enum _eIdentType

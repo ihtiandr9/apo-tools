@@ -1,23 +1,26 @@
-/*  Program grammar
-<program> ::= <statement>
-<statement> ::= { <space> } <semicolon> {...} |
-                { <space> } <label> |
-                { <space> } <label> <semicolon> {...} |
-                { <space> } <label> { <space> } <keyword> <space> { <space> } <operands> { <space> } <semicolon> {...} |
-                { <space> } <keyword> <space> { <space> } <operands> { <space> } <semicolon> {...} |
-                { <space> } <keyword> <space> { <space> } <operands> |
-                { <statment> }
-<operands> ::= <lvalue> <comma> <rvalue> | <lvalue>
-<lvalue>   ::= <reg> | <expr>
-<rvalue>   ::= <reg> | <expr>
-<expr>     ::= <int>
-<label>    ::= <id> <colon> 
-<id>       ::= <alfa> { <alfa> }
-<alfa>     ::= "a" | "b" | ... | "z"
-<int>      ::= <digit> { <digit> }
-<digit>    ::= "0" | "1" | ... | "9" 
-<colon>    ::= ":"
-<semicolon>::= ";"
-TODO define it
-<term>     ::= <id> | <int> | <paren-expr>
-*/
+
+#include <parser.h>
+#include <unistd.h>
+#include <program.h>
+
+static Program program, *last = 0;
+
+void program_generate(pParser parser)
+{
+    Node *m_statement = parser->statement;
+    parser->statement = 0;
+    if (!m_statement)
+        return;
+    if (OP != m_statement->type)
+        return;
+    Operation m_operation = *(Operation*)m_statement;
+    free(parser->statement);
+    if (last)
+    {
+        last->next = (Program *)malloc(sizeof(Program));
+        last = last->next;
+    }
+    else
+        last = &program;
+    last->operation =m_operation;
+}

@@ -55,12 +55,13 @@ static int lexer_next_tok(Lexer *self)
     while (self->token.type == NONE)
     {
         if (m_ch == NONE)
-            m_ch = inbuf_next_next_char();
+            m_ch = inbuf_next_char();
         else
             self->ch = NONE;
         if (m_ch == eof_sym)
         {
             self->token.type = L_EOF;
+            self->token.kind = SYM;
             self->token.ident = (char *)&eof_sym;
             continue;
         }
@@ -90,12 +91,12 @@ static int lexer_next_tok(Lexer *self)
                 ident = (char *)realloc(ident, len + 2);
                 ident[len++] = m_ch;
                 ident[len] = 0;
-                m_ch = inbuf_next_next_char();
+                m_ch = inbuf_next_char();
             }
             self->token.len = len;
             self->token.ident = 0;
             self->token.type = NUM;
-            self->token.kind = VARIABLE;
+            self->token.kind = VAR;
             self->token.value = atoi(ident);
             free(ident);
             continue;
@@ -109,7 +110,7 @@ static int lexer_next_tok(Lexer *self)
                 ident = (char *)realloc(ident, len + 2);
                 ident[len++] = m_ch;
                 ident[len] = 0;
-                m_ch = inbuf_next_next_char();
+                m_ch = inbuf_next_char();
             }
             m_sym = self->words;
             while (m_sym->len != 0)
@@ -128,6 +129,7 @@ static int lexer_next_tok(Lexer *self)
             }
             if (len < 255) // default is ident
             {
+                self->token.kind = VAR;
                 self->token.type = IDENT;
                 self->token.ident = ident;
                 continue;
@@ -166,7 +168,7 @@ static void lexer_skip_while(Lexer *self, unsigned char symbol)
 {
     while (self->ch == symbol && self->ch != 0xff)
     {
-        self->ch = inbuf_next_next_char();
+        self->ch = inbuf_next_char();
     }
 }
 
@@ -177,6 +179,7 @@ static void lexer_skip_until(Lexer *self, unsigned char symbol)
         self->ch = NONE;
         self->nextTok(self);
     }
+    self->ch = NONE;
 }
 
 pLexer lexer_create(int fd_in)

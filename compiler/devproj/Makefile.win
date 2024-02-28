@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = ../src/lexer.o ../src/main.o ../src/errors.o ../src/globals.o
-LINKOBJ  = ../src/lexer.o ../src/main.o ../src/errors.o ../src/globals.o
+OBJ      = ../src/lexer.o ../src/main.o ../src/errors.o ../src/globals.o ../src/parser.o ../src/program.o ../src/symbols.o ../src/inbuf.o
+LINKOBJ  = ../src/lexer.o ../src/main.o ../src/errors.o ../src/globals.o ../src/parser.o ../src/program.o ../src/symbols.o ../src/inbuf.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -g3
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"C:/Users/user/Documents/Projects/apogee.git/projects/tools/compiler/src"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++" -I"C:/Users/user/Documents/Projects/apogee.git/projects/tools/compiler/src"
@@ -35,3 +35,15 @@ $(BIN): $(OBJ)
 
 ../src/globals.o: ../src/globals.c
 	$(CC) -c ../src/globals.c -o ../src/globals.o $(CFLAGS)
+
+../src/parser.o: ../src/parser.c
+	$(CC) -c ../src/parser.c -o ../src/parser.o $(CFLAGS)
+
+../src/program.o: ../src/program.c
+	$(CC) -c ../src/program.c -o ../src/program.o $(CFLAGS)
+
+../src/symbols.o: ../src/symbols.c
+	$(CC) -c ../src/symbols.c -o ../src/symbols.o $(CFLAGS)
+
+../src/inbuf.o: ../src/inbuf.c
+	$(CC) -c ../src/inbuf.c -o ../src/inbuf.o $(CFLAGS)
