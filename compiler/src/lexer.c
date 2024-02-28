@@ -30,9 +30,9 @@ static const Lexema words[] =
 static const Lexema symbols[] =
     {
         {COMMA, ",", 0, 1},
-        {EQ, "=" , 0, 1},
-        {GT, ">" , 0, 1},
-        {LT, "<" , 0, 1},
+        {EQ, "=", 0, 1},
+        {GT, ">", 0, 1},
+        {LT, "<", 0, 1},
         {SPACE, " ", 0, 1},
         {L_EOL, (char *)&lexer_eol, 0, 1},
         {L_EOF, (char *)&lexer_eof, 0, 1},
@@ -66,7 +66,7 @@ int lexer_next_tok(Lexer *lexer)
 {
     char m_ch = lexer->ch;
     int readed;
-
+    int f_result = 1;
     lexer->token.type = NONE;
     lexer->token.value = 0;
     lexer->token.len = 0;
@@ -158,8 +158,10 @@ int lexer_next_tok(Lexer *lexer)
         }
     }
     lexer->ch = m_ch;
+    if (lexer->token.type == L_EOF)
+        f_result = 0;
 
-    return 1;
+    return f_result;
 }
 
 pLexer lexer_create(int fd_in)
