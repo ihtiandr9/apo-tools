@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
     }
 
     lexer_free(m_lexer);
+    m_lexer = 0;
     close(fd_in);
     close(fd_out);
     return 0;
