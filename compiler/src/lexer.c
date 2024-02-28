@@ -1,3 +1,4 @@
+#include <symbols.h>
 #include <lexer.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -6,10 +7,8 @@
 
 // imports
 void exitNicely();
-
-// statics
-static const char lexer_eof = 0xFF;
-static const char lexer_eol = 0x0A;
+extern const char eof_sym;
+extern const char eol_sym;
 
 static const Lexema words[] =
     {
@@ -34,33 +33,9 @@ static const Lexema symbols[] =
         {GT, ">", 0, 1},
         {LT, "<", 0, 1},
         {SPACE, " ", 0, 1},
-        {L_EOL, (char *)&lexer_eol, 0, 1},
-        {L_EOF, (char *)&lexer_eof, 0, 1},
+        {L_EOL, (char *)&eol_sym, 0, 1},
+        {L_EOF, (char *)&eof_sym, 0, 1},
         {0, 0, 0, 0}};
-int isDigit(char ch)
-{
-    const char digit[] = "0123456789";
-    int i = 0;
-    for (i = 0; i < sizeof(digit) - 1; i++)
-    {
-        if (ch == digit[i])
-            break;
-    }
-    return (ch == digit[i]);
-}
-
-int isAlfa(char ch)
-{
-    const char alfa[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    int i = 0;
-    // printf("Size of alfa: %d ", sizeof(alfa));
-    for (i = 0; i < sizeof(alfa) - 1; i++)
-    {
-        if (ch == alfa[i])
-            break;
-    }
-    return (ch == alfa[i]);
-}
 
 int lexer_next_tok(Lexer *lexer)
 {
@@ -78,8 +53,9 @@ int lexer_next_tok(Lexer *lexer)
             readed = read(lexer->fd_in, &m_ch, 1);
             if (!readed)
             {
-                m_ch = lexer_eof;
+                m_ch = eof_sym;
                 lexer->token.type = L_EOF;
+                lexer->token.ident = &eof_sym;
             }
         }
         else
@@ -115,6 +91,7 @@ int lexer_next_tok(Lexer *lexer)
                 lexer->token.ident = 0;
                 lexer->token.type = NUM;
                 lexer->token.value = atoi(ident);
+                free(ident);
                 continue;
             }
             if (isAlfa(m_ch))
