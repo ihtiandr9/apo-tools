@@ -11,6 +11,7 @@ typedef enum _exprOp
     OP_INSTRUCTION,
     OP_CONST,
     OP_REG,
+    OP_ADDITIVE
 } eExprOp;
 
 typedef struct _Expr
@@ -39,10 +40,10 @@ typedef struct _Register
     Expr super;
 } Register;
 
-typedef struct _ConstExpr
+typedef struct _Const
 {
     Expr super;
-} ConstExpr;
+} Const;
 
 typedef struct _Instruction
 {
@@ -52,7 +53,15 @@ typedef struct _Instruction
     int paramCount;
 } Instruction;
 
+typedef struct _Addition
+{
+    InstructionExpr super;
+    Node lparam;
+    Node rparam;
+} Addition;
+
 Node *createRegister(ExprValue reg);
-Node *createConstExpr(ExprValue num);
+Node *createConst(ExprValue num);
 Node *createInstruction(ExprValue opcode);
+Node *createAddition(ExprValue lparam);
 #endif

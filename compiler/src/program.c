@@ -25,3 +25,4 @@ void program_generate(pParser parser)
         last = &program;
     last->instruction = m_instruction;
 }
+

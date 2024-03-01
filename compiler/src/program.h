@@ -27,10 +27,10 @@ TODO define it
 #include <parser.h>
 #include <nodes.h>
 
-typedef struct _Program
+typedef struct _InstructionList
 {
     Instruction instruction;
-    struct _Program *next;
+    struct _InstructionList *next;
 } Program;
 
 void program_generate(pParser parser);

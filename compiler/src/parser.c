@@ -54,6 +54,24 @@ static void parse_comment(pParser self, pLexer lexer)
     }
 }
 
+static void parse_const(pParser self, pLexer lexer)
+{
+    Lexema m_token = lexer->token;
+    Node *result = createConst(m_token.value);
+    self->statement = result;
+}
+
+static void parse_addition(pParser self, pLexer lexer)
+{
+    parse_const(self, lexer);
+    // skip spaces
+    // m_token = ...
+    /*if(m)
+    Addition *addexp = createAddition(m_token.value);
+    */
+    // self->statement = lparam;
+}
+
 static void parse_param(pParser self, pLexer lexer)
 {
     Node *expr = 0;
@@ -62,14 +80,15 @@ static void parse_param(pParser self, pLexer lexer)
     {
     case REG:
         expr = createRegister(m_token.type);
-        printf("    < REGISTER >: %s\n", m_token.ident);
+        printf("    < REGISTER >: %s code %d\n", m_token.ident, expr->num.evaluate((Expr *)expr));
         break;
     case CONST:
         switch (m_token.type)
         {
         case TOK_NUM:
-            expr = createConstExpr(m_token.value);
-            printf("    < VALUE >: %d\n", m_token.value);
+            parse_addition(self, lexer);
+            expr = self->statement;
+            printf("    < VALUE >: %d\n", expr->num.evaluate((Expr *)expr));
             break;
         default:
             throw_error(E_UNKIDENT, m_token.ident);
@@ -84,10 +103,8 @@ static void parse_param(pParser self, pLexer lexer)
 static void parse_op(pParser self, pLexer lexer)
 {
     Lexema op_token = lexer->token;
-    /* FIXME */
-    // Node *op = 0
     Node *expr = createInstruction(op_token.type);
-    printf("    < OPERATION >: %s\n", op_token.ident);
+    printf("    < OPERATION >: %s code %d\n", op_token.ident, expr->op.evaluate((InstructionExpr *)expr));
 
     switch (op_token.type)
     {
