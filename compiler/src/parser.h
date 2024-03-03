@@ -7,6 +7,7 @@
 typedef struct _Parser
 {
     Node *statement;
+    int level;
     void (*parse)(struct _Parser *self, pLexer lexer);
 } *pParser, Parser;
 

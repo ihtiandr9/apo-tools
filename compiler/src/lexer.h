@@ -60,6 +60,7 @@ typedef struct t_lexer
   void (*printTok)(Lexema token);
   void (*skipUntil)(struct t_lexer *self, unsigned char symbol);
   void (*skipWhile)(struct t_lexer *self, unsigned char symbol);
+  void (*skipOne)(struct t_lexer *self);
 } Lexer, *pLexer;
 
 // exports

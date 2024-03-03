@@ -12,7 +12,7 @@ void program_generate(pParser parser)
     parser->statement = 0;
     if (!m_statement)
         return;
-    if (OP_INSTRUCTION != m_statement->type)
+    if (NODE_INSTRUCTION != m_statement->type)
         return;
     Instruction m_instruction = *(Instruction *)m_statement;
     free(parser->statement);

@@ -5,32 +5,32 @@
 
 typedef int ExprValue;
 
-typedef enum _exprOp
+typedef enum _NodeType
 {
-    OP_NONE,
-    OP_INSTRUCTION,
-    OP_CONST,
-    OP_REG,
-    OP_ADDITIVE
-} eExprOp;
+    NODE_EMPTY,
+    NODE_INSTRUCTION,
+    NODE_CONST,
+    NODE_REG,
+    NODE_MATH
+} eNodeType;
 
 typedef struct _Expr
 {
-    eExprOp type;
+    eNodeType type;
     ExprValue value;
     ExprValue (*evaluate)(struct _Expr *self);
 } Expr;
 
 typedef struct _InstructionExpr
 {
-    eExprOp type;
+    eNodeType type;
     ExprValue opcode;
     ExprValue (*evaluate)(struct _InstructionExpr *self);
 } InstructionExpr;
 
 typedef union _Node
 {
-    eExprOp type;
+    eNodeType type;
     InstructionExpr op;
     Expr num;
 } Node;
@@ -48,20 +48,20 @@ typedef struct _Const
 typedef struct _Instruction
 {
     InstructionExpr super;
-    Node lparam;
-    Node rparam;
+    Node *lparam;
+    Node *rparam;
     int paramCount;
 } Instruction;
 
 typedef struct _Addition
 {
     InstructionExpr super;
-    Node lparam;
-    Node rparam;
+    Const *lparam;
+    Const *rparam;
 } Addition;
 
 Node *createRegister(ExprValue reg);
 Node *createConst(ExprValue num);
 Node *createInstruction(ExprValue opcode);
-Node *createAddition(ExprValue lparam);
+Node *createAddition(ExprValue operation);
 #endif

@@ -164,6 +164,11 @@ static void lexer_print_tok(Lexema token)
     }
 }
 
+static void lexer_skip_one(Lexer *self)
+{
+    self->ch = inbuf_next_char();
+}
+
 static void lexer_skip_while(Lexer *self, unsigned char symbol)
 {
     while (self->ch == symbol && self->ch != 0xff)
@@ -176,10 +181,9 @@ static void lexer_skip_until(Lexer *self, unsigned char symbol)
 {
     while (self->ch != symbol && self->ch != 0xff)
     {
-        self->ch = TOK_NONE;
-        self->nextTok(self);
+        self->skipOne(self);
     }
-    self->ch = TOK_NONE;
+    self->nextTok(self);
 }
 
 pLexer lexer_create(int fd_in)
@@ -193,6 +197,7 @@ pLexer lexer_create(int fd_in)
     m_lexer->printTok = lexer_print_tok;
     m_lexer->skipWhile = lexer_skip_while;
     m_lexer->skipUntil = lexer_skip_until;
+    m_lexer->skipOne = lexer_skip_one;
     m_lexer->token.type = TOK_NONE;
     m_lexer->token.ident = 0;
     inbuf_init(fd_in);

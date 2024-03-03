@@ -17,7 +17,8 @@ static void parse_var(pParser self, pLexer lexer)
     if (m_token.type == TOK_COLON)
     {
         printf("< LABEL >: %s\n", m_ident);
-        lexer->skipWhile(lexer, ':');
+        lexer->skipOne(lexer);
+        lexer->skipWhile(lexer, ' ');
     }
     else
     {
@@ -35,12 +36,15 @@ static void parse_comment(pParser self, pLexer lexer)
         switch (m_token.type)
         {
         case L_EOL:
+            lexer->skipOne(lexer);
+            break;
         case L_EOF:
             lexer->ch = TOK_NONE;
             return;
         case TOK_SEMICOLON:
             printf("< COMMENT >: skip until eol\n");
             lexer->skipUntil(lexer, 10);
+            lexer->skipOne(lexer);
             break;
         default:
             throw_error(E_UNEXPSYM, m_token.ident);
@@ -63,13 +67,36 @@ static void parse_const(pParser self, pLexer lexer)
 
 static void parse_addition(pParser self, pLexer lexer)
 {
+    Lexema m_token;
+    Node *result = 0;
     parse_const(self, lexer);
-    // skip spaces
-    // m_token = ...
-    /*if(m)
-    Addition *addexp = createAddition(m_token.value);
-    */
-    // self->statement = lparam;
+    result = self->statement;
+    lexer->skipWhile(lexer, ' ');
+    lexer->nextTok(lexer);
+    m_token = lexer->token;
+    if (m_token.type == TOK_MINUS)
+    {
+        Addition *expr = (Addition *)createAddition(TOK_MINUS);
+        expr->lparam = (Const*)result;
+        lexer->skipOne(lexer);
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        parse_addition(self, lexer);
+        expr->rparam = (Const*)self->statement;
+        result = (Node*)expr;
+    }
+    if (m_token.type == TOK_PLUS)
+    {
+        Addition *expr = (Addition *)createAddition(TOK_PLUS);
+        expr->lparam = (Const*)result;
+        lexer->skipOne(lexer);
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        parse_addition(self, lexer);
+        expr->rparam = (Const*)self->statement;
+        result = (Node*)expr;
+    }
+    self->statement = result;
 }
 
 static void parse_param(pParser self, pLexer lexer)
@@ -80,7 +107,7 @@ static void parse_param(pParser self, pLexer lexer)
     {
     case REG:
         expr = createRegister(m_token.type);
-        printf("    < REGISTER >: %s code %d\n", m_token.ident, expr->num.evaluate((Expr *)expr));
+        printf("        < REGISTER >: %s code %d\n", m_token.ident, expr->num.evaluate((Expr *)expr));
         break;
     case CONST:
         switch (m_token.type)
@@ -88,7 +115,7 @@ static void parse_param(pParser self, pLexer lexer)
         case TOK_NUM:
             parse_addition(self, lexer);
             expr = self->statement;
-            printf("    < VALUE >: %d\n", expr->num.evaluate((Expr *)expr));
+            printf("        < IMMEDIATE >: %d\n", expr->num.evaluate((Expr *)expr));
             break;
         default:
             throw_error(E_UNKIDENT, m_token.ident);
@@ -97,6 +124,7 @@ static void parse_param(pParser self, pLexer lexer)
     default:
         throw_error(E_UNEXPTOKEN, m_token.ident);
     }
+    lexer->skipWhile(lexer, ' ');
     self->statement = expr;
 }
 
@@ -114,18 +142,15 @@ static void parse_op(pParser self, pLexer lexer)
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         parse_param(self, lexer);
-        op->lparam = *(self->statement);
-        free(self->statement);
+        op->lparam = self->statement;
         self->statement = 0;
-        lexer->skipWhile(lexer, ' ');
-        lexer->nextTok(lexer);
         lexer->skipWhile(lexer, ',');
-        lexer->nextTok(lexer);
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         parse_param(self, lexer);
-        op->rparam = *(self->statement);
-        free(self->statement);
+        lexer->skipWhile(lexer, ' ');
+        op->rparam = self->statement;
+        self->statement = 0;
         break;
     case TOK_MOV:
         op = (Instruction *)expr;
@@ -133,19 +158,15 @@ static void parse_op(pParser self, pLexer lexer)
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         parse_param(self, lexer);
-        op->lparam = *(self->statement);
-        free(self->statement);
+        op->lparam = self->statement;
         self->statement = 0;
-        lexer->skipWhile(lexer, ' ');
-        lexer->nextTok(lexer);
         lexer->skipWhile(lexer, ',');
-        lexer->nextTok(lexer);
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         parse_param(self, lexer);
-        if (self->statement)
-            op->rparam = *(self->statement);
-        free(self->statement);
+        lexer->skipWhile(lexer, ' ');
+        op->rparam = self->statement;
+        self->statement = 0;
         break;
     case TOK_SEMICOLON: // no operation pass-throw comment
         break;
@@ -170,10 +191,8 @@ static void parse_statement(pParser self, pLexer lexer)
         {
         case TOK_IDENT:
             parse_var(self, lexer);
-            lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
             parse_op(self, lexer);
-            lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
             parse_comment(self, lexer);
             break;
@@ -186,7 +205,7 @@ static void parse_statement(pParser self, pLexer lexer)
             parse_comment(self, lexer);
             break;
         case L_EOL:
-            printf("    < EOL >\n");
+            printf("< EMPTY STRING >\n");
             lexer->ch = TOK_NONE;
             break;
         case L_EOF:
@@ -226,6 +245,7 @@ static void parser_parse(pParser self, pLexer lexer)
 pParser parser_create(void)
 {
     pParser m_parser = (pParser)malloc(sizeof(Parser));
+    m_parser->level = 0;
     m_parser->parse = parser_parse;
     return m_parser;
 }

@@ -7,6 +7,7 @@ typedef enum _eErrorType
     E_UNEXPSYM,
     E_UNEXPTOKEN,
     E_UNKKEYWORD,
+    E_SYNTAXERROR
 } eErrorType;
 
 typedef struct _Error
