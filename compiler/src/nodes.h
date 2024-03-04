@@ -60,8 +60,16 @@ typedef struct _Addition
     Const *rparam;
 } Addition;
 
+typedef struct _Multiplication
+{
+    InstructionExpr super;
+    Const *lparam;
+    Const *rparam;
+} Multiplication;
+
 Node *createRegister(ExprValue reg);
 Node *createConst(ExprValue num);
 Node *createInstruction(ExprValue opcode);
 Node *createAddition(ExprValue operation);
+Node *createMultiplication(ExprValue operation);
 #endif

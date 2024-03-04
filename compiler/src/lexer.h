@@ -22,8 +22,6 @@ typedef enum _eIdentType
   TOK_EQ,
   TOK_GT,
   TOK_LT,
-  TOK_PLUS,
-  TOK_MINUS,
   TOK_SPACE,
   TOK_NUM,
   TOK_IDENT,
@@ -36,6 +34,9 @@ typedef enum _eIdentType
   TOK_REGL,
   TOK_REGM,
   TOK_REGSP,
+  TOK_PLUS,
+  TOK_MINUS,
+  TOK_ASTERISK,
   L_EOL,
   L_EOF
 } eIdentType;

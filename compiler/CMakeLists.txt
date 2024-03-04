@@ -25,7 +25,8 @@ src/nodes.c
 ##target_link_libraries(nonestl curl json-c)
 add_definitions(-g)
 
-add_custom_target(test ./bkasm ../src/test.asm
+add_custom_target(test
+COMMAND	./bkasm ../src/test.asm
 COMMENT "Run Tests"
 )
 

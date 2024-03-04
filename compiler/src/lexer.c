@@ -36,9 +36,10 @@ static const Lexema symbols[] =
         {SYM, TOK_EQ, "=", 0, 1},
         {SYM, TOK_GT, ">", 0, 1},
         {SYM, TOK_LT, "<", 0, 1},
-        {SYM, TOK_PLUS, "+", 0, 1},
-        {SYM, TOK_MINUS, "-", 0, 1},
         {SYM, TOK_SPACE, " ", 0, 1},
+	{SYM, TOK_PLUS, "+", 0, 1},
+	{SYM, TOK_MINUS, "-", 0, 1},
+	{SYM, TOK_ASTERISK, "*", 0, 1},
         {SYM, L_EOL, (char *)&eol_sym, 0, 1},
         {SYM, L_EOF, (char *)&eof_sym, 0, 1},
         {0, 0, 0, 0, 0}};

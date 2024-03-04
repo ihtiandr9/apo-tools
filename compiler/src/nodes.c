@@ -77,6 +77,45 @@ void freeInstruction(Node *node)
         }
 }
 
+
+////////////////////////////////////////////
+// Multiply expression
+
+static ExprValue evaluateMultiplicationExpr(InstructionExpr *self)
+{
+	ExprValue result = 0;
+	Multiplication *expr = (Multiplication *)self;
+	ExprValue lparam = expr->lparam->super.evaluate((Expr *)(expr->lparam));
+	ExprValue rparam = expr->rparam->super.evaluate((Expr *)(expr->rparam));
+	if (expr->super.opcode == TOK_ASTERISK)
+		result = lparam * rparam;
+	else
+		throw_error(E_SYNTAXERROR, " invalid operation");
+	return result;
+}
+
+Node *createMultiplication(ExprValue opcode)
+{
+	Multiplication *expr = (Multiplication *)malloc(sizeof(Addition));
+	expr->super.type = NODE_MATH;
+	expr->super.opcode = opcode;
+	expr->super.evaluate = evaluateMultiplicationExpr;
+	expr->lparam = 0;
+	expr->rparam = 0;
+	return (Node *)expr;
+}
+
+void freeMultiplication(Node *node)
+{
+	if (node)
+	{
+		Multiplication *m_instr = (Multiplication *)node;
+		freeConst((Node *)m_instr->lparam);
+		freeConst((Node *)m_instr->rparam);
+		free(m_instr);
+	}
+}
+
 ////////////////////////////////////////////
 // Addition expression
 
