@@ -1,6 +1,6 @@
 #ifndef H_LEXER_H
 #define H_LEXER_H
-
+#define CH_NULL 0
 typedef enum _eIdentKind
 {
   KIND_NONE = 0,

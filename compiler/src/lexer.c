@@ -55,7 +55,7 @@ static int lexer_next_tok(Lexer *self)
 
     while (self->token.type == TOK_NONE)
     {
-        if (m_ch == TOK_NONE)
+        if (m_ch == CH_NULL)
             m_ch = inbuf_next_char();
         else
             self->ch = TOK_NONE;

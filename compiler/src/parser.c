@@ -39,7 +39,7 @@ static void parse_comment(pParser self, pLexer lexer)
             lexer->skipOne(lexer);
             break;
         case L_EOF:
-            lexer->ch = TOK_NONE;
+            lexer->skipOne(lexer);
             return;
         case TOK_SEMICOLON:
             printf("< COMMENT >: skip until eol\n");
@@ -239,11 +239,11 @@ static void parse_statement(pParser self, pLexer lexer)
             break;
         case L_EOL:
             printf("< EMPTY STRING >\n");
-            lexer->ch = TOK_NONE;
+            lexer->skipOne(lexer);
             break;
         case L_EOF:
             printf("    < EOF >\n");
-            lexer->ch = TOK_NONE;
+            lexer->skipOne(lexer);
             break;
         default:
             throw_error(E_UNEXPSYM, m_token.ident);
