@@ -62,14 +62,15 @@ static void parse_const(pParser self, pLexer lexer)
 {
     Lexema m_token = lexer->token;
     Node *result = 0;
-    if(TOK_NUM == m_token.type)
+    if (TOK_NUM == m_token.type)
     {
         result = createConst(m_token.value);
-    }else
-     {
-         throw_error(E_UNEXPTOKEN, m_token.ident);
-         result = createConst(0);
-     }
+    }
+    else
+    {
+        throw_error(E_UNEXPTOKEN, m_token.ident);
+        result = createConst(0);
+    }
     self->statement = result;
 }
 
@@ -84,16 +85,19 @@ static void parse_multiplication(pParser self, pLexer lexer)
     lexer->skipWhile(lexer, ' ');
     lexer->nextTok(lexer);
     m_token = lexer->token;
-    if (m_token.type == TOK_ASTERISK)
+    while (m_token.type == TOK_ASTERISK)
     {
-	Multiplication *expr = (Multiplication *)createMultiplication(TOK_ASTERISK);
-	expr->lparam = (Const*)result;
-	lexer->skipOne(lexer);
-	lexer->skipWhile(lexer, ' ');
-	lexer->nextTok(lexer);
-	parse_multiplication(self, lexer);
-	expr->rparam = (Const*)self->statement;
-	result = (Node*)expr;
+        Multiplication *expr = (Multiplication *)createMultiplication(TOK_ASTERISK);
+        expr->lparam = (Const *)result;
+        lexer->skipOne(lexer);
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        parse_const(self, lexer);
+        expr->rparam = (Const *)self->statement;
+        result = (Node *)expr;
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        m_token = lexer->token;
     }
     self->statement = result;
 }
@@ -107,27 +111,36 @@ static void parse_addition(pParser self, pLexer lexer)
     lexer->skipWhile(lexer, ' ');
     lexer->nextTok(lexer);
     m_token = lexer->token;
-    if (m_token.type == TOK_MINUS)
+    while (m_token.type == TOK_PLUS || m_token.type == TOK_MINUS)
     {
-        Addition *expr = (Addition *)createAddition(TOK_MINUS);
-        expr->lparam = (Const*)result;
-        lexer->skipOne(lexer);
-        lexer->skipWhile(lexer, ' ');
-        lexer->nextTok(lexer);
-        parse_addition(self, lexer);
-        expr->rparam = (Const*)self->statement;
-        result = (Node*)expr;
-    }
-    if (m_token.type == TOK_PLUS)
-    {
-        Addition *expr = (Addition *)createAddition(TOK_PLUS);
-        expr->lparam = (Const*)result;
-        lexer->skipOne(lexer);
-        lexer->skipWhile(lexer, ' ');
-        lexer->nextTok(lexer);
-        parse_addition(self, lexer);
-        expr->rparam = (Const*)self->statement;
-        result = (Node*)expr;
+        if (m_token.type == TOK_MINUS)
+        {
+            Addition *expr = (Addition *)createAddition(TOK_MINUS);
+            expr->lparam = (Const *)result;
+            lexer->skipOne(lexer);
+            lexer->skipWhile(lexer, ' ');
+            lexer->nextTok(lexer);
+            parse_multiplication(self, lexer);
+            expr->rparam = (Const *)self->statement;
+            result = (Node *)expr;
+            lexer->skipWhile(lexer, ' ');
+            lexer->nextTok(lexer);
+            m_token = lexer->token;
+        }
+        if (m_token.type == TOK_PLUS)
+        {
+            Addition *expr = (Addition *)createAddition(TOK_PLUS);
+            expr->lparam = (Const *)result;
+            lexer->skipOne(lexer);
+            lexer->skipWhile(lexer, ' ');
+            lexer->nextTok(lexer);
+            parse_multiplication(self, lexer);
+            expr->rparam = (Const *)self->statement;
+            result = (Node *)expr;
+            lexer->skipWhile(lexer, ' ');
+            lexer->nextTok(lexer);
+            m_token = lexer->token;
+        }
     }
     self->statement = result;
 }
@@ -265,13 +278,9 @@ static void parser_parse(pParser self, pLexer lexer)
 {
     while (lexer->nextTok(lexer))
     {
-        if (TOK_SPACE == lexer->token.type)
-        {
-            lexer->skipWhile(lexer, ' ');
-            lexer->nextTok(lexer);
-        }
         parse_statement(self, lexer);
         program_generate(self);
+        lexer->skipWhile(lexer, ' ');
     }
 }
 

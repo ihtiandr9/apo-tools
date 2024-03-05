@@ -22,7 +22,6 @@ typedef enum _eIdentType
   TOK_EQ,
   TOK_GT,
   TOK_LT,
-  TOK_SPACE,
   TOK_NUM,
   TOK_IDENT,
   TOK_REGA,

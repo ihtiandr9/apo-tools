@@ -36,10 +36,9 @@ static const Lexema symbols[] =
         {SYM, TOK_EQ, "=", 0, 1},
         {SYM, TOK_GT, ">", 0, 1},
         {SYM, TOK_LT, "<", 0, 1},
-        {SYM, TOK_SPACE, " ", 0, 1},
-	{SYM, TOK_PLUS, "+", 0, 1},
-	{SYM, TOK_MINUS, "-", 0, 1},
-	{SYM, TOK_ASTERISK, "*", 0, 1},
+        {SYM, TOK_PLUS, "+", 0, 1},
+        {SYM, TOK_MINUS, "-", 0, 1},
+        {SYM, TOK_ASTERISK, "*", 0, 1},
         {SYM, L_EOL, (char *)&eol_sym, 0, 1},
         {SYM, L_EOF, (char *)&eof_sym, 0, 1},
         {0, 0, 0, 0, 0}};
@@ -57,8 +56,6 @@ static int lexer_next_tok(Lexer *self)
     {
         if (m_ch == CH_NULL)
             m_ch = inbuf_next_char();
-        else
-            self->ch = TOK_NONE;
         if (m_ch == eof_sym)
         {
             self->token.type = L_EOF;
@@ -154,7 +151,6 @@ static void lexer_print_tok(Lexema token)
     {
     case L_EOF:
     case L_EOL:
-    case TOK_SPACE:
         break;
     case TOK_NUM:
         printf("Token: %d \n", token.value);
