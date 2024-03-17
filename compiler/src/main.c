@@ -34,13 +34,12 @@ int main(int argc, char *argv[])
         printf("file not create");
         exit_nicely();
     }
-    Lexer *m_lexer = lexer_create(fd_in);
-    Parser *m_parser = parser_create();
-    if (m_parser)
-        m_parser->parse(m_parser, m_lexer);
+    Lexer m_lexer;
+    lexer_init(&m_lexer, fd_in);
+    Parser m_parser;
+    parser_init(&m_parser);
+    m_parser.parse(&m_parser, &m_lexer);
 
-    parser_free(m_parser);
-    lexer_free(m_lexer);
     close(fd_in);
     close(fd_out);
     return 0;

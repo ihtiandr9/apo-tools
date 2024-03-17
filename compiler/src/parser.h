@@ -13,5 +13,6 @@ typedef struct _Parser
 
 // exports
 pParser parser_create(void);
+int parser_init(pParser parser);
 void parser_free(pParser parser);
 #endif

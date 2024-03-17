@@ -10,22 +10,22 @@ static void default_error_dispatcher(Error *e)
     switch (e->type)
     {
     case E_UNKIDENT:
-        printf("Unknown identifier: %s\n", (char *)e->data);
+        fprintf(stderr, "Unknown identifier: %s\n", (char *)e->data);
         break;
     case E_UNEXPSYM:
-        printf("Unexpected symbol: %c (may be in lowercase)\n", *(char*)e->data);
+        fprintf(stderr, "Unexpected symbol: %c (may be in lowercase)\n", *(char*)e->data);
         break;
     case E_UNEXPTOKEN:
-        printf("Unexpected token: %s\n", (char*)e->data);
+        fprintf(stderr, "Unexpected token: %s\n", (char*)e->data);
         break;
     case E_UNKKEYWORD:
-        printf("Unexpected keyword: %s\n", (char*)e->data);
+        fprintf(stderr, "Unexpected keyword: %s\n", (char*)e->data);
         break;
     case E_SYNTAXERROR:
-        printf("Syntax error in expression: %s\n", (char*)e->data);
+        fprintf(stderr, "Syntax error in expression: %s\n", (char*)e->data);
         break;
     default:
-        printf("Unknown error\n");
+        fprintf(stderr, "Unknown error\n");
         exit_nicely();
         break;
     }
@@ -46,3 +46,4 @@ void set_error_dipatcher(void(*_error_dispatcher)(Error*))
 {
     error_dispatcher = _error_dispatcher;
 }
+

@@ -284,11 +284,16 @@ static void parser_parse(pParser self, pLexer lexer)
     }
 }
 
+int parser_init(pParser parser)
+{
+    parser->level = 0;
+    parser->parse = parser_parse;
+    return 1;
+}
 pParser parser_create(void)
 {
     pParser m_parser = (pParser)malloc(sizeof(Parser));
-    m_parser->level = 0;
-    m_parser->parse = parser_parse;
+    parser_init(m_parser);
     return m_parser;
 }
 

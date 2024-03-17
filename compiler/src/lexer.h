@@ -65,5 +65,6 @@ typedef struct t_lexer
 
 // exports
 pLexer lexer_create(int fd_in);
+int lexer_init(pLexer lexer, int fd_in);
 void lexer_free(pLexer self);
 #endif

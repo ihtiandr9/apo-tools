@@ -9,6 +9,8 @@ include_directories(/usr/local/include
  src)
 link_directories(/usr/local/lib)
 
+add_definitions(-g -Wno-switch)
+
 ## forktest
 add_executable(bkasm
 src/main.c
@@ -23,7 +25,6 @@ src/nodes.c
 )
 
 ##target_link_libraries(nonestl curl json-c)
-add_definitions(-g)
 
 add_custom_target(test
 COMMAND	./bkasm ../src/test.asm
