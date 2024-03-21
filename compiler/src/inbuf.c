@@ -12,19 +12,19 @@ static int fd;
 
 unsigned char inbuf_next_char()
 {
-	if(cursym < bufsize)
-		return inbuf[cursym++];
-	bufsize = read(fd, inbuf, 512);
-	cursym = 0;
-	if(bufsize)
-		return inbuf[cursym++];
-	else
-		return 0xff;
+    if(cursym < bufsize)
+	return inbuf[cursym++];
+    bufsize = read(fd, inbuf, 512);
+    cursym = 0;
+    if(bufsize)
+	return inbuf[cursym++];
+    else
+	return 0xff;
 }
 
 void inbuf_init( int _fd)
 {
-	fd = _fd;
-	bufsize = read(fd, inbuf, 512);
-	cursym = 0;
+    fd = _fd;
+    bufsize = read(fd, inbuf, 512);
+    cursym = 0;
 }
