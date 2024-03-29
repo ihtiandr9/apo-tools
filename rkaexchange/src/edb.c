@@ -126,7 +126,7 @@ static int unpack(int fd_in, int fd_out)
 
 static int pack(int fd_in, int fd_out)
 {
-    int fd_tmp = open("./tmpfile", O_CREAT | O_RDWR, S_IRUSR|S_IWUSR);
+    int fd_tmp = open("./tmpfile", O_CREAT | O_RDWR, 0655);
     convert(fd_in, fd_tmp);
 }
 
