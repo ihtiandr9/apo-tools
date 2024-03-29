@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <globals.h>
 #include <assert.h>
 
 #define CMD_PACK 1
@@ -12,9 +13,6 @@
 
 #define DEFAULT_FD_IN 1
 #define DEFAULT_FD_OUT 1
-
-int fd_in;
-int fd_out;
 
 int main(int argc, char *argv[])
 {
@@ -24,8 +22,7 @@ int main(int argc, char *argv[])
     int cmd = CMD_UNPACK;
     if (argc <= 1)
     {
-        printf("error: command \"pack\" or \"unpack\" required\n");
-        exitNicely(E_CMDREQ);
+        throw_error(E_CMDREQ, 0);        
     }
     else
     {
@@ -35,8 +32,7 @@ int main(int argc, char *argv[])
             cmd = CMD_UNPACK;
         else
         {
-            printf("error: unexpected command %s\n", argv[1]);
-            exitNicely(E_UNKNOWNCMD);
+            throw_error(E_UNKNOWNCMD, argv[1]);            
         }
     }
     if (argc > 2)
@@ -50,13 +46,11 @@ int main(int argc, char *argv[])
 
     if (fd_in < 0)
     {
-        printf("file not exist\n");
-        exitNicely(E_NOEXIST);
+        throw_error(E_NOEXIST, argv[2]);        
     }
-    if (fd_in < 0)
+    if (fd_out < 0)
     {
-        printf("file not create\n");
-        exitNicely(E_CREATE);
+        throw_error(E_CREATE, argv[3]);        
     }
     Edb *pEdb = edb_create(fd_in, fd_out);
     if (CMD_UNPACK == cmd)
