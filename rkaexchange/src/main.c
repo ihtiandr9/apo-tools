@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
     else if (CMD_PACK == cmd)
         pEdb->pack(pEdb);
 
-    // unpack(fd_in, fd_out);
     close(fd_in);
     close(fd_out);
     return 0;

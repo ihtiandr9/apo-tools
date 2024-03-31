@@ -6,7 +6,7 @@ static  fn_error_dispatecher error_dispatcher = 0;
 
 static void default_error_dispatcher(Error *e)
 {
-    printf("Error: ");
+    fprintf(stderr,"Error: ");
     switch (e->type)
     {
     case E_CMDREQ:
