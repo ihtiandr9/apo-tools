@@ -43,14 +43,13 @@ char charCodeAt(uint8_t chr)
     return res;
 }
 
-static int convert(int fd_in, int fd_out)
+static int encode(int fd_in, int fd_out)
 {
     unsigned char ch, res;
     assert(fd_in > 0 && fd_out > 0);
     for (int readed = read(fd_in, &ch, 1); readed > 0; readed = read(fd_in, &ch, 1))
     {
         assert(readed > 0);
-        //    unsigned char *curSym = buf;
         if (0xd0 == ch)
         {
             continue;
@@ -127,7 +126,14 @@ static int unpack(int fd_in, int fd_out)
 static int pack(int fd_in, int fd_out)
 {
     int fd_tmp = open("./tmpfile", O_CREAT | O_RDWR, 0655);
-    convert(fd_in, fd_tmp);
+    encode(fd_in, fd_tmp);
+    lseek(fd_tmp, 0, SEEK_SET);
+    char buf[512];
+    for(int readed = read(fd_tmp, buf, 512); readed; readed = read(fd_tmp, buf, 512))
+    {
+        write(fd_out, buf, readed);
+    }
+    return 0;
 }
 
 static inline int edb_unpack(ptrEdb this)
