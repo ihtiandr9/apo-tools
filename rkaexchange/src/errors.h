@@ -8,7 +8,8 @@ typedef enum _eErrorType
     E_NOEXIST,
     E_CREATE,
     E_FMT,
-        E_UNDEFERR	
+    E_PIPE,
+    E_UNDEFERR	
 } eErrorType;
 
 typedef struct _Error

@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <unistd.h>
+#include <errors.h>
 
 wchar_t getUnicodeSymbol(uint8_t chr)
 {
@@ -45,18 +46,20 @@ char charCodeAt(uint8_t chr)
 
 static int encode(int fd_in, int fd_out)
 {
+    static char const utfRu = 0xd0;
     unsigned char ch, res;
     assert(fd_in > 0 && fd_out > 0);
     for (int readed = read(fd_in, &ch, 1); readed > 0; readed = read(fd_in, &ch, 1))
     {
         assert(readed > 0);
-        if (0xd0 == ch)
+        if (utfRu == ch)
         {
             continue;
         }
         res = charCodeAt(ch);
         write(fd_out, &res, 1);
     }
+    close(fd_out);
     return 0;
 }
 
@@ -125,11 +128,14 @@ static int unpack(int fd_in, int fd_out)
 
 static int pack(int fd_in, int fd_out)
 {
-    int fd_tmp = open("./tmpfile", O_CREAT | O_RDWR, 0655);
-    encode(fd_in, fd_tmp);
-    lseek(fd_tmp, 0, SEEK_SET);
+    // int fd_tmp = open("./tmpfile", O_CREAT | O_RDWR, 0656);
+    int fd_pipes[2];
+    if (pipe(fd_pipes))
+        throw_error(E_PIPE, "Cant create tmp stream");
+    encode(fd_in, fd_pipes[1]);
+    //lseek(fd_tmp, 0, SEEK_SET);
     char buf[512];
-    for(int readed = read(fd_tmp, buf, 512); readed; readed = read(fd_tmp, buf, 512))
+    for(int readed = read(fd_pipes[0], buf, 512); readed; readed = read(fd_pipes[0], buf, 512))
     {
         write(fd_out, buf, readed);
     }
