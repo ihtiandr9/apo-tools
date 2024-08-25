@@ -25,7 +25,10 @@ static const Lexema words[] =
         {REG, TOK_REGH, "H", 0, 1},
         {REG, TOK_REGL, "L", 0, 1},
         {REG, TOK_REGM, "M", 0, 1},
-        {REG, TOK_REGSP, "SP", 0, 1},
+        {REG, TOK_REGSP, "SP", 0, 2},
+	{REG, TOK_REGSP, "HL", 0, 2},
+	{REG, TOK_REGSP, "BC", 0, 2},
+	{REG, TOK_REGSP, "DE", 0, 2},
         {0, 0, 0, 0, 0}};
 
 static const Lexema symbols[] =
