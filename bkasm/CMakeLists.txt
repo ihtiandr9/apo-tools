@@ -20,15 +20,17 @@ src/lexer.c
 src/parser.c
 src/symbols.c
 src/inbuf.c
-src/program.c
+src/cfg_tree.c
 src/nodes.c
+src/mathexpr.c
 )
 
 ##target_link_libraries(nonestl curl json-c)
 
-add_custom_target(test
+add_custom_target(tests
 COMMAND	./bkasm ../src/test.asm
 COMMENT "Run Tests"
+DEPENDS ./bkasm
 )
 
-install(TARGETS bkasm DESTINATION bin)
+install(TARGETS bkasm DESTINATION /usr/bin)

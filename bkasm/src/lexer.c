@@ -50,6 +50,7 @@ static int lexer_next_tok(Lexer *self)
 {
     char m_ch = self->ch;
     int f_result = 1;
+	Lexema *m_sym;
     self->token.type = TOK_NONE;
     self->token.value = 0;
     self->token.len = 0;
@@ -67,7 +68,7 @@ static int lexer_next_tok(Lexer *self)
             continue;
         }
 
-        Lexema *m_sym = self->symbols;
+        m_sym = self->symbols;
         while (m_sym->len != 0)
         {
             if (*(m_sym->ident) == m_ch)
@@ -86,7 +87,7 @@ static int lexer_next_tok(Lexer *self)
         {
             char *ident = 0;
             int len = 0;
-            int value = 0;
+			
             while (is_digit(m_ch))
             {
                 ident = (char *)realloc(ident, len + 2);
@@ -186,7 +187,7 @@ static void lexer_skip_until(Lexer *self, unsigned char symbol)
     self->nextTok(self);
 }
 
-int lexer_init(pLexer lexer, int fd_in)
+int lexer_init(Lexer* lexer, int fd_in)
 {
     lexer->fd_in = fd_in;
     lexer->words = (Lexema *)words;
@@ -203,14 +204,14 @@ int lexer_init(pLexer lexer, int fd_in)
     return 1;
 }
 
-pLexer lexer_create(int fd_in)
+Lexer* lexer_create(int fd_in)
 {
-    pLexer m_lexer = (pLexer)malloc(sizeof(Lexer));
+    Lexer* m_lexer = (Lexer*)malloc(sizeof(Lexer));
     lexer_init(m_lexer, fd_in);
     return m_lexer;
 }
 
-void lexer_free(pLexer self)
+void lexer_free(Lexer* self)
 {
     free(self);
 }

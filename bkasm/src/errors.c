@@ -2,7 +2,7 @@
 #include <errors.h>
 #include <stdio.h>
 
-static  fn_error_dispatecher error_dispatcher = 0;
+static  fn_error_dispatcher error_dispatcher = 0;
 
 static void default_error_dispatcher(Error *e)
 {

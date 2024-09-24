@@ -1,5 +1,7 @@
 #ifndef H_LEXER_H
 #define H_LEXER_H
+
+#include <globals.h>
 #define CH_NULL 0
 typedef enum _eIdentKind
 {
@@ -40,31 +42,31 @@ typedef enum _eIdentType
   L_EOF
 } eIdentType;
 
-typedef struct _Lexema
+STRUCT(Lexema)
 {
   eIdentKind kind;
   eIdentType type;
   char *ident;
   int value;
   int len;
-} Lexema;
+};
 
-typedef struct t_lexer
+STRUCT(Lexer)
 {
+	unsigned char ch;
   int fd_in;
+  Lexema token;
   Lexema *symbols;
   Lexema *words;
-  unsigned char ch;
-  Lexema token;
-  int (*nextTok)(struct t_lexer *self);
+  int (*nextTok)(Lexer* self);
   void (*printTok)(Lexema token);
-  void (*skipUntil)(struct t_lexer *self, unsigned char symbol);
-  void (*skipWhile)(struct t_lexer *self, unsigned char symbol);
-  void (*skipOne)(struct t_lexer *self);
-} Lexer, *pLexer;
+  void (*skipUntil)(Lexer* self, unsigned char symbol);
+  void (*skipWhile)(Lexer* self, unsigned char symbol);
+  void (*skipOne)(Lexer* self);
+};
 
 // exports
-pLexer lexer_create(int fd_in);
-int lexer_init(pLexer lexer, int fd_in);
-void lexer_free(pLexer self);
+Lexer* lexer_create(int fd_in);
+int lexer_init(Lexer* lexer, int fd_in);
+void lexer_free(Lexer* self);
 #endif

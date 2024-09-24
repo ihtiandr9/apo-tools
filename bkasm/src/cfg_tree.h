@@ -21,17 +21,24 @@
 TODO define it
 <term>     ::= <id> | <int> | <paren-expr>
 */
-#ifndef H_PROGRAM_H
-#define H_PROGRAM_H
+#ifndef H_CFG_TREE_H
+#define H_CFG_TREE_H
 
+#include <globals.h>
 #include <parser.h>
 #include <nodes.h>
 
-typedef struct _InstructionList
+STRUCT(CFG_Tree)
 {
     Instruction instruction;
-    struct _InstructionList *next;
-} Program;
+    CFG_Tree* next;
+};
 
-void program_generate(pParser parser);
+STRUCT(Program)
+{
+    CFG_Tree *first;
+    CFG_Tree *last;
+};
+
+void cfg_tree_add_statement(Parser* parser, Program *prog);
 #endif

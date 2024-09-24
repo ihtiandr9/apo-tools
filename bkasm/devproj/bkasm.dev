@@ -27,9 +27,9 @@ CommandLine=..\src\test.asm
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
-CompilerSet=0
-CompilerSettings=0000000000000000001000000
-UnitCount=15
+CompilerSet=5
+CompilerSettings=0000000100000000101000000
+UnitCount=18
 
 [VersionInfo]
 Major=1
@@ -121,16 +121,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=..\src\program.c
-CompileCpp=0
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit9]
 FileName=..\src\symbols.c
 CompileCpp=0
 Folder=
@@ -140,7 +130,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit10]
+[Unit9]
 FileName=..\src\parser.h
 CompileCpp=0
 Folder=
@@ -150,7 +140,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit11]
+[Unit10]
 FileName=..\src\symbols.h
 CompileCpp=0
 Folder=
@@ -160,7 +150,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit12]
+[Unit11]
 FileName=..\src\inbuf.c
 CompileCpp=0
 Folder=
@@ -170,7 +160,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit13]
+[Unit12]
 FileName=..\src\inbuf.h
 CompileCpp=0
 Folder=
@@ -180,7 +170,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit14]
+[Unit13]
 FileName=..\src\nodes.h
 CompileCpp=0
 Folder=
@@ -190,8 +180,48 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit15]
+[Unit14]
 FileName=..\src\nodes.c
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit15]
+FileName=..\src\cfg_tree.c
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit16]
+FileName=..\src\cfg_tree.h
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit17]
+FileName=..\src\mathexpr.h
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit18]
+FileName=..\src\mathexpr.c
 CompileCpp=0
 Folder=
 Compile=1

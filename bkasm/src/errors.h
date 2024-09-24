@@ -1,6 +1,8 @@
 #ifndef H_ERRORS_H
 #define H_ERRORS_H
 
+#include <globals.h>
+
 typedef enum _eErrorType
 {
     E_UNKIDENT,
@@ -10,13 +12,13 @@ typedef enum _eErrorType
     E_SYNTAXERROR
 } eErrorType;
 
-typedef struct _Error
+STRUCT(Error)
 {
     eErrorType type;
     void *data;
-} Error;
+};
 
-typedef void (*fn_error_dispatecher)(Error *);
+typedef void (*fn_error_dispatcher)(Error *);
 
 void throw_error(eErrorType etype, void *data);
 

@@ -42,6 +42,7 @@ add_custom_target(testinfileerror
 add_custom_target(testoutfileerror
     COMMAND chmod 000 ../src/errtest.asm
     COMMAND ./rkaexchange unpack ../src/test.rka ../src/errtest.asm || (exit 0)
+    COMMAND chmod 666 ../src/errtest.asm
     COMMENT "Test outfile error"
 )
 
