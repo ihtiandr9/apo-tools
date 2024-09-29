@@ -1,31 +1,34 @@
-
-#include <cfg_tree.h>
-#include <stdlib.h>
 #include <globals.h>
-#include <errors.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <cfg_tree.h>
+#include <errors.h>
 #include <parser.h>
 
 static void parse_op(Parser* self, Lexer* lexer);
 
 static void parse_var(Parser* self, Lexer* lexer)
 {
-    Lexema m_token = lexer->token;
-    char *m_ident = m_token.ident;
+    Label* target;
+    Lexema l_token = lexer->token;
+    char *l_ident = l_token.ident;
     lexer->nextTok(lexer);
-    m_token = lexer->token;
-    if (m_token.type == TOK_COLON)
+    l_token = lexer->token;
+    Node* expr = 0;
+
+    if (l_token.type == TOK_COLON)
     {
-        printf("< LABEL >: %s\n", m_ident);
+        expr = createLabel(l_ident);
+        free(l_ident);
         lexer->skipOne(lexer);
-        lexer->skipWhile(lexer, ' ');
     }
     else
     {
-        throw_error(E_UNKIDENT, m_ident);
+        throw_error(E_UNKIDENT, l_ident);
         exit_nicely();
     }
+self->statement = (ParseResult *)expr;
 }
 
 static void parse_comment(Parser* self, Lexer* lexer)
@@ -179,9 +182,8 @@ static void parse_op(Parser* self, Lexer* lexer)
 {
 	Instruction *op;
     Lexema op_token = lexer->token;
-    Node *expr = createInstruction(op_token.type);
-    printf("    < OPERATION >: %s code %d\n", op_token.ident, expr->op.evaluate(expr));
-
+    Node *expr = createInstruction(op_token.ident, op_token.type);
+    
     switch (op_token.type)
     {
     case TOK_MVI:;
@@ -237,10 +239,6 @@ static void parse_statement(Parser* self, Lexer* lexer)
         {
         case TOK_IDENT:
             parse_var(self, lexer);
-            lexer->nextTok(lexer);
-            parse_op(self, lexer);
-            lexer->nextTok(lexer);
-            parse_comment(self, lexer);
             break;
         }
         break;

@@ -1,3 +1,4 @@
+#define MAX_LABEL_SIZE 50
 #define STRUCT(XXX) typedef struct XXX XXX; \
 	struct XXX
 STRUCT(CFG_Tree);

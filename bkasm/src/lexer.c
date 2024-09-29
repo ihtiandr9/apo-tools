@@ -87,7 +87,7 @@ static int lexer_next_tok(Lexer *self)
         {
             char *ident = 0;
             int len = 0;
-			
+
             while (is_digit(m_ch))
             {
                 ident = (char *)realloc(ident, len + 2);
@@ -134,6 +134,7 @@ static int lexer_next_tok(Lexer *self)
                 self->token.kind = CONST;
                 self->token.type = TOK_IDENT;
                 self->token.ident = ident;
+                self->token.len = len;
                 continue;
             }
             throw_error(E_UNKIDENT, ident);

@@ -30,7 +30,7 @@ TODO define it
 
 STRUCT(CFG_Tree)
 {
-    Instruction instruction;
+    Node node;
     CFG_Tree* next;
 };
 
@@ -41,4 +41,5 @@ STRUCT(Program)
 };
 
 void cfg_tree_add_statement(Parser* parser, Program *prog);
+void destroyProgram(Program* prg);
 #endif

@@ -21,17 +21,28 @@ typedef enum _NodeType
 STRUCT(Instruction)
 {
     eNodeType type;
-    ExprValue opcode;
-    ExprValue (*evaluate)(Node *self);
-    Expr *lparam;
-    Expr *rparam;
+    int opcode;
+    char *ident;
+    Expr* lparam;
+    Expr* rparam;
+};
+
+STRUCT(Label)
+{
+    eNodeType type;
+    int target;
+    char *ident;
 };
 
 union Node
 {
     eNodeType type;
     Instruction op;
+    Label label;
 };
 
-Node *createInstruction(ExprValue opcode);
+Node *createLabel(const char *ident);
+void destroyLabel(Label *_label);
+Node *createInstruction(const char *ident, ExprValue opcode);
+void destroyInstruction(Instruction *_instr);
 #endif

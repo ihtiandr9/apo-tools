@@ -40,12 +40,13 @@ int main(int argc, char *argv[])
         printf("file not create");
         exit_nicely();
     }
-    
+
     lexer_init(&m_lexer, fd_in);
     parser_init(&m_parser);
     m_parser.parse(&m_parser, &m_lexer, &program);
 
     close(fd_in);
     close(fd_out);
+    destroyProgram(&program);
     return 0;
 }
