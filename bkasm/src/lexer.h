@@ -53,20 +53,20 @@ STRUCT(Lexema)
 
 STRUCT(Lexer)
 {
-	unsigned char ch;
+  unsigned char ch;
   int fd_in;
   Lexema token;
   Lexema *symbols;
   Lexema *words;
-  int (*nextTok)(Lexer* self);
+  int (*nextTok)(Lexer *self);
   void (*printTok)(Lexema token);
-  void (*skipUntil)(Lexer* self, unsigned char symbol);
-  void (*skipWhile)(Lexer* self, unsigned char symbol);
-  void (*skipOne)(Lexer* self);
+  void (*skipUntil)(Lexer *self, unsigned char symbol);
+  void (*skipWhile)(Lexer *self, unsigned char symbol);
+  void (*skipOne)(Lexer *self);
 };
 
 // exports
-Lexer* lexer_create(int fd_in);
-int lexer_init(Lexer* lexer, int fd_in);
-void lexer_free(Lexer* self);
+Lexer *lexer_create(int fd_in);
+int lexer_init(Lexer *lexer, int fd_in);
+void lexer_free(Lexer *self);
 #endif

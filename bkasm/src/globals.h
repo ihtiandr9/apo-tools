@@ -1,3 +1,6 @@
+#ifndef H_GLOBALS_H
+#define H_GLOBALS_H
+
 #define MAX_LABEL_SIZE 50
 #define STRUCT(XXX) typedef struct XXX XXX; \
 	struct XXX
@@ -6,4 +9,5 @@ STRUCT(Program);
 
 extern int fd_in;
 extern int fd_out;
-void exit_nicely(void);
+void exit_nicely(int);
+#endif

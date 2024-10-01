@@ -42,7 +42,8 @@ union Node
 };
 
 Node *createLabel(const char *ident);
-void destroyLabel(Label *_label);
+void clearLabel(Label *_label);
 Node *createInstruction(const char *ident, ExprValue opcode);
-void destroyInstruction(Instruction *_instr);
+void clearInstruction(Instruction *_instr);
+void clearNode(Node *node);
 #endif

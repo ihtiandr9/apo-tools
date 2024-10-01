@@ -70,7 +70,6 @@ static Expr *createMathExpr(ExprValue opcode)
 
 void freeMathExpr(Math *expr)
 {
-	Math *m_instr=0;
         if (expr)
         {
                 switch (expr->type)
@@ -82,10 +81,9 @@ void freeMathExpr(Math *expr)
                         freeRegister((Register *)expr);
                         break;
                 case EXPR_MATH:
-                        m_instr = (Math *)expr;
-                        freeMathExpr((Math *)m_instr->lparam);
-                        freeMathExpr((Math *)m_instr->rparam);
-                        free(m_instr);
+                        freeMathExpr((Math *)expr->lparam);
+                        freeMathExpr((Math *)expr->rparam);
+                        free(expr);
                         break;
                 default:
                         assert(0);

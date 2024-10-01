@@ -41,5 +41,9 @@ STRUCT(Program)
 };
 
 void cfg_tree_add_statement(Parser* parser, Program *prog);
-void destroyProgram(Program* prg);
+Program* program_create();
+void program_init(Program* prg);
+void program_free(Program* prg);
+void program_destroy(Program* prg);
+void destroyCFGTree(CFG_Tree* tree);
 #endif

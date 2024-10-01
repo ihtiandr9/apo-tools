@@ -9,7 +9,9 @@ include_directories(/usr/local/include
  src)
 link_directories(/usr/local/lib)
 
-add_definitions(-g -Wno-switch)
+if(NOT DEFINED _Release_)
+add_definitions(-ggdb -Wno-switch)
+endif()
 
 ## forktest
 add_executable(bkasm
@@ -27,8 +29,14 @@ src/mathexpr.c
 
 ##target_link_libraries(nonestl curl json-c)
 
+add_custom_target(debug
+COMMAND	gdb ./bkasm
+COMMENT "GDB Debug"
+DEPENDS ./bkasm
+)
+
 add_custom_target(tests
-COMMAND	./bkasm ../src/test.asm
+COMMAND	valgrind -s ./bkasm ../src/test.asm
 COMMENT "Run Tests"
 DEPENDS ./bkasm
 )

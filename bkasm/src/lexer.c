@@ -26,10 +26,11 @@ static const Lexema words[] =
         {REG, TOK_REGL, "L", 0, 1},
         {REG, TOK_REGM, "M", 0, 1},
         {REG, TOK_REGSP, "SP", 0, 2},
-	{REG, TOK_REGSP, "HL", 0, 2},
-	{REG, TOK_REGSP, "BC", 0, 2},
-	{REG, TOK_REGSP, "DE", 0, 2},
-        {0, 0, 0, 0, 0}};
+        {REG, TOK_REGSP, "HL", 0, 2},
+        {REG, TOK_REGSP, "BC", 0, 2},
+        {REG, TOK_REGSP, "DE", 0, 2},
+        {KIND_NONE, TOK_NONE, 0, 0, 0},
+};
 
 static const Lexema symbols[] =
     {
@@ -44,13 +45,14 @@ static const Lexema symbols[] =
         {SYM, TOK_ASTERISK, "*", 0, 1},
         {SYM, L_EOL, (char *)&eol_sym, 0, 1},
         {SYM, L_EOF, (char *)&eof_sym, 0, 1},
-        {0, 0, 0, 0, 0}};
+        {0, 0, 0, 0, 0},
+};
 
 static int lexer_next_tok(Lexer *self)
 {
     char m_ch = self->ch;
     int f_result = 1;
-	Lexema *m_sym;
+    Lexema *m_sym;
     self->token.type = TOK_NONE;
     self->token.value = 0;
     self->token.len = 0;
@@ -138,10 +140,14 @@ static int lexer_next_tok(Lexer *self)
                 continue;
             }
             throw_error(E_UNKIDENT, ident);
-            exit_nicely();
+            exit_nicely(E_UNKIDENT);
         }
         throw_error(E_UNEXPSYM, &m_ch);
-        exit_nicely();
+        self->token.kind = KIND_NONE;
+        self->token.type = TOK_NONE;
+        self->token.ident = 0;
+        self->token.len = 0;
+        break;
     }
     self->ch = m_ch;
     if (self->token.type == L_EOF)
@@ -188,7 +194,7 @@ static void lexer_skip_until(Lexer *self, unsigned char symbol)
     self->nextTok(self);
 }
 
-int lexer_init(Lexer* lexer, int fd_in)
+int lexer_init(Lexer *lexer, int fd_in)
 {
     lexer->fd_in = fd_in;
     lexer->words = (Lexema *)words;
@@ -205,14 +211,14 @@ int lexer_init(Lexer* lexer, int fd_in)
     return 1;
 }
 
-Lexer* lexer_create(int fd_in)
+Lexer *lexer_create(int fd_in)
 {
-    Lexer* m_lexer = (Lexer*)malloc(sizeof(Lexer));
+    Lexer *m_lexer = (Lexer *)malloc(sizeof(Lexer));
     lexer_init(m_lexer, fd_in);
     return m_lexer;
 }
 
-void lexer_free(Lexer* self)
+void lexer_free(Lexer *self)
 {
     free(self);
 }

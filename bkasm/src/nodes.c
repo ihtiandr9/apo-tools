@@ -11,7 +11,7 @@
 Node *createInstruction(const char *ident, ExprValue opcode)
 {
         int len = strlen(ident);
-        Instruction *node = (Instruction *)malloc(sizeof(Instruction));
+        Instruction *node = (Instruction *)malloc(sizeof(Node));
         node->type = NODE_INSTRUCTION;
         node->opcode = opcode;
         node->lparam = NULL;
@@ -24,16 +24,17 @@ Node *createInstruction(const char *ident, ExprValue opcode)
         return (Node *)node;
 }
 
-void destroyInstruction(Instruction *_instr)
+void clearInstruction(Instruction *_instr)
 {
         if (_instr)
         {
                 _instr->type = NODE_EMPTY;
+                free(_instr->ident);
+                _instr->ident = NULL;
                 freeMathExpr((Math *)_instr->lparam);
                 _instr->lparam = 0;
                 freeMathExpr((Math *)_instr->rparam);
                 _instr->rparam = 0;
-                free(_instr);
         }
 }
 
@@ -43,7 +44,7 @@ void destroyInstruction(Instruction *_instr)
 Node *createLabel(const char *ident)
 {
         int len = strlen(ident);
-        Label *node = (Label *)malloc(sizeof(Label));
+        Label *node = (Label *)malloc(sizeof(Node));
         node->type = NODE_LABEL;
         node->target = 0;
         if (len > MAX_LABEL_SIZE)
@@ -54,13 +55,30 @@ Node *createLabel(const char *ident)
         return (Node *)node;
 }
 
-void destroyLabel(Label *_label)
+void clearLabel(Label *_label)
 {
         if (_label)
         {
                 _label->type = NODE_EMPTY;
                 free(_label->ident);
                 _label->ident = NULL;
-                free(_label);
+        }
+}
+
+void clearNode(Node *node)
+{
+        if (!node)
+                return;
+        switch (node->type)
+        {
+        case NODE_INSTRUCTION:
+                clearInstruction((Instruction *)node);
+                break;
+        case NODE_LABEL:
+                clearLabel((Label *)node);
+                break;
+        default:
+                assert(0);
+                break;
         }
 }

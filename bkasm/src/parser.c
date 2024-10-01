@@ -11,11 +11,13 @@ static void parse_op(Parser* self, Lexer* lexer);
 static void parse_var(Parser* self, Lexer* lexer)
 {
     Label* target;
-    Lexema l_token = lexer->token;
+    Node* expr;
+	
+	Lexema l_token = lexer->token;
     char *l_ident = l_token.ident;
     lexer->nextTok(lexer);
     l_token = lexer->token;
-    Node* expr = 0;
+    expr = 0;
 
     if (l_token.type == TOK_COLON)
     {
@@ -24,9 +26,10 @@ static void parse_var(Parser* self, Lexer* lexer)
         lexer->skipOne(lexer);
     }
     else
-    {
+    {        
         throw_error(E_UNKIDENT, l_ident);
-        exit_nicely();
+        free(l_ident);
+        exit_nicely(E_UNKIDENT);
     }
 self->statement = (ParseResult *)expr;
 }
@@ -173,6 +176,7 @@ static void parse_param(Parser* self, Lexer* lexer)
         break;
     default:
         throw_error(E_UNEXPTOKEN, m_token.ident);
+        exit_nicely(E_UNEXPTOKEN);
     }
     lexer->skipWhile(lexer, ' ');
     self->statement = (ParseResult *)expr;
@@ -258,7 +262,7 @@ static void parse_statement(Parser* self, Lexer* lexer)
             break;
         default:
             throw_error(E_UNEXPSYM, m_token.ident);
-            exit_nicely();
+            exit_nicely(E_UNEXPSYM);
         }
         break;
     case OP:

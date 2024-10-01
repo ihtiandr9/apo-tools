@@ -5,6 +5,7 @@
 
 typedef enum _eErrorType
 {
+    E_SUCCESS,
     E_UNKIDENT,
     E_UNEXPSYM,
     E_UNEXPTOKEN,

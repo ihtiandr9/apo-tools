@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <assert.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 
 static unsigned char inbuf[512];
 static int bufsize;
