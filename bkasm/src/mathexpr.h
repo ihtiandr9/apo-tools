@@ -33,6 +33,15 @@ STRUCT(Register)
     ExprValue (*evaluate)(Expr *self);
 };
 
+STRUCT(Variable)
+{
+    eExprType type;
+    ExprValue value;
+    ExprValue (*evaluate)(Expr *self);
+    char* ident;
+    unsigned char resolved;
+};
+
 STRUCT(Math)
 {
     eExprType type;
@@ -49,11 +58,13 @@ union Expr
     Const constval;
     Register reg;
     Math mathExpr;
+    Variable var;
 };
 
 Expr *createRegister(ExprValue reg);
 Expr *createConst(ExprValue num);
 Expr *createAddition(ExprValue operation);
 Expr *createMultiplication(ExprValue operation);
+Expr *createVariable(const char *ident);
 void freeMathExpr(Math *expr);
 #endif

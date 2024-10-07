@@ -25,6 +25,7 @@ src/inbuf.c
 src/cfg_tree.c
 src/nodes.c
 src/mathexpr.c
+src/generator.c
 )
 
 ##target_link_libraries(nonestl curl json-c)

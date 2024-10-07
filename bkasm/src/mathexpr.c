@@ -3,7 +3,9 @@
 #include <errors.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
+ExprValue resolveVar(Expr *var);
 ////////////////////////////////////////////
 // ConsExpr
 
@@ -55,6 +57,42 @@ void freeRegister(Register *expr)
 }
 
 ////////////////////////////////////////////
+// Variable expression
+
+static ExprValue evaluateVartExpr(Expr *self)
+{
+        ExprValue result = self->var.value;
+        if (!self->var.resolved)
+                result = resolveVar(self);
+        return result;
+}
+
+Expr *createVariable(const char *ident)
+{
+        int len = strlen(ident);
+        Variable *expr = (Variable *)malloc(sizeof(Expr));
+        expr->type = EXPR_VAR;
+        expr->value = 0;
+        expr->resolved = 0;
+        expr->evaluate = evaluateVartExpr;
+        if (len > MAX_LABEL_SIZE)
+                len = MAX_LABEL_SIZE;
+        expr->ident = (char *)malloc(len + 1);
+        strncpy(expr->ident, ident, len);
+        expr->ident[len] = '\0';
+        return (Expr *)expr;
+}
+
+void freeVariable(Variable *expr)
+{
+        if (expr)
+        {
+                free(expr->ident);
+                free(expr);
+        }
+}
+
+////////////////////////////////////////////
 // Math expression
 
 static Expr *createMathExpr(ExprValue opcode)
@@ -79,6 +117,9 @@ void freeMathExpr(Math *expr)
                         break;
                 case EXPR_REG:
                         freeRegister((Register *)expr);
+                        break;
+                case EXPR_VAR:
+                        freeVariable((Variable *)expr);
                         break;
                 case EXPR_MATH:
                         freeMathExpr((Math *)expr->lparam);

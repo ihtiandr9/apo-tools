@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=5
 CompilerSettings=0000000100000000101000000
-UnitCount=18
+UnitCount=19
 
 [VersionInfo]
 Major=1
@@ -222,6 +222,16 @@ BuildCmd=
 
 [Unit18]
 FileName=..\src\mathexpr.c
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit19]
+FileName=..\src\generator.c
 CompileCpp=0
 Folder=
 Compile=1
