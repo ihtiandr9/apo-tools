@@ -36,9 +36,21 @@ COMMENT "GDB Debug"
 DEPENDS ./bkasm
 )
 
-add_custom_target(tests
-COMMAND	valgrind -s ./bkasm ../src/test.asm
+add_custom_target(unittest
+COMMAND	./bkasm ../src/tests/test.asm
 COMMENT "Run Tests"
+DEPENDS ./bkasm
+)
+
+add_custom_target(testscript
+COMMAND	python3 ../src/tests.py
+COMMENT "Run Tests"
+DEPENDS ./bkasm
+)
+
+add_custom_target(valgrind
+COMMAND	valgrind -s ./bkasm ../src/tests/test.asm
+COMMENT "Run Memory tests"
 DEPENDS ./bkasm
 )
 
