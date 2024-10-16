@@ -109,7 +109,7 @@ static int lexer_next_tok(Lexer *self)
         {
             char *ident = 0;
             int len = 0;
-            while (is_alfa(m_ch))
+            while (is_alfa(m_ch) || is_digit(m_ch))
             {
                 ident = (char *)realloc(ident, len + 2);
                 ident[len++] = m_ch;

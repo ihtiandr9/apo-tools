@@ -10,7 +10,7 @@ static void parse_op(Parser *self, Lexer *lexer);
 
 static void parse_var(Parser *self, Lexer *lexer)
 {
-    Label *target;
+    //Label *target;
     Node *expr;
 
     Lexema l_token = lexer->token;
@@ -29,7 +29,8 @@ static void parse_var(Parser *self, Lexer *lexer)
     {
         throw_error(E_UNKIDENT, l_ident);
         free(l_ident);
-        exit_nicely(E_UNKIDENT);
+        lexer->skipUntil(lexer, 10);
+        lexer->skipOne(lexer);
     }
     self->statement = (ParseResult *)expr;
 }
@@ -99,13 +100,13 @@ static void parse_multiplication(Parser *self, Lexer *lexer)
     m_token = lexer->token;
     while (m_token.type == TOK_ASTERISK)
     {
-        Math *expr = (Math *)createMultiplication(TOK_ASTERISK);
-        expr->lparam = result;
+        Expr *expr = createMultiplication(TOK_ASTERISK);
+        expr->op.setlparam(expr, result);
         lexer->skipOne(lexer);
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         parse_term(self, lexer);
-        expr->rparam = (Expr *)self->statement;
+        expr->op.setrparam(expr, (Expr *)self->statement);
         result = (Expr *)expr;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -127,13 +128,13 @@ static void parse_addition(Parser *self, Lexer *lexer)
     {
         if (m_token.type == TOK_MINUS)
         {
-            Math *expr = (Math *)createAddition(TOK_MINUS);
-            expr->lparam = result;
+            Expr *expr = createAddition(TOK_MINUS);
+            expr->op.setlparam(expr, result);
             lexer->skipOne(lexer);
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
             parse_multiplication(self, lexer);
-            expr->rparam = (Expr *)self->statement;
+            expr->op.setrparam(expr, (Expr *)self->statement);
             result = (Expr *)expr;
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
@@ -141,13 +142,13 @@ static void parse_addition(Parser *self, Lexer *lexer)
         }
         if (m_token.type == TOK_PLUS)
         {
-            Math *expr = (Math *)createAddition(TOK_PLUS);
-            expr->lparam = result;
+            Expr *expr = createAddition(TOK_PLUS);
+            expr->op.setlparam(expr, result);
             lexer->skipOne(lexer);
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
             parse_multiplication(self, lexer);
-            expr->rparam = (Expr *)self->statement;
+            expr->op.setrparam(expr, (Expr *)self->statement);
             result = (Expr *)expr;
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
@@ -165,7 +166,7 @@ static void parse_param(Parser *self, Lexer *lexer)
     {
     case REG:
         expr = createRegister(m_token.type);
-        printf("        < REGISTER >: %s code %d\n", m_token.ident, expr->reg.evaluate(expr));
+        printf("        < REGISTER >: %s code %d\n", m_token.ident, expr->op.evaluate(expr));
         break;
     case CONST:
         switch (m_token.type)
@@ -173,12 +174,12 @@ static void parse_param(Parser *self, Lexer *lexer)
         case TOK_NUM:
             parse_addition(self, lexer);
             expr = (Expr *)self->statement;
-            printf("        < IMMEDIATE >: %d\n", expr->mathExpr.evaluate(expr));
+            printf("        < IMMEDIATE >: %d\n", expr->op.evaluate(expr));
             break;
         case TOK_IDENT:
             parse_addition(self, lexer);
             expr = (Expr *)self->statement;
-            printf("        < VAR >: %s\n", expr->var.ident);
+            printf("        < VAR >: %s\n", expr->ident);
             break;
         default:
             throw_error(E_UNKIDENT, m_token.ident);
@@ -280,6 +281,10 @@ static void parse_statement(Parser *self, Lexer *lexer)
         lexer->nextTok(lexer);
         parse_comment(self, lexer);
         break;
+    case KIND_NONE:
+        lexer->skipUntil(lexer, 10);
+        lexer->skipOne(lexer);
+        break;
     default:
         assert(0);
         throw_error(E_UNEXPTOKEN, m_token.ident);
@@ -287,7 +292,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
     }
 }
 
-static void parser_parse(Parser *self, Lexer *lexer, Program *prog)
+void parser_parse(Parser *self, Lexer *lexer, Program *prog)
 {
     while (lexer->nextTok(lexer))
     {
@@ -300,7 +305,6 @@ static void parser_parse(Parser *self, Lexer *lexer, Program *prog)
 int parser_init(Parser *parser)
 {
     parser->level = 0;
-    parser->parse = parser_parse;
     return 1;
 }
 Parser *parser_create(void)

@@ -45,8 +45,7 @@ int main(int argc, char *argv[])
     lexer_init(&m_lexer, fd_in);
     parser_init(&m_parser);
     program_init(&program);
-
-	m_parser.parse(&m_parser, &m_lexer, &program);
+    parser_parse(&m_parser, &m_lexer, &program);
 
     exit_nicely(0);
     return 0;

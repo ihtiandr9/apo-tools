@@ -5,7 +5,7 @@
 
 // { forward decl
 
-typedef union Expr Expr;
+STRUCT(Expr);
 
 // }==================================
 typedef int ExprValue;
@@ -19,52 +19,26 @@ typedef enum _ExprType
     EXPR_MATH
 } eExprType;
 
-STRUCT(Const)
+STRUCT(ExprOp)
 {
-    eExprType type;
-    ExprValue value;
     ExprValue (*evaluate)(Expr *self);
+    void (*setlparam)(Expr *self, Expr *val);
+    void (*setrparam)(Expr *self, Expr *val);
 };
 
-STRUCT(Register)
+STRUCT(Expr)
 {
     eExprType type;
     ExprValue value;
-    ExprValue (*evaluate)(Expr *self);
-};
-
-STRUCT(Variable)
-{
-    eExprType type;
-    ExprValue value;
-    ExprValue (*evaluate)(Expr *self);
     char* ident;
-    unsigned char resolved;
+    ExprOp op;
+    void *expr_private;
 };
 
-STRUCT(Math)
-{
-    eExprType type;
-    ExprValue result;
-    ExprValue (*evaluate)(Expr *self);
-    Expr *lparam;
-    Expr *rparam;
-    ExprValue opcode;
-};
-
-union Expr
-{
-    eExprType type;
-    Const constval;
-    Register reg;
-    Math mathExpr;
-    Variable var;
-};
-
-Expr *createRegister(ExprValue reg);
 Expr *createConst(ExprValue num);
+Expr *createRegister(ExprValue reg);
 Expr *createAddition(ExprValue operation);
 Expr *createMultiplication(ExprValue operation);
+void freeMathExpr(Expr *expr);
 Expr *createVariable(const char *ident);
-void freeMathExpr(Math *expr);
 #endif
