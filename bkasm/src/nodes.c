@@ -31,9 +31,9 @@ void clearInstruction(Instruction *_instr)
                 _instr->type = NODE_EMPTY;
                 free(_instr->ident);
                 _instr->ident = NULL;
-                freeMathExpr((Math *)_instr->lparam);
+                freeMathExpr((Expr *)_instr->lparam);
                 _instr->lparam = 0;
-                freeMathExpr((Math *)_instr->rparam);
+                freeMathExpr((Expr *)_instr->rparam);
                 _instr->rparam = 0;
         }
 }

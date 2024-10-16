@@ -16,11 +16,11 @@ STRUCT(Parser)
 {
     ParseResult *statement;
     int level;
-    void (*parse)(Parser *self, Lexer* lexer, Program *prog);
 };
 
 // exports
 Parser* parser_create(void);
 int parser_init(Parser* parser);
 void parser_free(Parser* parser);
+void parser_parse(Parser *self, Lexer *lexer, Program *prog);
 #endif

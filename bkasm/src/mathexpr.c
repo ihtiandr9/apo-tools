@@ -11,70 +11,88 @@ ExprValue resolveVar(Expr *var);
 
 static ExprValue evaluateConstExpr(Expr *self)
 {
-        return self->constval.value;
+        return self->value;
 }
 
 Expr *createConst(ExprValue num)
 {
-        Const *expr = (Const *)malloc(sizeof(Const));
+        Expr *expr = (Expr *)malloc(sizeof(Expr));
         expr->type = EXPR_CONST;
         expr->value = num;
-        expr->evaluate = evaluateConstExpr;
-        return (Expr *)expr;
+        expr->expr_private = NULL;
+        expr->ident = NULL;
+        expr->op.evaluate = evaluateConstExpr;
+        return expr;
 }
 
-void freeConst(Const *expr)
+void freeConst(Expr *expr)
 {
-        if (expr)
-        {
-                free(expr);
-        }
+        free(expr->expr_private);
+        free(expr->ident);
+        free(expr);
 }
 
 ////////////////////////////////////////////
 // Register expression
+STRUCT(RegisterPrivate)
+{
+        eExprType type;
+        ExprValue value;
+        ExprOp op;
+};
+Expr *createRegister(ExprValue reg);
 
 static ExprValue evaluateRegtExpr(Expr *self)
 {
-        return self->reg.value;
+        return self->value;
 }
 
 Expr *createRegister(ExprValue reg)
 {
-        Register *expr = (Register *)malloc(sizeof(Expr));
+        Expr *expr = (Expr *)malloc(sizeof(Expr));
         expr->type = EXPR_REG;
         expr->value = reg;
-        expr->evaluate = evaluateConstExpr;
+        expr->op.evaluate = evaluateConstExpr;
+        expr->expr_private = NULL;
+        expr->ident = NULL;
         return (Expr *)expr;
 }
 
-void freeRegister(Register *expr)
+void freeRegister(Expr *expr)
 {
-        if (expr)
-        {
-                free(expr);
-        }
+        free(expr->expr_private);
+        free(expr->ident);
+        free(expr);
 }
 
 ////////////////////////////////////////////
 // Variable expression
+STRUCT(VarPrivate)
+{
+        unsigned char resolved;
+};
 
 static ExprValue evaluateVartExpr(Expr *self)
 {
-        ExprValue result = self->var.value;
-        if (!self->var.resolved)
+        ExprValue result = self->value;
+        VarPrivate *props = (VarPrivate *)self->expr_private;
+        if (!props->resolved)
                 result = resolveVar(self);
         return result;
 }
 
 Expr *createVariable(const char *ident)
 {
-        int len = strlen(ident);
-        Variable *expr = (Variable *)malloc(sizeof(Expr));
+
+        VarPrivate *props;
+		int len = strlen(ident);
+        Expr *expr = (Expr *)malloc(sizeof(Expr));
         expr->type = EXPR_VAR;
         expr->value = 0;
-        expr->resolved = 0;
-        expr->evaluate = evaluateVartExpr;
+        expr->op.evaluate = evaluateVartExpr;
+        props = (VarPrivate *)malloc(sizeof(VarPrivate));
+        expr->expr_private = props;
+        props->resolved = 0;
         if (len > MAX_LABEL_SIZE)
                 len = MAX_LABEL_SIZE;
         expr->ident = (char *)malloc(len + 1);
@@ -83,11 +101,12 @@ Expr *createVariable(const char *ident)
         return (Expr *)expr;
 }
 
-void freeVariable(Variable *expr)
+void freeVariable(Expr *expr)
 {
         if (expr)
         {
                 free(expr->ident);
+                free(expr->expr_private);
                 free(expr);
         }
 }
@@ -95,35 +114,67 @@ void freeVariable(Variable *expr)
 ////////////////////////////////////////////
 // Math expression
 
+STRUCT(MathPrivate)
+{
+        Expr *lparam;
+        Expr *rparam;
+        ExprValue opcode;
+};
+
+void MathSetLParam(Expr *self, Expr *val)
+{
+        MathPrivate *props = (MathPrivate *)self->expr_private;
+        props->lparam = val;
+}
+
+void MathSetRParam(Expr *self, Expr *val)
+{
+        MathPrivate *props = (MathPrivate *)self->expr_private;
+        props->rparam = val;
+}
+
+ExprOp mathops = {
+	NULL, MathSetLParam, MathSetRParam
+    
+};
+
 static Expr *createMathExpr(ExprValue opcode)
 {
-        Math *expr = (Math *)malloc(sizeof(Math));
+        MathPrivate *props;
+		Expr *expr = (Expr *)malloc(sizeof(Expr));
         expr->type = EXPR_MATH;
-        expr->opcode = opcode;
-        expr->lparam = NULL;
-        expr->rparam = NULL;
-        expr->result = 0;
+        expr->value = 0;
+        expr->ident = NULL;
+        expr->op = mathops;
+        props = (MathPrivate *)malloc(sizeof(MathPrivate));
+        expr->expr_private = props;
+        props->opcode = opcode;
+        props->lparam = NULL;
+        props->rparam = NULL;
         return (Expr *)expr;
 }
 
-void freeMathExpr(Math *expr)
+void freeMathExpr(Expr *expr)
 {
+        MathPrivate *props;
         if (expr)
         {
                 switch (expr->type)
                 {
                 case EXPR_CONST:
-                        freeConst((Const *)expr);
+                        freeConst(expr);
                         break;
                 case EXPR_REG:
-                        freeRegister((Register *)expr);
+                        freeRegister(expr);
                         break;
                 case EXPR_VAR:
-                        freeVariable((Variable *)expr);
+                        freeVariable(expr);
                         break;
                 case EXPR_MATH:
-                        freeMathExpr((Math *)expr->lparam);
-                        freeMathExpr((Math *)expr->rparam);
+                        props = (MathPrivate *)expr->expr_private;
+                        freeMathExpr(props->lparam);
+                        freeMathExpr(props->rparam);
+                        free(props);
                         free(expr);
                         break;
                 default:
@@ -138,10 +189,11 @@ void freeMathExpr(Math *expr)
 
 static ExprValue evaluateMultiplicationExpr(Expr *self)
 {
+        MathPrivate *props = (MathPrivate *)self->expr_private;
         ExprValue result = 0;
-        ExprValue lparam = self->mathExpr.lparam->mathExpr.evaluate((Expr *)(self->mathExpr.lparam));
-        ExprValue rparam = self->mathExpr.rparam->mathExpr.evaluate((Expr *)(self->mathExpr.rparam));
-        switch (self->mathExpr.opcode)
+        ExprValue lparam = props->lparam->op.evaluate(props->lparam);
+        ExprValue rparam = props->rparam->op.evaluate(props->rparam);
+        switch (props->opcode)
         {
         case TOK_ASTERISK:
                 result = lparam * rparam;
@@ -151,18 +203,18 @@ static ExprValue evaluateMultiplicationExpr(Expr *self)
                 throw_error(E_SYNTAXERROR, " invalid operation");
                 break;
         }
-        self->mathExpr.result = result;
+        self->value = result;
         return result;
 }
 
 Expr *createMultiplication(ExprValue opcode)
 {
         Expr *expr = createMathExpr(opcode);
-        expr->mathExpr.evaluate = evaluateMultiplicationExpr;
+        expr->op.evaluate = evaluateMultiplicationExpr;
         return (Expr *)expr;
 }
 
-void freeMultiplication(Math *expr)
+void freeMultiplication(Expr *expr)
 {
         freeMathExpr(expr);
 }
@@ -172,10 +224,11 @@ void freeMultiplication(Math *expr)
 
 static ExprValue evaluateAdditionExpr(Expr *self)
 {
+        MathPrivate *props = (MathPrivate *)self->expr_private;
         ExprValue result = 0;
-        ExprValue lparam = self->mathExpr.lparam->mathExpr.evaluate((Expr *)(self->mathExpr.lparam));
-        ExprValue rparam = self->mathExpr.rparam->mathExpr.evaluate((Expr *)(self->mathExpr.rparam));
-        switch (self->mathExpr.opcode)
+        ExprValue lparam = props->lparam->op.evaluate(props->lparam);
+        ExprValue rparam = props->rparam->op.evaluate(props->rparam);
+        switch (props->opcode)
         {
         case TOK_PLUS:
                 result = lparam + rparam;
@@ -188,18 +241,18 @@ static ExprValue evaluateAdditionExpr(Expr *self)
                 throw_error(E_SYNTAXERROR, " invalid operation");
                 break;
         }
-        self->mathExpr.result = result;
+        self->value = result;
         return result;
 }
 
 Expr *createAddition(ExprValue opcode)
 {
         Expr *expr = createMathExpr(opcode);
-        expr->mathExpr.evaluate = evaluateAdditionExpr;
+        expr->op.evaluate = evaluateAdditionExpr;
         return (Expr *)expr;
 }
 
-void freeAddition(Math *expr)
+void freeAddition(Expr *expr)
 {
         freeMathExpr(expr);
 }
