@@ -18,6 +18,7 @@ typedef enum _eIdentType
   TOK_MOV,
   TOK_MVI,
   TOK_LXI,
+  TOK_JMP,
   TOK_COLON,
   TOK_SEMICOLON,
   TOK_COMMA,

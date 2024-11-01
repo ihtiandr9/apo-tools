@@ -201,7 +201,10 @@ static void parse_op(Parser *self, Lexer *lexer)
 
     switch (op_token.type)
     {
-    case TOK_MVI:;
+    // two opernds mnemonics    
+    case TOK_MVI:
+    case TOK_MOV:
+    case TOK_LXI:
         op = (Instruction *)expr;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -216,19 +219,13 @@ static void parse_op(Parser *self, Lexer *lexer)
         op->rparam = (Expr *)self->statement;
         self->statement = 0;
         break;
-    case TOK_MOV:
+    // one operand mnemonics    
+    case TOK_JMP:
         op = (Instruction *)expr;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         parse_param(self, lexer);
         op->lparam = (Expr *)self->statement;
-        self->statement = 0;
-        lexer->skipWhile(lexer, ',');
-        lexer->skipWhile(lexer, ' ');
-        lexer->nextTok(lexer);
-        parse_param(self, lexer);
-        lexer->skipWhile(lexer, ' ');
-        op->rparam = (Expr *)self->statement;
         self->statement = 0;
         break;
     case TOK_SEMICOLON: // no operation pass-throw comment

@@ -17,6 +17,7 @@ static const Lexema words[] =
         {OP, TOK_MOV, "MOV", 0, 3},
         {OP, TOK_MVI, "MVI", 0, 3},
         {OP, TOK_LXI, "LXI", 0, 3},
+        {OP, TOK_JMP, "JMP", 0, 3},
         {REG, TOK_REGA, "A", 0, 1},
         {REG, TOK_REGB, "B", 0, 1},
         {REG, TOK_REGC, "C", 0, 1},
@@ -45,7 +46,7 @@ static const Lexema symbols[] =
         {SYM, TOK_ASTERISK, "*", 0, 1},
         {SYM, L_EOL, (char *)&eol_sym, 0, 1},
         {SYM, L_EOF, (char *)&eof_sym, 0, 1},
-        {0, 0, 0, 0, 0},
+        {KIND_NONE, TOK_NONE, 0, 0, 0},
 };
 
 static int lexer_next_tok(Lexer *self)
