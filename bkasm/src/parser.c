@@ -5,12 +5,13 @@
 #include <cfg_tree.h>
 #include <errors.h>
 #include <parser.h>
+#include <inbuf.h>
 
 static void parse_op(Parser *self, Lexer *lexer);
 
 static void parse_var(Parser *self, Lexer *lexer)
 {
-    //Label *target;
+    // Label *target;
     Node *expr;
 
     Lexema l_token = lexer->token;
@@ -55,6 +56,7 @@ static void parse_comment(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             break;
         default:
+            fprintf(stderr,"In string: %s\n", inbuf_currstr());
             throw_error(E_UNEXPSYM, m_token.ident);
             lexer->skipUntil(lexer, 10);
         }
@@ -166,7 +168,7 @@ static void parse_param(Parser *self, Lexer *lexer)
     {
     case REG:
         expr = createRegister(m_token.type);
-        printf("        < REGISTER >: %s code %d\n", m_token.ident, expr->op.evaluate(expr));
+        printf(INDENT INDENT "< REGISTER >: %s code %d\n", m_token.ident, expr->op.evaluate(expr));
         break;
     case CONST:
         switch (m_token.type)
@@ -174,12 +176,12 @@ static void parse_param(Parser *self, Lexer *lexer)
         case TOK_NUM:
             parse_addition(self, lexer);
             expr = (Expr *)self->statement;
-            printf("        < IMMEDIATE >: %d\n", expr->op.evaluate(expr));
+            printf(INDENT INDENT "< IMMEDIATE >: %d\n", expr->op.evaluate(expr));
             break;
         case TOK_IDENT:
             parse_addition(self, lexer);
             expr = (Expr *)self->statement;
-            printf("        < VAR >: %s\n", expr->ident);
+            printf(INDENT INDENT "< VAR >: %s\n", expr->ident);
             break;
         default:
             throw_error(E_UNKIDENT, m_token.ident);
@@ -201,7 +203,7 @@ static void parse_op(Parser *self, Lexer *lexer)
 
     switch (op_token.type)
     {
-    // two opernds mnemonics    
+    // two opernds mnemonics
     case TOK_MVI:
     case TOK_MOV:
     case TOK_LXI:
@@ -219,7 +221,7 @@ static void parse_op(Parser *self, Lexer *lexer)
         op->rparam = (Expr *)self->statement;
         self->statement = 0;
         break;
-    // one operand mnemonics    
+    // one operand mnemonics
     case TOK_JMP:
         op = (Instruction *)expr;
         lexer->skipWhile(lexer, ' ');
@@ -265,7 +267,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             break;
         case L_EOF:
-            printf("    < EOF >\n");
+            printf( INDENT "< EOF >\n");
             lexer->skipOne(lexer);
             break;
         default:
