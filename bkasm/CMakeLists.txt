@@ -13,7 +13,7 @@ if(NOT DEFINED _Release_)
 add_definitions(-ggdb -Wno-switch)
 endif()
 
-## forktest
+## main executable file
 add_executable(bkasm
 src/main.c
 src/globals.c
@@ -28,7 +28,7 @@ src/mathexpr.c
 src/generator.c
 )
 
-##target_link_libraries(nonestl curl json-c)
+## debug target
 
 add_custom_target(debug
 COMMAND	gdb ./bkasm
@@ -36,17 +36,23 @@ COMMENT "GDB Debug"
 DEPENDS ./bkasm
 )
 
+## unittest tests one unit
+
 add_custom_target(unittest
 COMMAND	./bkasm ../src/tests/test.asm
 COMMENT "Run Tests"
 DEPENDS ./bkasm
 )
 
+## script unittests
+
 add_custom_target(testscript
 COMMAND	python3 ../src/tests.py
 COMMENT "Run Tests"
 DEPENDS ./bkasm
 )
+
+## valgrind test
 
 add_custom_target(valgrind
 COMMAND	valgrind -s ./bkasm ../src/tests/test.asm
