@@ -39,7 +39,7 @@ void cfg_tree_add_statement(Parser *parser, Program *program)
         program->last->node = *m_statement;
         free(m_statement);
         m_statement = 0;
-        printf("    < OPERATION >: %s code %d\n", program->last->node.op.ident,
+        printf(INDENT "< OPERATION >: %s code %d\n", program->last->node.op.ident,
                program->last->node.op.opcode);
         break;
     case NODE_LABEL:

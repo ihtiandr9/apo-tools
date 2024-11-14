@@ -1,4 +1,5 @@
 build
+python
 Makefile
 *.o
 *.exe

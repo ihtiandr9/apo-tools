@@ -27,9 +27,9 @@ static const Lexema words[] =
         {REG, TOK_REGL, "L", 0, 1},
         {REG, TOK_REGM, "M", 0, 1},
         {REG, TOK_REGSP, "SP", 0, 2},
-        {REG, TOK_REGSP, "HL", 0, 2},
-        {REG, TOK_REGSP, "BC", 0, 2},
-        {REG, TOK_REGSP, "DE", 0, 2},
+        {REG, TOK_REGHL, "HL", 0, 2},
+        {REG, TOK_REGBC, "BC", 0, 2},
+        {REG, TOK_REGDE, "DE", 0, 2},
         {KIND_NONE, TOK_NONE, 0, 0, 0},
 };
 
