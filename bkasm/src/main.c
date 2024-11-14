@@ -10,39 +10,38 @@
 #include <parser.h>
 #include <cfg_tree.h>
 
-static const int default_fd_in = 1;
-static const int default_fd_out = 1;
 extern Program program;
 
 int main(int argc, char *argv[])
 {
-	Lexer m_lexer;
-	Parser m_parser;
+    Lexer m_lexer;
+    Parser m_parser;
 
-    fd_in = default_fd_in;
-    fd_out = default_fd_out;
+    in_file = stdin;
+    out_file = stdout;
 
     if (argc > 1)
     {
-        fd_in = open(argv[1], O_RDONLY);
-    }
-    if (argc > 2)
-    {
-        fd_out = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 511);
+        in_file = fopen(argv[1], "r");
     }
 
-    if (fd_in < 0)
+    if (argc > 2)
+    {
+        out_file = fopen(argv[2], "w");
+    }
+
+    if (!in_file)
     {
         printf("file not exist");
         exit_nicely(-1);
     }
-    if (fd_in < 0)
+    if (!out_file)
     {
         printf("file not create");
         exit_nicely(-1);
     }
 
-    lexer_init(&m_lexer, fd_in);
+    lexer_init(&m_lexer, in_file);
     parser_init(&m_parser);
     program_init(&program);
     parser_parse(&m_parser, &m_lexer, &program);

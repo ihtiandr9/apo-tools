@@ -3,17 +3,19 @@
 #ifndef WIN32
 #include <unistd.h>
 #endif
+#include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #include <cfg_tree.h>
 
-int fd_in;
-int fd_out;
+FILE* in_file;
+FILE* out_file;
 Program program;
 
 void exit_nicely(int errorlevel)
 {
-    close(fd_in);
-    close(fd_out);
+    fclose(in_file);
+    fclose(out_file);
     program_destroy(&program);
     exit(errorlevel);
 }

@@ -195,9 +195,9 @@ static void lexer_skip_until(Lexer *self, unsigned char symbol)
     self->nextTok(self);
 }
 
-int lexer_init(Lexer *lexer, int fd_in)
+int lexer_init(Lexer *lexer, FILE* in_file)
 {
-    lexer->fd_in = fd_in;
+    lexer->in_file = in_file;
     lexer->words = (Lexema *)words;
     lexer->symbols = (Lexema *)symbols;
     lexer->ch = TOK_NONE;
@@ -208,14 +208,14 @@ int lexer_init(Lexer *lexer, int fd_in)
     lexer->skipOne = lexer_skip_one;
     lexer->token.type = TOK_NONE;
     lexer->token.ident = 0;
-    inbuf_init(fd_in);
+    inbuf_init(in_file);
     return 1;
 }
 
-Lexer *lexer_create(int fd_in)
+Lexer *lexer_create(FILE* in_file)
 {
     Lexer *m_lexer = (Lexer *)malloc(sizeof(Lexer));
-    lexer_init(m_lexer, fd_in);
+    lexer_init(m_lexer, in_file);
     return m_lexer;
 }
 

@@ -55,7 +55,7 @@ STRUCT(Lexema)
 STRUCT(Lexer)
 {
   unsigned char ch;
-  int fd_in;
+  FILE *in_file;
   Lexema token;
   Lexema *symbols;
   Lexema *words;
@@ -67,7 +67,7 @@ STRUCT(Lexer)
 };
 
 // exports
-Lexer *lexer_create(int fd_in);
-int lexer_init(Lexer *lexer, int fd_in);
+Lexer *lexer_create(FILE *in_file);
+int lexer_init(Lexer *lexer, FILE *in_file);
 void lexer_free(Lexer *self);
 #endif

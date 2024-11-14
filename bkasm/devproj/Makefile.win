@@ -4,11 +4,11 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = ../src/lexer.o ../src/main.o ../src/errors.o ../src/globals.o ../src/parser.o ../src/symbols.o ../src/inbuf.o ../src/nodes.o ../src/cfg_tree.o ../src/mathexpr.o ../src/generator.o
-LINKOBJ  = ../src/lexer.o ../src/main.o ../src/errors.o ../src/globals.o ../src/parser.o ../src/symbols.o ../src/inbuf.o ../src/nodes.o ../src/cfg_tree.o ../src/mathexpr.o ../src/generator.o
-LIBS     = -L"C:/Program Files/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -m32 -pg -g3
-INCS     = -I"C:/Program Files/Dev-Cpp/MinGW64/include" -I"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"../src"
-CXXINCS  = -I"C:/Program Files/Dev-Cpp/MinGW64/include" -I"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++" -I"../src"
+OBJ      = ../devproj/lexer.o ../devproj/main.o ../devproj/errors.o ../devproj/globals.o ../devproj/parser.o ../devproj/symbols.o ../devproj/inbuf.o ../devproj/nodes.o ../devproj/cfg_tree.o ../devproj/mathexpr.o ../devproj/generator.o
+LINKOBJ  = ../devproj/lexer.o ../devproj/main.o ../devproj/errors.o ../devproj/globals.o ../devproj/parser.o ../devproj/symbols.o ../devproj/inbuf.o ../devproj/nodes.o ../devproj/cfg_tree.o ../devproj/mathexpr.o ../devproj/generator.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -m32 -pg -g3
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"../src"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++" -I"../src"
 BIN      = bkasm.exe
 CXXFLAGS = $(CXXINCS) -m32 -pg -g3
 CFLAGS   = $(INCS) -m32 -pg -g3
@@ -24,35 +24,35 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CC) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-../src/lexer.o: ../src/lexer.c
-	$(CC) -c ../src/lexer.c -o ../src/lexer.o $(CFLAGS)
+../devproj/lexer.o: ../src/lexer.c
+	$(CC) -c ../src/lexer.c -o ../devproj/lexer.o $(CFLAGS)
 
-../src/main.o: ../src/main.c
-	$(CC) -c ../src/main.c -o ../src/main.o $(CFLAGS)
+../devproj/main.o: ../src/main.c
+	$(CC) -c ../src/main.c -o ../devproj/main.o $(CFLAGS)
 
-../src/errors.o: ../src/errors.c
-	$(CC) -c ../src/errors.c -o ../src/errors.o $(CFLAGS)
+../devproj/errors.o: ../src/errors.c
+	$(CC) -c ../src/errors.c -o ../devproj/errors.o $(CFLAGS)
 
-../src/globals.o: ../src/globals.c
-	$(CC) -c ../src/globals.c -o ../src/globals.o $(CFLAGS)
+../devproj/globals.o: ../src/globals.c
+	$(CC) -c ../src/globals.c -o ../devproj/globals.o $(CFLAGS)
 
-../src/parser.o: ../src/parser.c
-	$(CC) -c ../src/parser.c -o ../src/parser.o $(CFLAGS)
+../devproj/parser.o: ../src/parser.c
+	$(CC) -c ../src/parser.c -o ../devproj/parser.o $(CFLAGS)
 
-../src/symbols.o: ../src/symbols.c
-	$(CC) -c ../src/symbols.c -o ../src/symbols.o $(CFLAGS)
+../devproj/symbols.o: ../src/symbols.c
+	$(CC) -c ../src/symbols.c -o ../devproj/symbols.o $(CFLAGS)
 
-../src/inbuf.o: ../src/inbuf.c
-	$(CC) -c ../src/inbuf.c -o ../src/inbuf.o $(CFLAGS)
+../devproj/inbuf.o: ../src/inbuf.c
+	$(CC) -c ../src/inbuf.c -o ../devproj/inbuf.o $(CFLAGS)
 
-../src/nodes.o: ../src/nodes.c
-	$(CC) -c ../src/nodes.c -o ../src/nodes.o $(CFLAGS)
+../devproj/nodes.o: ../src/nodes.c
+	$(CC) -c ../src/nodes.c -o ../devproj/nodes.o $(CFLAGS)
 
-../src/cfg_tree.o: ../src/cfg_tree.c
-	$(CC) -c ../src/cfg_tree.c -o ../src/cfg_tree.o $(CFLAGS)
+../devproj/cfg_tree.o: ../src/cfg_tree.c
+	$(CC) -c ../src/cfg_tree.c -o ../devproj/cfg_tree.o $(CFLAGS)
 
-../src/mathexpr.o: ../src/mathexpr.c
-	$(CC) -c ../src/mathexpr.c -o ../src/mathexpr.o $(CFLAGS)
+../devproj/mathexpr.o: ../src/mathexpr.c
+	$(CC) -c ../src/mathexpr.c -o ../devproj/mathexpr.o $(CFLAGS)
 
-../src/generator.o: ../src/generator.c
-	$(CC) -c ../src/generator.c -o ../src/generator.o $(CFLAGS)
+../devproj/generator.o: ../src/generator.c
+	$(CC) -c ../src/generator.c -o ../devproj/generator.o $(CFLAGS)

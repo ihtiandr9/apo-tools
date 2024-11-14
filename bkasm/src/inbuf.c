@@ -11,9 +11,9 @@ static unsigned char inbuf[512];
 static unsigned char currstr[512];
 static int bufsize;
 static int cursym;
-static int fd;
+static FILE *in_file;
 
-char* inbuf_currstr()
+char *inbuf_currstr()
 {
     return (char *)currstr;
 }
@@ -36,7 +36,7 @@ unsigned char inbuf_next_char()
         chr = inbuf[cursym++];
     else
     {
-        bufsize = read(fd, inbuf, 512);
+        bufsize = fread(inbuf, 512, 1, in_file);
         cursym = 0;
         if (bufsize)
             chr = inbuf[cursym++];
@@ -48,10 +48,10 @@ unsigned char inbuf_next_char()
     return chr;
 }
 
-void inbuf_init(int _fd)
+void inbuf_init(FILE *_in_file)
 {
-    fd = _fd;
-    bufsize = read(fd, inbuf, 512);
+    in_file = _in_file;
+    bufsize = fread(inbuf, 1, 512, in_file);
     cursym = 0;
     currstr[0] = 0;
 }
