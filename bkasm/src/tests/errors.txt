@@ -1,0 +1,22 @@
+mov a,b               ;Error: Unexpected symbol: "m" (may be in lowercase)
+START:   JMP EXIT1    ;None
+START:   JMP EXIT1, 8 ;Error: Unexpected symbol: "," (may be in lowercase)
+START:   INR A        ;None
+START:   INR B        ;None
+START:   INR C        ;None
+START:   INR D        ;None
+START:   INR E        ;None
+START:   INR H        ;None
+START:   INR L        ;None
+START:   INR M        ;None
+START:   DCR A        ;None
+START:   DCR B        ;None
+START:   DCR C        ;None
+START:   DCR D        ;None
+START:   DCR E        ;None
+START:   DCR H        ;None
+START:   DCR L        ;None
+START:   DCR M        ;None
+START:   INX B        ;None
+START:   INX D        ;None
+START:   INX H        ;None

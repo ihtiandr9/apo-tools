@@ -17,7 +17,7 @@ class TestUM(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_1pipe(self):
+    def test_apipe(self):
         if(self.osname == "nt"):
             cmd_str = ['C:\\windows\\system32\\cmd.exe', '/c', 'dir']
             enc = 'cp866'
@@ -39,32 +39,53 @@ class TestUM(unittest.TestCase):
         print('\ntest_pipes')
     
     def test_executeProgram(self):
-        log_path = abspath(join(dirname(__file__), "log.txt"))
-        log_file = open('log.txt', 'w')
+        err_count = 0
+        log_path = abspath(join(dirname(__file__), "../build/log.txt"))
+        log_file = open(log_path, 'w')
+        err_path = abspath(join(dirname(__file__), "../src/tests/errors.txt"))
+        err_file = open(err_path, 'r')
+        errors = err_file.readlines()
+        err_file.close()
+
         if(self.osname == "nt"):
             suffix = ".exe"
         else:
             suffix = ""
 
-        path = abspath(join(dirname(__file__), "../build/bkasm" + suffix))
-        testfile = abspath(join(dirname(__file__), "../src/tests/test.asm"))
-        process = subprocess.Popen([path, testfile],
-                    universal_newlines = True,
-                    stderr = subprocess.PIPE,
-                    stdout = log_file)
+        exe_path = abspath(join(dirname(__file__), "../build/bkasm" + suffix))
+        for num in range(26):
+            log_file.write('line: ' + str(num + 1) + '\n')
+            log_file.flush()
+            process = subprocess.Popen([exe_path],
+                universal_newlines = True,
+                stdin = subprocess.PIPE,
+                stdout = log_file,
+                stderr = subprocess.PIPE)
+            process.stdin.write(errors[num])    
+            stdout, stderr = process.communicate()
+            expected_error = errors[num].replace('\n','')
+            semicolon_pos = expected_error.find(';')
+            expected_error = expected_error[semicolon_pos + 1:]
+            if(expected_error == 'None'):
+                expected_error = None
 
-        stdout, stderr = process.communicate()
+            err_msg = None;
+            if stderr:
+                err_stream = stderr.split('\n')
+                err_msg = err_stream[1]
 
+            try:
+                self.assertEqual(err_msg,
+                    expected_error,
+                    None)
+                log_file.write("Pass\n-----------\n")
+            except:
+                err_count = err_count + 1
+                log_file.write('Unexpexted msg!!!Expect: ' + str(expected_error) + '\n')
+                log_file.write('    Got: ' + str(err_msg) + '\n-----------\n')
+        
         log_file.close()
-
-        if stderr:
-            errstr = stderr.split('\n')
-##            print(errstr[1])
-            self.assertEqual(errstr[1],
-                "Error: Unexpected symbol: \",\" (may be in lowercase)",
-                "Is errors!! None expected")
-        print('\ntest.asm')
-
+        self.assertEqual(0, err_count, "Errors: " + str(err_count))
 
 if __name__ == '__main__':
     unittest.main()
