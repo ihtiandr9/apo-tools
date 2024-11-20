@@ -6,7 +6,6 @@
 #include <unistd.h>
 #endif
 #include <cfg_tree.h>
-#include <parser.h>
 
 CFG_Tree *cfg_tree_create()
 {
@@ -17,13 +16,11 @@ CFG_Tree *cfg_tree_create()
     return tree;
 }
 
-void cfg_tree_add_statement(Parser *parser, Program *program)
+void cfg_tree_add_statement(Node *statement, Program *program)
 {
-    Node *m_statement = (Node *)parser->statement;
-    parser->statement = 0;
-    if (!m_statement)
+    if (!statement)
         return;
-    switch (m_statement->type)
+    switch (statement->type)
     {
     case NODE_INSTRUCTION:
         if (program->last)
@@ -36,9 +33,7 @@ void cfg_tree_add_statement(Parser *parser, Program *program)
             program->first = cfg_tree_create();
             program->last = program->first;
         }
-        program->last->node = *m_statement;
-        free(m_statement);
-        m_statement = 0;
+        program->last->node = *statement;
         printf(INDENT "< OPERATION >: %s code %d\n", program->last->node.op.ident,
                program->last->node.op.opcode);
         break;
@@ -53,16 +48,13 @@ void cfg_tree_add_statement(Parser *parser, Program *program)
             program->first = cfg_tree_create();
             program->last = program->first;
         }
-        program->last->node = *m_statement;
-        free(m_statement);
-        m_statement = 0;
+        program->last->node = *statement;
         printf("< LABEL >: %s\n", program->last->node.label.ident);
         break;
     default:
         assert(0);
         return;
     }
-    assert(!m_statement);
 }
 
 Program *program_create()

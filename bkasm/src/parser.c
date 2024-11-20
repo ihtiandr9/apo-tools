@@ -56,7 +56,7 @@ static void parse_comment(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             break;
         default:
-            fprintf(stderr,"In string: %s\n", inbuf_currstr());
+            fprintf(stderr, "In string: %s\n", inbuf_currstr());
             throw_error(E_UNEXPSYM, m_token.ident);
             lexer->skipUntil(lexer, 10);
         }
@@ -267,7 +267,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             break;
         case L_EOF:
-            printf( INDENT "< EOF >\n");
+            printf(INDENT "< EOF >\n");
             lexer->skipOne(lexer);
             break;
         default:
@@ -296,7 +296,9 @@ void parser_parse(Parser *self, Lexer *lexer, Program *prog)
     while (lexer->nextTok(lexer))
     {
         parse_statement(self, lexer);
-        cfg_tree_add_statement(self, prog);
+        cfg_tree_add_statement((Node *) self->statement, prog);
+        free(self->statement);
+        self->statement = 0;
         lexer->skipWhile(lexer, ' ');
     }
 }

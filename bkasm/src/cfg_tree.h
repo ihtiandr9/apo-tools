@@ -40,7 +40,7 @@ STRUCT(Program)
     CFG_Tree *last;
 };
 
-void cfg_tree_add_statement(Parser* parser, Program *prog);
+void cfg_tree_add_statement(Node *statement, Program *program);
 Program* program_create();
 void program_init(Program* prg);
 void program_free(Program* prg);
