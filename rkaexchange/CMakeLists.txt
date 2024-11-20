@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 project(rkaexchange)
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
@@ -11,7 +11,7 @@ link_directories(/usr/local/lib)
 
 add_definitions(-g)
 
-## forktest
+# main executable target
 add_executable(rkaexchange
     src/main.c
     src/edb.c
@@ -20,23 +20,26 @@ add_executable(rkaexchange
     src/globals.c
 )
 
-add_custom_target(test
+add_custom_target(run_tests
     COMMENT "Run Tests"
 )
 
 add_custom_target(testpack
     COMMAND ./rkaexchange pack ../src/test.asm
     COMMENT "Test pack"
+    DEPENDS rkaexchange
 )
 
 add_custom_target(testunpack
     COMMAND ./rkaexchange unpack ../src/test.rka
     COMMENT "Test unpack"
+    DEPENDS rkaexchange
 )
 
 add_custom_target(testinfileerror
     COMMAND ./rkaexchange unpack ../src/errtest.rka || (exit 0)
     COMMENT "Test infile error"
+    DEPENDS rkaexchange
 )
 
 add_custom_target(testoutfileerror
@@ -44,9 +47,10 @@ add_custom_target(testoutfileerror
     COMMAND ./rkaexchange unpack ../src/test.rka ../src/errtest.asm || (exit 0)
     COMMAND chmod 666 ../src/errtest.asm
     COMMENT "Test outfile error"
+    DEPENDS rkaexchange
 )
 
-add_dependencies(test
+add_dependencies(run_tests
     rkaexchange
     testpack
     testunpack
@@ -54,6 +58,6 @@ add_dependencies(test
     testoutfileerror
 )
 
-##target_link_libraries(nonestl curl json-c)
+##  target_link_libraries(nonestl curl json-c)
 
 install(TARGETS rkaexchange  DESTINATION bin)

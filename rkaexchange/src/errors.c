@@ -28,6 +28,10 @@ static void default_error_dispatcher(Error *e)
         fprintf(stderr, "File not exist: %s\n", (char*)e->data);
         exit_nicely(E_NOEXIST);
         break;
+    case E_PIPE:
+        fprintf(stderr, "%s\n", (char*)e->data);
+        exit_nicely(E_NOEXIST);
+        break;
     case E_UNDEFERR:
     default:
         fprintf(stderr, "Unknown error\n");

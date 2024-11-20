@@ -6,6 +6,8 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <unistd.h>
+#include <errors.h>
+#include <errno.h>
 
 wchar_t getUnicodeSymbol(uint8_t chr)
 {
@@ -45,12 +47,14 @@ char charCodeAt(uint8_t chr)
 
 static int encode(int fd_in, int fd_out)
 {
+    static unsigned char const utfRu = 0xd0;
     unsigned char ch, res;
+    int readed;
     assert(fd_in > 0 && fd_out > 0);
-    for (int readed = read(fd_in, &ch, 1); readed > 0; readed = read(fd_in, &ch, 1))
+    for (readed = read(fd_in, &ch, 1); readed > 0; readed = read(fd_in, &ch, 1))
     {
         assert(readed > 0);
-        if (0xd0 == ch)
+        if (utfRu == ch)
         {
             continue;
         }
@@ -125,14 +129,23 @@ static int unpack(int fd_in, int fd_out)
 
 static int pack(int fd_in, int fd_out)
 {
-    int fd_tmp = open("./tmpfile", O_CREAT | O_RDWR, 0655);
+    int fd_tmp = open("./tmpfile", O_CREAT | O_RDWR, 0656);
+    int readed;
+    long f_pos;
     encode(fd_in, fd_tmp);
-    lseek(fd_tmp, 0, SEEK_SET);
+    f_pos = lseek(fd_tmp, 0, SEEK_SET);
+    if(f_pos == -1)
+        fprintf(stderr,"Error %d: %s", errno, strerror(errno));
+
     char buf[512];
-    for(int readed = read(fd_tmp, buf, 512); readed; readed = read(fd_tmp, buf, 512))
+    for(readed = read(fd_tmp, buf, 512); readed > 0; readed = read(fd_tmp, buf, 512))
     {
         write(fd_out, buf, readed);
     }
+    if (readed == -1)
+        fprintf(stderr,"Error %d: %s", errno, strerror(errno));
+    close(fd_tmp);
+    remove("./tmpfile");
     return 0;
 }
 

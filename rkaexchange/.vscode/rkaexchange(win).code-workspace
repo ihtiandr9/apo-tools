@@ -1,0 +1,69 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"launch": {
+		"version": "0.2.0",
+    "configurations": [
+        {
+            "miDebuggerPath": "C:\\Program Files (x86)\\Dev-Cpp\\MinGW64\\bin\\gdb.exe",
+            "name": "(gdb-win) pack",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/rkaexchange.exe",
+            "args": [
+                "pack",
+                "test.asm"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/src",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Включить автоматическое форматирование для gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Задать для варианта приложения дизассемблирования значение Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "miDebuggerPath": "C:\\Program Files (x86)\\Dev-Cpp\\MinGW64\\bin\\gdb.exe",
+			"name": "(gdb-win) unpack",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/rkaexchange.exe",
+            "args": [
+                "unpack",
+                "test.rka",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/src",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Включить автоматическое форматирование для gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Задать для варианта приложения дизассемблирования значение Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+
+    ]
+	}
+}
