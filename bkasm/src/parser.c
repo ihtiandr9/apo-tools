@@ -62,6 +62,7 @@ static void parse_comment(Parser *self, Lexer *lexer)
         }
         break;
     default:
+        fprintf(stderr, "In string: %s\n", inbuf_currstr());
         throw_error(E_UNEXPSYM, m_token.ident);
         lexer->skipUntil(lexer, 10);
         break;
@@ -223,6 +224,10 @@ static void parse_op(Parser *self, Lexer *lexer)
         break;
     // one operand mnemonics
     case TOK_JMP:
+    case TOK_INR:
+    case TOK_DCR:
+    case TOK_INX:
+    case TOK_DCX:
         op = (Instruction *)expr;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -233,6 +238,7 @@ static void parse_op(Parser *self, Lexer *lexer)
     case TOK_SEMICOLON: // no operation pass-throw comment
         break;
     default:
+        fprintf(stderr, "In string: %s\n", inbuf_currstr());
         throw_error(E_UNKKEYWORD, op_token.ident);
         lexer->skipUntil(lexer, 10);
         break;

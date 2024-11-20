@@ -34,7 +34,7 @@ class TestUM(unittest.TestCase):
             for i in output:
                 print( i.decode(encoding = enc).replace("\r", "").replace("\n", ""))
 
-        process.kill()
+        process.wait()
         self.assertEqual(0, 0)
         print('\ntest_pipes')
     

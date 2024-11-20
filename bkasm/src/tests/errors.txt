@@ -20,3 +20,8 @@ START:   DCR M        ;None
 START:   INX B        ;None
 START:   INX D        ;None
 START:   INX H        ;None
+START:   INX SP       ;None
+START:   DCX B        ;None
+START:   DCX D        ;None
+START:   DCX H        ;None
+START:   DCX SP       ;None
