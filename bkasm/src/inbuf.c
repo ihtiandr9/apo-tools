@@ -53,5 +53,5 @@ void inbuf_init(FILE *_in_file)
     in_file = _in_file;
     bufsize = fread(inbuf, 1, 512, in_file);
     cursym = 0;
-    currstr[0] = 0;
+    inbuf_markcurrstr();
 }

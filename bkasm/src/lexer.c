@@ -147,6 +147,7 @@ static int lexer_next_tok(Lexer *self)
             throw_error(E_UNKIDENT, ident);
             exit_nicely(E_UNKIDENT);
         }
+        fprintf(stderr, "In string: %s\n", inbuf_currstr());
         throw_error(E_UNEXPSYM, &m_ch);
         self->token.kind = KIND_NONE;
         self->token.type = TOK_NONE;

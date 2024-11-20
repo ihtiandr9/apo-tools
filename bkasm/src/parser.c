@@ -277,6 +277,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             break;
         default:
+            fprintf(stderr, "In string: %s\n", inbuf_currstr());
             throw_error(E_UNEXPSYM, m_token.ident);
             exit_nicely(E_UNEXPSYM);
         }
@@ -291,8 +292,9 @@ static void parse_statement(Parser *self, Lexer *lexer)
         lexer->skipOne(lexer);
         break;
     default:
-        assert(0);
+        fprintf(stderr, "In string: %s\n", inbuf_currstr());
         throw_error(E_UNEXPTOKEN, m_token.ident);
+        assert(0);
         break;
     }
 }
