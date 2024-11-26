@@ -41,9 +41,16 @@ union Node
     Label label;
 };
 
+STRUCT(NodeList)
+{
+    Node node;
+    NodeList* next;
+};
+
 Node *createLabel(const char *ident);
 void clearLabel(Label *_label);
 Node *createInstruction(const char *ident, ExprValue opcode);
 void clearInstruction(Instruction *_instr);
 void clearNode(Node *node);
+void nodelist_destroy(NodeList* nodelist);
 #endif

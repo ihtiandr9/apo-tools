@@ -28,22 +28,16 @@ TODO define it
 #include <parser.h>
 #include <nodes.h>
 
-STRUCT(CFG_Tree)
+
+STRUCT(Gfg_Tree)
 {
-    Node node;
-    CFG_Tree* next;
+    NodeList *first;
+    NodeList *last;
 };
 
-STRUCT(Program)
-{
-    CFG_Tree *first;
-    CFG_Tree *last;
-};
-
-void cfg_tree_add_statement(Node *statement, Program *program);
-Program* program_create();
-void program_init(Program* prg);
-void program_free(Program* prg);
-void program_destroy(Program* prg);
-void destroyCFGTree(CFG_Tree* tree);
+void cfg_tree_add_statement(Node *statement, Gfg_Tree *cfgtree);
+Gfg_Tree* cfgtree_create();
+void cfgtree_init(Gfg_Tree* cfgtree);
+void cfgtree_free(Gfg_Tree* cfgtree);
+void cfgtree_destroy(Gfg_Tree* cfgtree);
 #endif

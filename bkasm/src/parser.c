@@ -300,7 +300,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
     }
 }
 
-void parser_parse(Parser *self, Lexer *lexer, Program *prog)
+void parser_parse(Parser *self, Lexer *lexer, Gfg_Tree *prog)
 {
     while (lexer->nextTok(lexer))
     {

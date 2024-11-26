@@ -7,49 +7,49 @@
 #endif
 #include <cfg_tree.h>
 
-CFG_Tree *cfg_tree_create()
+NodeList *cfg_tree_create()
 {
-    CFG_Tree *tree;
-    tree = (CFG_Tree *)malloc(sizeof(CFG_Tree));
-    tree->next = 0;
-    tree->node.type = NODE_EMPTY;
-    return tree;
+    NodeList *nodelist;
+    nodelist = (NodeList *)malloc(sizeof(NodeList));
+    nodelist->next = 0;
+    nodelist->node.type = NODE_EMPTY;
+    return nodelist;
 }
 
-void cfg_tree_add_statement(Node *statement, Program *program)
+void cfg_tree_add_statement(Node *statement, Gfg_Tree *cfgtree)
 {
     if (!statement)
         return;
     switch (statement->type)
     {
     case NODE_INSTRUCTION:
-        if (program->last)
+        if (cfgtree->last)
         {
-            program->last->next = cfg_tree_create();
-            program->last = program->last->next;
+            cfgtree->last->next = cfg_tree_create();
+            cfgtree->last = cfgtree->last->next;
         }
         else
         {
-            program->first = cfg_tree_create();
-            program->last = program->first;
+            cfgtree->first = cfg_tree_create();
+            cfgtree->last = cfgtree->first;
         }
-        program->last->node = *statement;
-        printf(INDENT "< OPERATION >: %s code %d\n", program->last->node.op.ident,
-               program->last->node.op.opcode);
+        cfgtree->last->node = *statement;
+        printf(INDENT "< OPERATION >: %s code %d\n", cfgtree->last->node.op.ident,
+               cfgtree->last->node.op.opcode);
         break;
     case NODE_LABEL:
-        if (program->last)
+        if (cfgtree->last)
         {
-            program->last->next = cfg_tree_create();
-            program->last = program->last->next;
+            cfgtree->last->next = cfg_tree_create();
+            cfgtree->last = cfgtree->last->next;
         }
         else
         {
-            program->first = cfg_tree_create();
-            program->last = program->first;
+            cfgtree->first = cfg_tree_create();
+            cfgtree->last = cfgtree->first;
         }
-        program->last->node = *statement;
-        printf("< LABEL >: %s\n", program->last->node.label.ident);
+        cfgtree->last->node = *statement;
+        printf("< LABEL >: %s\n", cfgtree->last->node.label.ident);
         break;
     default:
         assert(0);
@@ -57,49 +57,37 @@ void cfg_tree_add_statement(Node *statement, Program *program)
     }
 }
 
-Program *program_create()
+Gfg_Tree *cfgtree_create()
 {
-    Program *prg = (Program *)malloc(sizeof(Program));
-    program_init(prg);
-    return prg;
+    Gfg_Tree *cfgtree = (Gfg_Tree *)malloc(sizeof(Gfg_Tree));
+    cfgtree_init(cfgtree);
+    return cfgtree;
 }
 
-void program_init(Program* prg)
+void cfgtree_init(Gfg_Tree* cfgtree)
 {
-    prg->first = NULL;
-    prg->last = NULL;
+    cfgtree->first = NULL;
+    cfgtree->last = NULL;
 }
 
-void program_free(Program *prg)
+void cfgtree_free(Gfg_Tree *cfgtree)
 {
-    if (prg)
+    if (cfgtree)
     {
-        program_destroy(prg);
-        free(prg);
+        cfgtree_destroy(cfgtree);
+        free(cfgtree);
     }
 }
 
-void program_destroy(Program *prg)
+void cfgtree_destroy(Gfg_Tree *cfgtree)
 {
-    if (prg)
+    if (cfgtree)
     {
-        if (prg->first)
+        if (cfgtree->first)
         {
-            destroyCFGTree(prg->first);
+            nodelist_destroy(cfgtree->first);
         }
-        prg->first = 0;
-        prg->last = 0;
-    }
-}
-
-void destroyCFGTree(CFG_Tree *tree)
-{
-    CFG_Tree *next = 0;
-    while (tree)
-    {
-        next = tree->next;
-        clearNode(&tree->node);
-        free(tree);
-        tree = next;
+        cfgtree->first = 0;
+        cfgtree->last = 0;
     }
 }

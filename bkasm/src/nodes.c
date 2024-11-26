@@ -82,3 +82,14 @@ void clearNode(Node *node)
                 break;
         }
 }
+void nodelist_destroy(NodeList *nodelist)
+{
+    NodeList *next = 0;
+    while (nodelist)
+    {
+        next = nodelist->next;
+        clearNode(&nodelist->node);
+        free(nodelist);
+        nodelist = next;
+    }
+}

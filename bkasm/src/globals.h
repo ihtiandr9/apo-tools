@@ -6,8 +6,8 @@
 #define STRUCT(XXX)         \
 	typedef struct XXX XXX; \
 	struct XXX
-STRUCT(CFG_Tree);
-STRUCT(Program);
+STRUCT(NodeList);
+STRUCT(Gfg_Tree);
 
 #include <stdio.h>
 extern FILE *in_file;

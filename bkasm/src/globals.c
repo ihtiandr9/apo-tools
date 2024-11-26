@@ -10,12 +10,12 @@
 
 FILE* in_file;
 FILE* out_file;
-Program program;
+Gfg_Tree program;
 
 void exit_nicely(int errorlevel)
 {
     fclose(in_file);
     fclose(out_file);
-    program_destroy(&program);
+    cfgtree_destroy(&program);
     exit(errorlevel);
 }

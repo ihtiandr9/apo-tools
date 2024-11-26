@@ -22,5 +22,5 @@ STRUCT(Parser)
 Parser* parser_create(void);
 int parser_init(Parser* parser);
 void parser_free(Parser* parser);
-void parser_parse(Parser *self, Lexer *lexer, Program *prog);
+void parser_parse(Parser *self, Lexer *lexer, Gfg_Tree *prog);
 #endif

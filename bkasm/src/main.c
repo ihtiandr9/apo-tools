@@ -10,7 +10,7 @@
 #include <parser.h>
 #include <cfg_tree.h>
 
-extern Program program;
+extern Gfg_Tree program;
 
 int main(int argc, char *argv[])
 {
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 
     lexer_init(&m_lexer, in_file);
     parser_init(&m_parser);
-    program_init(&program);
+    cfgtree_init(&program);
     parser_parse(&m_parser, &m_lexer, &program);
 
     exit_nicely(0);
