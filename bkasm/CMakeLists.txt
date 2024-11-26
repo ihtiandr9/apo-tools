@@ -25,6 +25,7 @@ add_executable(bkasm
     src/cfg_tree.c
     src/nodes.c
     src/mathexpr.c
+    src/bkints.c
     src/generator.c
 )
 

@@ -7,6 +7,7 @@
 #include <symbols.h>
 #include <inbuf.h>
 #include <lexer.h>
+#include <bkints.h>
 
 // imports
 extern const char eof_sym;
@@ -95,6 +96,7 @@ static int lexer_next_tok(Lexer *self)
         {
             char *ident = 0;
             int len = 0;
+            char *endbuf;
 
             while (is_digit(m_ch))
             {
@@ -107,7 +109,7 @@ static int lexer_next_tok(Lexer *self)
             self->token.ident = 0;
             self->token.type = TOK_NUM;
             self->token.kind = CONST;
-            self->token.value = atoi(ident);
+            self->token.value = strtol(ident, &endbuf, radix(m_ch));
             free(ident);
             continue;
         }
