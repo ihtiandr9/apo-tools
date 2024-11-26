@@ -14,6 +14,7 @@ extern const char eol_sym;
 
 static const Lexema words[] =
     {
+        {OP, TOK_ORG, "ORG", 0, 3},
         {OP, TOK_MOV, "MOV", 0, 3},
         {OP, TOK_MVI, "MVI", 0, 3},
         {OP, TOK_LXI, "LXI", 0, 3},
@@ -200,7 +201,7 @@ static void lexer_skip_until(Lexer *self, unsigned char symbol)
     self->nextTok(self);
 }
 
-int lexer_init(Lexer *lexer, FILE* in_file)
+int lexer_init(Lexer *lexer, FILE *in_file)
 {
     lexer->in_file = in_file;
     lexer->words = (Lexema *)words;
@@ -217,7 +218,7 @@ int lexer_init(Lexer *lexer, FILE* in_file)
     return 1;
 }
 
-Lexer *lexer_create(FILE* in_file)
+Lexer *lexer_create(FILE *in_file)
 {
     Lexer *m_lexer = (Lexer *)malloc(sizeof(Lexer));
     lexer_init(m_lexer, in_file);

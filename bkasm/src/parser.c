@@ -228,6 +228,7 @@ static void parse_op(Parser *self, Lexer *lexer)
     case TOK_DCR:
     case TOK_INX:
     case TOK_DCX:
+    case TOK_ORG:
         op = (Instruction *)expr;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -304,7 +305,7 @@ void parser_parse(Parser *self, Lexer *lexer, Program *prog)
     while (lexer->nextTok(lexer))
     {
         parse_statement(self, lexer);
-        cfg_tree_add_statement((Node *) self->statement, prog);
+        cfg_tree_add_statement((Node *)self->statement, prog);
         free(self->statement);
         self->statement = 0;
         lexer->skipWhile(lexer, ' ');

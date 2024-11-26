@@ -1,10 +1,10 @@
 ; ОПИСАНИЕ ПРОГРАММЫ
-.ORG 1100H
+ORG 1100H
   JMP START
 
 ;             КОНСТАНТЫ И СТРОКИ
 ENDL: 
-	.DB 13, 10, 0
+	DB 13, 10, 0
 
 ;             НАЧАЛО ГЛАВНОЙ ФУНКЦИИ
 
@@ -50,13 +50,13 @@ WAIT1:
 DISCARD:      ; НАЧАЛО НЕИНИЦИАЛИЗИРОАВННОЙ ПАМЯТИ
 
 ;             КОНСТАНТЫ И ПОДПРОГРАММЫ МОНИТОРА
-PUTC:   .EQU 0F809H
-PUTS:   .EQU 0F818H
-WTCHR:  .EQU 0F803H
-NWTCHR: .EQU 0F81BH
-MONIT:  .EQU 0F875H
-PRHEX:  .EQU 0F815H
+PUTC:   EQU 0F809H
+PUTS:   EQU 0F818H
+WTCHR:  EQU 0F803H
+NWTCHR: EQU 0F81BH
+MONIT:  EQU 0F875H
+PRHEX:  EQU 0F815H
 ;             ПОРТЫ
-TIMER:  .EQU 0EC00H
-.END
+TIMER:  EQU 0EC00H
+END
 ;                  КОНЕЦ ПРОГРАММЫ
