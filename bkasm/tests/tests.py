@@ -42,7 +42,7 @@ class TestUM(unittest.TestCase):
         err_count = 0
         log_path = abspath(join(dirname(__file__), "../build/log.txt"))
         log_file = open(log_path, 'w')
-        err_path = abspath(join(dirname(__file__), "../src/tests/errors.txt"))
+        err_path = abspath(join(dirname(__file__), "../tests/errors.txt"))
         err_file = open(err_path, 'r')
         errors = err_file.readlines()
         err_file.close()

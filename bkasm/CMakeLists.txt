@@ -40,7 +40,7 @@ add_custom_target(debug
 ## unittest tests one unit
 
 add_custom_target(unittest
-    COMMAND	./bkasm ../src/tests/test.asm
+    COMMAND	./bkasm ../tests/test.asm
     COMMENT "Run Test"
     DEPENDS ./bkasm
 )
@@ -48,7 +48,7 @@ add_custom_target(unittest
 ## script unittests
 
 add_custom_target(run_tests
-    COMMAND	../src/tests/python/bin/python3 ../src/tests.py
+    COMMAND	../tests/python/bin/python3 ../tests/tests.py
     COMMENT "Run Tests"
     DEPENDS ./bkasm
 )
@@ -56,7 +56,7 @@ add_custom_target(run_tests
 ## valgrind test
 
 add_custom_target(valgrind
-    COMMAND	valgrind -s ./bkasm ../src/tests/test.asm
+    COMMAND	valgrind -s ./bkasm ../tests/test.asm
     COMMENT "Run Memory tests"
     DEPENDS ./bkasm
 )
