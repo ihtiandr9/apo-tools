@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 // statics
-const char eof_sym = 0xFF;
-const char eol_sym = 0x0A;
+const unsigned char eof_sym = 0xFF;
+const unsigned char eol_sym = 0x0A;
 static const char digits[] = "0123456789";
 static const char alfas[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
