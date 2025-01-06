@@ -6,6 +6,7 @@
 #define STRUCT(XXX)         \
 	typedef struct XXX XXX; \
 	struct XXX
+
 STRUCT(NodeList);
 STRUCT(Gfg_Tree);
 
