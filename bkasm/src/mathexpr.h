@@ -26,13 +26,29 @@ STRUCT(ExprOp)
     void (*setrparam)(Expr *self, Expr *val);
 };
 
+STRUCT(MathExpr)
+{
+    Expr *lparam;
+    Expr *rparam;
+    ExprValue opcode;
+};
+
+STRUCT(Variable)
+{
+    ExprValue dirty;
+    ExprValue *ref;
+};
+
 STRUCT(Expr)
 {
     eExprType type;
-    ExprValue value;
-    char* ident;
+    char *ident;
     ExprOp op;
-    void *expr_private;
+    union
+    {
+        MathExpr mathExpr;
+        ExprValue value;
+    } data;
 };
 
 Expr *createConst(ExprValue num);
