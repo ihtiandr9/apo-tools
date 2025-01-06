@@ -23,13 +23,13 @@ OverrideOutputName=bkasm.exe
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
-CommandLine=..\src\tests\test.asm
+CommandLine=..\tests\test.asm
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=5
 CompilerSettings=0000000100000000101000000
-UnitCount=19
+UnitCount=21
 
 [VersionInfo]
 Major=1
@@ -232,6 +232,26 @@ BuildCmd=
 
 [Unit19]
 FileName=..\src\generator.c
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit20]
+FileName=..\src\bkints.c
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit21]
+FileName=..\src\bkints.h
 CompileCpp=0
 Folder=
 Compile=1

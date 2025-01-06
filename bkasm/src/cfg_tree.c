@@ -3,7 +3,11 @@
 #include <stdio.h>
 #include <assert.h>
 #ifndef WIN32
+#ifndef __MSDOS__
+#ifndef _Windows
 #include <unistd.h>
+#endif
+#endif
 #endif
 #include <cfg_tree.h>
 

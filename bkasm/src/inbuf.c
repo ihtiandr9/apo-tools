@@ -4,7 +4,11 @@
 #include <fcntl.h>
 #include <assert.h>
 #ifndef WIN32
+#ifndef _Windows
+#ifndef __MSDOS__
 #include <unistd.h>
+#endif
+#endif
 #endif
 
 static unsigned char inbuf[512];
