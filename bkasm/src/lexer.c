@@ -64,6 +64,7 @@ static int lexer_next_tok(Lexer *self)
     self->token.value = 0;
     self->token.len = 0;
     self->token.ident = 0;
+    InbufCurrentString* currstr = inbuf_currstr();
 
     while (self->token.type == TOK_NONE)
     {
@@ -150,7 +151,7 @@ static int lexer_next_tok(Lexer *self)
             throw_error(E_UNKIDENT, ident);
             exit_nicely(E_UNKIDENT);
         }
-        fprintf(stderr, "In string: %s\n", inbuf_currstr());
+        fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
         throw_error(E_UNEXPSYM, &m_ch);
         self->token.kind = KIND_NONE;
         self->token.type = TOK_NONE;

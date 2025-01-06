@@ -39,6 +39,7 @@ static void parse_var(Parser *self, Lexer *lexer)
 static void parse_comment(Parser *self, Lexer *lexer)
 {
     Lexema m_token = lexer->token;
+    InbufCurrentString* currstr = inbuf_currstr();
     switch (m_token.kind)
     {
     case SYM:
@@ -56,13 +57,13 @@ static void parse_comment(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             break;
         default:
-            fprintf(stderr, "In string: %s\n", inbuf_currstr());
+            fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
             throw_error(E_UNEXPSYM, m_token.ident);
             lexer->skipUntil(lexer, 10);
         }
         break;
     default:
-        fprintf(stderr, "In string: %s\n", inbuf_currstr());
+        fprintf(stderr, "In string:  %d %s\n", currstr->num, currstr->str);
         throw_error(E_UNEXPSYM, m_token.ident);
         lexer->skipUntil(lexer, 10);
         break;
@@ -201,6 +202,7 @@ static void parse_op(Parser *self, Lexer *lexer)
     Instruction *op;
     Lexema op_token = lexer->token;
     Node *expr = createInstruction(op_token.ident, op_token.type);
+    InbufCurrentString* currstr = inbuf_currstr();
 
     switch (op_token.type)
     {
@@ -239,7 +241,7 @@ static void parse_op(Parser *self, Lexer *lexer)
     case TOK_SEMICOLON: // no operation pass-throw comment
         break;
     default:
-        fprintf(stderr, "In string: %s\n", inbuf_currstr());
+        fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
         throw_error(E_UNKKEYWORD, op_token.ident);
         lexer->skipUntil(lexer, 10);
         break;
@@ -252,6 +254,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
     Lexema m_token = lexer->token;
     self->statement = 0;
     lexer->printTok(lexer->token); // debug
+    InbufCurrentString* currstr = inbuf_currstr();
 
     switch (m_token.kind)
     {
@@ -278,7 +281,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             break;
         default:
-            fprintf(stderr, "In string: %s\n", inbuf_currstr());
+            fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
             throw_error(E_UNEXPSYM, m_token.ident);
             exit_nicely(E_UNEXPSYM);
         }
@@ -293,7 +296,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
         lexer->skipOne(lexer);
         break;
     default:
-        fprintf(stderr, "In string: %s\n", inbuf_currstr());
+        fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
         throw_error(E_UNEXPTOKEN, m_token.ident);
         assert(0);
         break;
