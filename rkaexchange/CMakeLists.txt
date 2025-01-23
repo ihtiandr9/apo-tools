@@ -60,6 +60,14 @@ add_dependencies(run_tests
     testoutfileerror
 )
 
+## valgrind test
+
+add_custom_target(valgrind
+    COMMAND valgrind -s ./rkaexchange unpack ../src/test.rka
+    COMMENT "Run Memory tests"
+    DEPENDS ./rkaexchange
+)
+
 ##  target_link_libraries(nonestl curl json-c)
 
 install(TARGETS rkaexchange  DESTINATION bin)
