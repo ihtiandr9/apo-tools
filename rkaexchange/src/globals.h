@@ -1,4 +1,5 @@
 
-extern int fd_in;
-extern int fd_out;
-void exit_nicely();
+#include <stdio.h>
+extern FILE *fd_in;
+extern FILE *fd_out;
+void exit_nicely(int);

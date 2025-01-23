@@ -35,7 +35,7 @@ static void default_error_dispatcher(Error *e)
     case E_UNDEFERR:
     default:
         fprintf(stderr, "Unknown error\n");
-        exit_nicely();
+        exit_nicely(-1);
         break;
     }
 }

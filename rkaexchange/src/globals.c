@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <globals.h>
 #ifndef WIN32
 #ifndef _Windows
@@ -9,12 +10,12 @@
 #endif
 #include <stdlib.h>
 
-int fd_in;
-int fd_out;
+FILE *fd_in;
+FILE *fd_out;
 
-void exit_nicely()
+void exit_nicely(int err)
 {
-    close(fd_in);
-    close(fd_out);
-    exit(-1);
+    fclose(fd_in);
+    fclose(fd_out);
+    exit(err);
 }

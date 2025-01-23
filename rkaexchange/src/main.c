@@ -17,8 +17,8 @@
 #define CMD_PACK 1
 #define CMD_UNPACK 2
 
-#define DEFAULT_FD_IN 1
-#define DEFAULT_FD_OUT 1
+#define DEFAULT_FD_IN stdin
+#define DEFAULT_FD_OUT stdout
 
 int main(int argc, char *argv[])
 {
@@ -44,11 +44,11 @@ int main(int argc, char *argv[])
     }
     if (argc > 2)
     {
-        fd_in = open(argv[2], O_RDONLY);
+        fd_in = fopen(argv[2], "r");
     }
     if (argc > 3)
     {
-        fd_out = open(argv[3], O_CREAT | O_WRONLY | O_TRUNC, 511);
+        fd_out = fopen(argv[3], "w");
     }
 
     if (fd_in < 0)
@@ -65,7 +65,8 @@ int main(int argc, char *argv[])
     else if (CMD_PACK == cmd)
         pEdb->pack(pEdb);
 
-    close(fd_in);
-    close(fd_out);
+    fclose(fd_in);
+    fclose(fd_out);
+    free(pEdb);
     return 0;
 }

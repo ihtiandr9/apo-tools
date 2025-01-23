@@ -1,9 +1,7 @@
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <assert.h>
-#include <inbuf.h>
 #ifndef WIN32
 #ifndef _Windows
 #ifndef __MSDOS__
@@ -11,6 +9,7 @@
 #endif
 #endif
 #endif
+#include <inbuf.h>
 
 static unsigned char inbuf[512];
 
@@ -42,7 +41,7 @@ unsigned char inbuf_next_char()
         chr = inbuf[cursym++];
     else
     {
-        bufsize = fread(inbuf, 512, 1, in_file);
+        bufsize = fread(inbuf, 1, 512, in_file);
         cursym = 0;
         if (bufsize)
             chr = inbuf[cursym++];
