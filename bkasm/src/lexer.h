@@ -25,6 +25,7 @@ typedef enum _eIdentType
     TOK_DCX,
     TOK_JMP,
     TOK_COLON,
+    TOK_CALL,
     TOK_SEMICOLON,
     TOK_COMMA,
     TOK_EQ,

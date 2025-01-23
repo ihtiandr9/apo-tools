@@ -231,6 +231,7 @@ static void parse_op(Parser *self, Lexer *lexer)
     case TOK_INX:
     case TOK_DCX:
     case TOK_ORG:
+    case TOK_CALL:
         op = (Instruction *)expr;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
