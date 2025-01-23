@@ -6,15 +6,10 @@
 #include <nodes.h>
 
 typedef union ParseResult ParseResult;
-union ParseResult
-{
-    Node node;
-    Expr expr;
-};
 
 STRUCT(Parser)
 {
-    ParseResult *statement;
+    Node *statement;
     int level;
 };
 

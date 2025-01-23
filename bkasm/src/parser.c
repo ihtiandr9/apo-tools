@@ -33,7 +33,7 @@ static void parse_var(Parser *self, Lexer *lexer)
         lexer->skipUntil(lexer, 10);
         lexer->skipOne(lexer);
     }
-    self->statement = (ParseResult *)expr;
+    self->statement = expr;
 }
 
 static void parse_comment(Parser *self, Lexer *lexer)
@@ -70,7 +70,7 @@ static void parse_comment(Parser *self, Lexer *lexer)
     }
 }
 
-static void parse_term(Parser *self, Lexer *lexer)
+static Expr *parse_term(Parser *self, Lexer *lexer)
 {
     Lexema m_token = lexer->token;
     Expr *result = 0;
@@ -88,17 +88,14 @@ static void parse_term(Parser *self, Lexer *lexer)
         throw_error(E_UNEXPTOKEN, m_token.ident);
         result = createConst(0);
     }
-    self->statement = (ParseResult *)result;
+    return result;
 }
 
-static void parse_addition(Parser *self, Lexer *lexer);
-
-static void parse_multiplication(Parser *self, Lexer *lexer)
+static Expr *parse_multiplication(Parser *self, Lexer *lexer)
 {
+
     Lexema m_token;
-    Expr *result = NULL;
-    parse_term(self, lexer);
-    result = (Expr *)self->statement;
+    Expr *result = parse_term(self, lexer);
     lexer->skipWhile(lexer, ' ');
     lexer->nextTok(lexer);
     m_token = lexer->token;
@@ -109,22 +106,20 @@ static void parse_multiplication(Parser *self, Lexer *lexer)
         lexer->skipOne(lexer);
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
-        parse_term(self, lexer);
-        expr->op.setrparam(expr, (Expr *)self->statement);
-        result = (Expr *)expr;
+        ;
+        expr->op.setrparam(expr, parse_term(self, lexer));
+        result = expr;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         m_token = lexer->token;
     }
-    self->statement = (ParseResult *)result;
+    return result;
 }
 
-static void parse_addition(Parser *self, Lexer *lexer)
+static Expr *parse_addition(Parser *self, Lexer *lexer)
 {
     Lexema m_token;
-    Expr *result = NULL;
-    parse_multiplication(self, lexer);
-    result = (Expr *)self->statement;
+    Expr *result = parse_multiplication(self, lexer);
     lexer->skipWhile(lexer, ' ');
     lexer->nextTok(lexer);
     m_token = lexer->token;
@@ -137,9 +132,8 @@ static void parse_addition(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
-            parse_multiplication(self, lexer);
-            expr->op.setrparam(expr, (Expr *)self->statement);
-            result = (Expr *)expr;
+            expr->op.setrparam(expr, parse_multiplication(self, lexer));
+            result = expr;
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
             m_token = lexer->token;
@@ -151,18 +145,17 @@ static void parse_addition(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
-            parse_multiplication(self, lexer);
-            expr->op.setrparam(expr, (Expr *)self->statement);
-            result = (Expr *)expr;
+            expr->op.setrparam(expr, parse_multiplication(self, lexer));
+            result = expr;
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
             m_token = lexer->token;
         }
     }
-    self->statement = (ParseResult *)result;
+        return result;
 }
 
-static void parse_param(Parser *self, Lexer *lexer)
+static Expr *parse_param(Parser *self, Lexer *lexer)
 {
     Expr *expr = 0;
     Lexema m_token = lexer->token;
@@ -176,13 +169,11 @@ static void parse_param(Parser *self, Lexer *lexer)
         switch (m_token.type)
         {
         case TOK_NUM:
-            parse_addition(self, lexer);
-            expr = (Expr *)self->statement;
+            expr = parse_addition(self, lexer);
             printf(INDENT INDENT "< IMMEDIATE >: %d\n", expr->op.evaluate(expr));
             break;
         case TOK_IDENT:
-            parse_addition(self, lexer);
-            expr = (Expr *)self->statement;
+            expr = parse_addition(self, lexer);
             printf(INDENT INDENT "< VAR >: %s\n", expr->ident);
             break;
         default:
@@ -194,7 +185,7 @@ static void parse_param(Parser *self, Lexer *lexer)
         exit_nicely(E_UNEXPTOKEN);
     }
     lexer->skipWhile(lexer, ' ');
-    self->statement = (ParseResult *)expr;
+    return expr;
 }
 
 static void parse_op(Parser *self, Lexer *lexer)
@@ -213,16 +204,12 @@ static void parse_op(Parser *self, Lexer *lexer)
         op = (Instruction *)expr;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
-        parse_param(self, lexer);
-        op->lparam = (Expr *)self->statement;
-        self->statement = 0;
+        op->lparam = parse_param(self, lexer);
         lexer->skipWhile(lexer, ',');
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
-        parse_param(self, lexer);
+        op->rparam = parse_param(self, lexer);
         lexer->skipWhile(lexer, ' ');
-        op->rparam = (Expr *)self->statement;
-        self->statement = 0;
         break;
     // one operand mnemonics
     case TOK_JMP:
@@ -235,9 +222,7 @@ static void parse_op(Parser *self, Lexer *lexer)
         op = (Instruction *)expr;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
-        parse_param(self, lexer);
-        op->lparam = (Expr *)self->statement;
-        self->statement = 0;
+        op->lparam = parse_param(self, lexer);
         break;
     case TOK_SEMICOLON: // no operation pass-throw comment
         break;
@@ -247,7 +232,7 @@ static void parse_op(Parser *self, Lexer *lexer)
         lexer->skipUntil(lexer, 10);
         break;
     }
-    self->statement = (ParseResult *)expr;
+    self->statement = expr;
 }
 
 static void parse_statement(Parser *self, Lexer *lexer)
@@ -293,7 +278,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
         lexer->nextTok(lexer);
         parse_comment(self, lexer);
         break;
-    case KIND_NONE:
+    case KIND_NONE: // if unexpectd symbol detected
         lexer->skipUntil(lexer, 10);
         lexer->skipOne(lexer);
         break;
