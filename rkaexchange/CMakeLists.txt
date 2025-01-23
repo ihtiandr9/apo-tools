@@ -9,7 +9,9 @@ include_directories(/usr/local/include
     src)
 link_directories(/usr/local/lib)
 
-add_definitions(-g)
+if(NOT DEFINED _Release_)
+    add_definitions(-ggdb -Wno-switch)
+endif()
 
 # main executable target
 add_executable(rkaexchange

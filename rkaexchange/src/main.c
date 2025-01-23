@@ -1,7 +1,13 @@
 #include <edb.h>
 #include <errors.h>
 #include <fcntl.h>
+#ifndef WIN32
+#ifndef _Windows
+#ifndef __MSDOS__
 #include <unistd.h>
+#endif
+#endif
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,10 +22,11 @@
 
 int main(int argc, char *argv[])
 {
-
+    Edb *pEdb;
+	int cmd;
     fd_in = DEFAULT_FD_IN;
     fd_out = DEFAULT_FD_OUT;
-    int cmd = CMD_UNPACK;
+	cmd = CMD_UNPACK;
     if (argc <= 1)
     {
         throw_error(E_CMDREQ, 0);        
@@ -52,7 +59,7 @@ int main(int argc, char *argv[])
     {
         throw_error(E_CREATE, argv[3]);        
     }
-    Edb *pEdb = edb_create(fd_in, fd_out);
+    pEdb = edb_create(fd_in, fd_out);
     if (CMD_UNPACK == cmd)
         pEdb->unpack(pEdb);
     else if (CMD_PACK == cmd)

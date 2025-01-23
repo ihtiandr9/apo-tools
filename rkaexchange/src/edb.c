@@ -2,10 +2,17 @@
 #include <edb.h>
 #include <inbuf.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <assert.h>
+#ifndef WIN32
+#ifndef _Windows
+#ifndef __MSDOS__
 #include <unistd.h>
+#endif
+#endif
+#endif
 #include <errors.h>
 #include <errno.h>
 
@@ -66,14 +73,15 @@ static int encode(int fd_in, int fd_out)
 
 static int unpack(int fd_in, int fd_out)
 {
-    assert(fd_in > 0 && fd_out > 0);
     static char const utfRu = 0xd0;
     wchar_t uniSym;
     unsigned char outSym;
-    char textStarted = 0;
+    unsigned char curSym;
+	char textStarted = 0;
     int totalSize = 0;
+    assert(fd_in > 0 && fd_out > 0);
     inbufInit(fd_in);
-    unsigned char curSym = inbufNextChar();
+    curSym = inbufNextChar();
     while (0xff != curSym)
     {
         if (!totalSize && (curSym != 0xe6))
@@ -129,6 +137,7 @@ static int unpack(int fd_in, int fd_out)
 
 static int pack(int fd_in, int fd_out)
 {
+    char buf[512];
     int fd_tmp = open("./tmpfile", O_CREAT | O_RDWR, 0656);
     int readed;
     long f_pos;
@@ -137,7 +146,6 @@ static int pack(int fd_in, int fd_out)
     if(f_pos == -1)
         fprintf(stderr,"Error %d: %s", errno, strerror(errno));
 
-    char buf[512];
     for(readed = read(fd_tmp, buf, 512); readed > 0; readed = read(fd_tmp, buf, 512))
     {
         write(fd_out, buf, readed);
@@ -149,12 +157,12 @@ static int pack(int fd_in, int fd_out)
     return 0;
 }
 
-static inline int edb_unpack(ptrEdb this)
+static int edb_unpack(ptrEdb this)
 {
     return unpack(this->fd_in, this->fd_out);
 }
 
-static inline int edb_pack(ptrEdb this)
+static int edb_pack(ptrEdb this)
 {
     return pack(this->fd_in, this->fd_out);
 }

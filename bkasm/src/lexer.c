@@ -60,11 +60,13 @@ static int lexer_next_tok(Lexer *self)
     char m_ch = self->ch;
     int f_result = 1;
     Lexema *m_sym;
+    InbufCurrentString *currstr;
+
     self->token.type = TOK_NONE;
     self->token.value = 0;
     self->token.len = 0;
     self->token.ident = 0;
-    InbufCurrentString* currstr = inbuf_currstr();
+    currstr = inbuf_currstr();
 
     while (self->token.type == TOK_NONE)
     {

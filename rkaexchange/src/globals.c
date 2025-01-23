@@ -1,6 +1,12 @@
 
 #include <globals.h>
+#ifndef WIN32
+#ifndef _Windows
+#ifndef __MSDOS__
 #include <unistd.h>
+#endif
+#endif
+#endif
 #include <stdlib.h>
 
 int fd_in;

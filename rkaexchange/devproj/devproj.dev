@@ -23,12 +23,12 @@ OverrideOutputName=rkaexchange.exe
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
-CommandLine=pack test.asm
+CommandLine=pack ..\src\test.asm
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
-CompilerSet=0
-CompilerSettings=00000000e0000000001000000
+CompilerSet=3
+CompilerSettings=0000000100000000000000000
 UnitCount=9
 
 [VersionInfo]

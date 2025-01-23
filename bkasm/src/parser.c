@@ -39,7 +39,7 @@ static void parse_var(Parser *self, Lexer *lexer)
 static void parse_comment(Parser *self, Lexer *lexer)
 {
     Lexema m_token = lexer->token;
-    InbufCurrentString* currstr = inbuf_currstr();
+    InbufCurrentString *currstr = inbuf_currstr();
     switch (m_token.kind)
     {
     case SYM:
@@ -202,7 +202,7 @@ static void parse_op(Parser *self, Lexer *lexer)
     Instruction *op;
     Lexema op_token = lexer->token;
     Node *expr = createInstruction(op_token.ident, op_token.type);
-    InbufCurrentString* currstr = inbuf_currstr();
+    InbufCurrentString *currstr = inbuf_currstr();
 
     switch (op_token.type)
     {
@@ -251,10 +251,11 @@ static void parse_op(Parser *self, Lexer *lexer)
 
 static void parse_statement(Parser *self, Lexer *lexer)
 {
+    InbufCurrentString *currstr;
     Lexema m_token = lexer->token;
     self->statement = 0;
     lexer->printTok(lexer->token); // debug
-    InbufCurrentString* currstr = inbuf_currstr();
+    currstr = inbuf_currstr();
 
     switch (m_token.kind)
     {
