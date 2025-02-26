@@ -1,6 +1,6 @@
 #ifndef H_BKINTS_H
 #define H_BKINTS_H
-#include <globals.h>
+#include <bkasm.h>
 
 STRUCT(IntBase)
 {

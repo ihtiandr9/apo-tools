@@ -1,4 +1,4 @@
-#include <globals.h>
+#include <bkasm.h>
 #include <bkints.h>
 
 static const IntBase bases[] =

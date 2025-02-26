@@ -16,7 +16,7 @@ endif()
 ## main executable file
 add_executable(bkasm
     src/main.c
-    src/globals.c
+    src/bkasm.c
     src/errors.c
     src/lexer.c
     src/parser.c
@@ -56,6 +56,7 @@ add_custom_target(run_tests
 ## valgrind test
 
 add_custom_target(valgrind
+##    COMMAND	valgrind -s --leak-check=full ./bkasm ../tests/test.asm
     COMMAND	valgrind -s ./bkasm ../tests/test.asm
     COMMENT "Run Memory tests"
     DEPENDS ./bkasm

@@ -1,7 +1,7 @@
 #ifndef H_NODES_H
 #define H_NODES_H
 
-#include <globals.h>
+#include <bkasm.h>
 #include <mathexpr.h>
 
 // { forward decl
