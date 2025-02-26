@@ -1,5 +1,5 @@
 
-#include <globals.h>
+#include <bkasm.h>
 #ifndef WIN32
 #ifndef _Windows
 #ifndef __MSDOS__
@@ -14,12 +14,10 @@
 
 FILE* in_file;
 FILE* out_file;
-Gfg_Tree program;
 
 void exit_nicely(int errorlevel)
 {
     fclose(in_file);
     fclose(out_file);
-    cfgtree_destroy(&program);
     exit(errorlevel);
 }

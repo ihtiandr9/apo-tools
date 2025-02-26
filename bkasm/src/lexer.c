@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-#include <globals.h>
+#include <bkasm.h>
 #include <errors.h>
 #include <string.h>
 #include <stdlib.h>

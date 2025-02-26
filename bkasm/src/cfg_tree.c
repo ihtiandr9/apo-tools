@@ -1,4 +1,4 @@
-#include <globals.h>
+#include <bkasm.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -20,7 +20,7 @@ NodeList *cfg_tree_create()
     return nodelist;
 }
 
-void cfg_tree_add_statement(Node *statement, Gfg_Tree *cfgtree)
+void cfg_tree_add_statement(Node *statement, Cfg_Tree *cfgtree)
 {
     if (!statement)
         return;
@@ -59,22 +59,23 @@ void cfg_tree_add_statement(Node *statement, Gfg_Tree *cfgtree)
         assert(0);
         return;
     }
+    free(statement);
 }
 
-Gfg_Tree *cfgtree_create()
+Cfg_Tree *cfgtree_create()
 {
-    Gfg_Tree *cfgtree = (Gfg_Tree *)malloc(sizeof(Gfg_Tree));
+    Cfg_Tree *cfgtree = (Cfg_Tree *)malloc(sizeof(Cfg_Tree));
     cfgtree_init(cfgtree);
     return cfgtree;
 }
 
-void cfgtree_init(Gfg_Tree* cfgtree)
+void cfgtree_init(Cfg_Tree* cfgtree)
 {
     cfgtree->first = NULL;
     cfgtree->last = NULL;
 }
 
-void cfgtree_free(Gfg_Tree *cfgtree)
+void cfgtree_free(Cfg_Tree *cfgtree)
 {
     if (cfgtree)
     {
@@ -83,7 +84,7 @@ void cfgtree_free(Gfg_Tree *cfgtree)
     }
 }
 
-void cfgtree_destroy(Gfg_Tree *cfgtree)
+void cfgtree_destroy(Cfg_Tree *cfgtree)
 {
     if (cfgtree)
     {

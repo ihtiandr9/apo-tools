@@ -1,7 +1,7 @@
 #ifndef H_ERRORS_H
 #define H_ERRORS_H
 
-#include <globals.h>
+#include <bkasm.h>
 
 typedef enum _eErrorType
 {

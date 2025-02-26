@@ -1,7 +1,7 @@
 #ifndef H_LEXER_H
 #define H_LEXER_H
 
-#include <globals.h>
+#include <bkasm.h>
 #define CH_NULL 0
 typedef enum _eIdentKind
 {

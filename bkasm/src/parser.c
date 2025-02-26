@@ -1,4 +1,4 @@
-#include <globals.h>
+#include <bkasm.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -7,9 +7,9 @@
 #include <parser.h>
 #include <inbuf.h>
 
-static void parse_op(Parser *self, Lexer *lexer);
+static Node* parse_op(Parser *self, Lexer *lexer);
 
-static void parse_var(Parser *self, Lexer *lexer)
+static Node* parse_var(Parser *self, Lexer *lexer)
 {
     // Label *target;
     Node *expr;
@@ -33,7 +33,7 @@ static void parse_var(Parser *self, Lexer *lexer)
         lexer->skipUntil(lexer, 10);
         lexer->skipOne(lexer);
     }
-    self->statement = expr;
+    return expr;
 }
 
 static void parse_comment(Parser *self, Lexer *lexer)
@@ -188,7 +188,7 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
     return expr;
 }
 
-static void parse_op(Parser *self, Lexer *lexer)
+static Node* parse_op(Parser *self, Lexer *lexer)
 {
     Instruction *op;
     Lexema op_token = lexer->token;
@@ -232,14 +232,13 @@ static void parse_op(Parser *self, Lexer *lexer)
         lexer->skipUntil(lexer, 10);
         break;
     }
-    self->statement = expr;
+    return expr;
 }
 
 static void parse_statement(Parser *self, Lexer *lexer)
 {
     InbufCurrentString *currstr;
     Lexema m_token = lexer->token;
-    self->statement = 0;
     lexer->printTok(lexer->token); // debug
     currstr = inbuf_currstr();
 
@@ -249,7 +248,8 @@ static void parse_statement(Parser *self, Lexer *lexer)
         switch (m_token.type)
         {
         case TOK_IDENT:
-            parse_var(self, lexer);
+        cfg_tree_add_statement(parse_var(self, lexer), self->prog);
+            
             break;
         }
         break;
@@ -274,7 +274,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
         }
         break;
     case OP:
-        parse_op(self, lexer);
+        cfg_tree_add_statement(parse_op(self, lexer), self->prog);
         lexer->nextTok(lexer);
         parse_comment(self, lexer);
         break;
@@ -290,14 +290,11 @@ static void parse_statement(Parser *self, Lexer *lexer)
     }
 }
 
-void parser_parse(Parser *self, Lexer *lexer, Gfg_Tree *prog)
+void parser_parse(Parser *self, Lexer *lexer)
 {
     while (lexer->nextTok(lexer))
     {
         parse_statement(self, lexer);
-        cfg_tree_add_statement((Node *)self->statement, prog);
-        free(self->statement);
-        self->statement = 0;
         lexer->skipWhile(lexer, ' ');
     }
 }
@@ -305,6 +302,8 @@ void parser_parse(Parser *self, Lexer *lexer, Gfg_Tree *prog)
 int parser_init(Parser *parser)
 {
     parser->level = 0;
+    parser->prog = cfgtree_create();
+    cfgtree_init(parser->prog);
     return 1;
 }
 Parser *parser_create(void)
