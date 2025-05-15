@@ -22,6 +22,7 @@ static const Lexema words[] =
         {OP, TOK_DCR, "DCR", 0, 3},
         {OP, TOK_DCX, "DCX", 0, 3},
         {OP, TOK_END, "END", 0, 3},
+        {OP, TOK_EQU, "EQU", 0, 3},
         {OP, TOK_INR, "INR", 0, 3},
         {OP, TOK_INX, "INX", 0, 3},
         {OP, TOK_JMP, "JMP", 0, 3},

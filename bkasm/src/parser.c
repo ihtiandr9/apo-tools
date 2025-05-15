@@ -22,6 +22,8 @@ static Node* parse_var(Parser *self, Lexer *lexer)
 
     if (l_token.type == TOK_COLON)
     {
+        // fixme label must have parameter
+        // PC or immediate
         node = createLabel(l_ident);
         free(l_ident);
         lexer->skipOne(lexer);
@@ -208,13 +210,13 @@ static Node* parse_op(Parser *self, Lexer *lexer)
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         while(lexer->token.kind == CONST){
-        node = createInstruction(op_token.ident, op_token.type);
-        op = (Instruction *)node;
-        op->lparam = parse_param(self, lexer);
-        cfg_tree_add_statement(node, self->prog);
-        lexer->skipWhile(lexer, ',');
-        lexer->skipWhile(lexer, ' ');
-        lexer->nextTok(lexer);
+            node = createInstruction(op_token.ident, op_token.type);
+            op = (Instruction *)node;
+            op->lparam = parse_param(self, lexer);
+            cfg_tree_add_statement(node, self->prog);
+            lexer->skipWhile(lexer, ',');
+            lexer->skipWhile(lexer, ' ');
+            lexer->nextTok(lexer);
         }
         node = NULL;
         break;

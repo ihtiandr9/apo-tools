@@ -24,6 +24,7 @@ typedef enum _eIdentType
     TOK_DCR,
     TOK_DCX,
     TOK_END,
+    TOK_EQU,
     TOK_EI,
     TOK_INR,
     TOK_INX,
