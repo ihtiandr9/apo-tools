@@ -12,7 +12,7 @@ typedef union Node Node;
 
 typedef enum _NodeType
 {
-    NODE_EMPTY,
+    NODE_EMPTY = 0,
     NODE_INSTRUCTION,
     NODE_LABEL,
     //NODE_GLOBALVAR,

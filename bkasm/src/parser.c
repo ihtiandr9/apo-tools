@@ -12,17 +12,17 @@ static Node* parse_op(Parser *self, Lexer *lexer);
 static Node* parse_var(Parser *self, Lexer *lexer)
 {
     // Label *target;
-    Node *expr;
+    Node *node;
 
     Lexema l_token = lexer->token;
     char *l_ident = l_token.ident;
     lexer->nextTok(lexer);
     l_token = lexer->token;
-    expr = 0;
+    node = NULL;
 
     if (l_token.type == TOK_COLON)
     {
-        expr = createLabel(l_ident);
+        node = createLabel(l_ident);
         free(l_ident);
         lexer->skipOne(lexer);
     }
@@ -33,7 +33,7 @@ static Node* parse_var(Parser *self, Lexer *lexer)
         lexer->skipUntil(lexer, 10);
         lexer->skipOne(lexer);
     }
-    return expr;
+    return node;
 }
 
 static void parse_comment(Parser *self, Lexer *lexer)
@@ -73,7 +73,7 @@ static void parse_comment(Parser *self, Lexer *lexer)
 static Expr *parse_term(Parser *self, Lexer *lexer)
 {
     Lexema m_token = lexer->token;
-    Expr *result = 0;
+    Expr *result = NULL;
     char *m_ident = m_token.ident;
     switch (m_token.type)
     {
@@ -157,7 +157,7 @@ static Expr *parse_addition(Parser *self, Lexer *lexer)
 
 static Expr *parse_param(Parser *self, Lexer *lexer)
 {
-    Expr *expr = 0;
+    Expr *expr = NULL;
     Lexema m_token = lexer->token;
     switch (m_token.kind)
     {
@@ -192,16 +192,38 @@ static Node* parse_op(Parser *self, Lexer *lexer)
 {
     Instruction *op;
     Lexema op_token = lexer->token;
-    Node *expr = createInstruction(op_token.ident, op_token.type);
+    Node *node = createInstruction(op_token.ident, op_token.type);
     InbufCurrentString *currstr = inbuf_currstr();
 
     switch (op_token.type)
     {
+        // multibyte arrays
+    case TOK_DB:
+        op = (Instruction *)node;
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        op->lparam = parse_param(self, lexer);
+        cfg_tree_add_statement(node, self->prog);
+        lexer->skipWhile(lexer, ',');
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        while(lexer->token.kind == CONST){
+        node = createInstruction(op_token.ident, op_token.type);
+        op = (Instruction *)node;
+        op->lparam = parse_param(self, lexer);
+        cfg_tree_add_statement(node, self->prog);
+        lexer->skipWhile(lexer, ',');
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        }
+        node = NULL;
+        break;
+
     // two opernds mnemonics
     case TOK_MVI:
     case TOK_MOV:
     case TOK_LXI:
-        op = (Instruction *)expr;
+        op = (Instruction *)node;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         op->lparam = parse_param(self, lexer);
@@ -212,17 +234,27 @@ static Node* parse_op(Parser *self, Lexer *lexer)
         lexer->skipWhile(lexer, ' ');
         break;
     // one operand mnemonics
-    case TOK_JMP:
-    case TOK_INR:
-    case TOK_DCR:
-    case TOK_INX:
-    case TOK_DCX:
-    case TOK_ORG:
+    case TOK_ANI:
     case TOK_CALL:
-        op = (Instruction *)expr;
+    case TOK_DCR:
+    case TOK_DCX:
+    case TOK_INR:
+    case TOK_INX:
+    case TOK_JMP:
+    case TOK_JZ:
+    case TOK_LHLD:
+    case TOK_ORG:
+        op = (Instruction *)node;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         op->lparam = parse_param(self, lexer);
+        break;
+    // NULL operand mnemonics
+    case TOK_EI:
+    case TOK_END:
+    case TOK_RET:
+    case TOK_XCHG:
+        op = (Instruction *)node;
         break;
     case TOK_SEMICOLON: // no operation pass-throw comment
         break;
@@ -232,7 +264,7 @@ static Node* parse_op(Parser *self, Lexer *lexer)
         lexer->skipUntil(lexer, 10);
         break;
     }
-    return expr;
+    return node;
 }
 
 static void parse_statement(Parser *self, Lexer *lexer)
