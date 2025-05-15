@@ -1,20 +1,16 @@
 #ifndef H_PARSER_H
 #define H_PARSER_H
 
-#include <globals.h>
+#include <bkasm.h>
 #include <lexer.h>
 #include <nodes.h>
+#include <cfg_tree.h>
 
-typedef union ParseResult ParseResult;
-union ParseResult
-{
-    Node node;
-    Expr expr;
-};
+// typedef union ParseResult ParseResult;
 
 STRUCT(Parser)
 {
-    ParseResult *statement;
+    Cfg_Tree *prog;
     int level;
 };
 
@@ -22,5 +18,5 @@ STRUCT(Parser)
 Parser* parser_create(void);
 int parser_init(Parser* parser);
 void parser_free(Parser* parser);
-void parser_parse(Parser *self, Lexer *lexer, Gfg_Tree *prog);
+void parser_parse(Parser *self, Lexer *lexer);
 #endif

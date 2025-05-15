@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-#include <globals.h>
+#include <bkasm.h>
 #include <errors.h>
 #include <string.h>
 #include <stdlib.h>
@@ -24,6 +24,7 @@ static const Lexema words[] =
         {OP, TOK_INX, "INX", 0, 3},
         {OP, TOK_DCX, "DCX", 0, 3},
         {OP, TOK_JMP, "JMP", 0, 3},
+        {OP, TOK_CALL, "CALL", 0, 4},
         {REG, TOK_REGA, "A", 0, 1},
         {REG, TOK_REGB, "B", 0, 1},
         {REG, TOK_REGC, "C", 0, 1},

@@ -8,13 +8,9 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <globals.h>
+#include <bkasm.h>
 #include <lexer.h>
 #include <parser.h>
-#include <cfg_tree.h>
-
-extern Gfg_Tree program;
 
 int main(int argc, char *argv[])
 {
@@ -47,9 +43,9 @@ int main(int argc, char *argv[])
 
     lexer_init(&m_lexer, in_file);
     parser_init(&m_parser);
-    cfgtree_init(&program);
-    parser_parse(&m_parser, &m_lexer, &program);
+    parser_parse(&m_parser, &m_lexer);
 
+    cfgtree_destroy(m_parser.prog);
     exit_nicely(0);
     return 0;
 }

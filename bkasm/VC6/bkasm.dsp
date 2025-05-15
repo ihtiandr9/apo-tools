@@ -89,6 +89,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\src\bkasm.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\bkints.c
 # End Source File
 # Begin Source File
@@ -102,10 +106,6 @@ SOURCE=..\src\errors.c
 # Begin Source File
 
 SOURCE=..\src\generator.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\globals.c
 # End Source File
 # Begin Source File
 
@@ -141,6 +141,10 @@ SOURCE=..\src\symbols.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=..\src\bkasm.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\bkints.h
 # End Source File
 # Begin Source File
@@ -150,10 +154,6 @@ SOURCE=..\src\cfg_tree.h
 # Begin Source File
 
 SOURCE=..\src\errors.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\globals.h
 # End Source File
 # Begin Source File
 

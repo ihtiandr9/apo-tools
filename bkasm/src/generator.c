@@ -1,5 +1,5 @@
 
-#include <globals.h>
+#include <bkasm.h>
 #include <mathexpr.h>
 
 ExprValue* resolveVar(Expr *var)
