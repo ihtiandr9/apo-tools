@@ -7,24 +7,46 @@
 #include <parser.h>
 #include <inbuf.h>
 
+static void parse_comment(Parser *self, Lexer *lexer);
 static Node* parse_op(Parser *self, Lexer *lexer);
+static Expr *parse_param(Parser *self, Lexer *lexer);
+static void parse_statement(Parser *self, Lexer *lexer);
 
 static Node* parse_var(Parser *self, Lexer *lexer)
 {
     // Label *target;
     Node *node;
 
-    Lexema l_token = lexer->token;
-    char *l_ident = l_token.ident;
+    Lexema m_token = lexer->token;
+    char *l_ident = m_token.ident;
     lexer->nextTok(lexer);
-    l_token = lexer->token;
+    m_token = lexer->token;
     node = NULL;
 
-    if (l_token.type == TOK_COLON)
+    if (m_token.type == TOK_COLON)
     {
         node = createLabel(l_ident);
-        free(l_ident);
         lexer->skipOne(lexer);
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        m_token = lexer->token;
+        if(m_token.type == TOK_EQU)
+        {
+            lexer->skipWhile(lexer, ' ');
+            lexer->nextTok(lexer);
+            node->label.target = parse_param(self, lexer);
+            lexer->skipUntil(lexer, 10);
+            parse_comment(self, lexer);
+            // pass node throw standart
+            // codeflow
+        }else
+        {
+            node->label.target = createRegister(TOK_REGPC);
+            cfg_tree_add_statement(node, self->prog); // add standart label
+            parse_statement(self, lexer); // parse remain part of string
+            node = NULL; // nothing to return, all parts were parsed
+        }
+        free(l_ident);
     }
     else
     {
@@ -208,13 +230,13 @@ static Node* parse_op(Parser *self, Lexer *lexer)
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         while(lexer->token.kind == CONST){
-        node = createInstruction(op_token.ident, op_token.type);
-        op = (Instruction *)node;
-        op->lparam = parse_param(self, lexer);
-        cfg_tree_add_statement(node, self->prog);
-        lexer->skipWhile(lexer, ',');
-        lexer->skipWhile(lexer, ' ');
-        lexer->nextTok(lexer);
+            node = createInstruction(op_token.ident, op_token.type);
+            op = (Instruction *)node;
+            op->lparam = parse_param(self, lexer);
+            cfg_tree_add_statement(node, self->prog);
+            lexer->skipWhile(lexer, ',');
+            lexer->skipWhile(lexer, ' ');
+            lexer->nextTok(lexer);
         }
         node = NULL;
         break;
@@ -280,9 +302,11 @@ static void parse_statement(Parser *self, Lexer *lexer)
         switch (m_token.type)
         {
         case TOK_IDENT:
-        cfg_tree_add_statement(parse_var(self, lexer), self->prog);
-            
+            cfg_tree_add_statement(parse_var(self, lexer), self->prog);
             break;
+        default:
+            fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
+            throw_error(E_UNEXPTOKEN, m_token.ident);
         }
         break;
     case SYM:

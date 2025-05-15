@@ -22,6 +22,7 @@ static const Lexema words[] =
         {OP, TOK_DCR, "DCR", 0, 3},
         {OP, TOK_DCX, "DCX", 0, 3},
         {OP, TOK_END, "END", 0, 3},
+        {OP, TOK_EQU, "EQU", 0, 3},
         {OP, TOK_INR, "INR", 0, 3},
         {OP, TOK_INX, "INX", 0, 3},
         {OP, TOK_JMP, "JMP", 0, 3},
@@ -104,7 +105,7 @@ static int lexer_next_tok(Lexer *self)
             continue;
         }
 
-        if (is_digit(m_ch)) // is digit returns number
+        if (is_decimal(m_ch)) // start with decimal digit returns number
         {
             char *ident = 0;
             int len = 0;
@@ -125,12 +126,13 @@ static int lexer_next_tok(Lexer *self)
             free(ident);
             continue;
         }
-        if (is_alfa(m_ch)) // try read keyword or ident
+        if (is_alfa(m_ch)) // start with alfa returns keyword or ident
         {
             char *ident = 0;
             int len = 0;
             while (is_alfa(m_ch) || is_digit(m_ch))
             {
+                // collect identifier
                 ident = (char *)realloc(ident, len + 2);
                 ident[len++] = m_ch;
                 ident[len] = 0;
@@ -139,6 +141,7 @@ static int lexer_next_tok(Lexer *self)
             m_sym = self->words;
             while (m_sym->len != 0)
             {
+                // compare with keywords
                 if (!strcmp(ident, m_sym->ident))
                 {
                     break;

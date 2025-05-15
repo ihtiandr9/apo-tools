@@ -30,8 +30,9 @@ STRUCT(Instruction)
 STRUCT(Label)
 {
     eNodeType type;
-    int target;
+    int target_type;
     char *ident;
+    Expr* target;
 };
 
 union Node

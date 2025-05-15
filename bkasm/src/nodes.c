@@ -46,7 +46,8 @@ Node *createLabel(const char *ident)
         int len = strlen(ident);
         Label *node = (Label *)malloc(sizeof(Node));
         node->type = NODE_LABEL;
-        node->target = 0;
+        node->target = NULL;
+        node->target_type = 0;
         if (len > MAX_LABEL_SIZE)
                 len = MAX_LABEL_SIZE;
         node->ident = (char *)malloc(len + 1);
@@ -60,6 +61,7 @@ void clearLabel(Label *_label)
         if (_label)
         {
                 _label->type = NODE_EMPTY;
+                freeMathExpr(_label->target);
                 free(_label->ident);
                 _label->ident = NULL;
         }
