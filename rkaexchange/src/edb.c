@@ -19,7 +19,8 @@ wchar_t getUnicodeSymbol(uint8_t chr)
     static const wchar_t *const c_apogeySymbols = // koi7
         L" ▘▝▀▗▚▐▜ ★⬯↑⬮ ↣↓"
         L"▖▌▞▛▄▙▟█∼≈╋┃━↢✿▕"
-        L" !\"#¤%&'()*+,-./0123456789:;<=>?"
+        L" !\"#¤%&'()*+,-./"
+        "0123456789:;<=>?"
         L"@ABCDEFGHIJKLMNO"
         L"PQRSTUVWXYZ[\\]^_"
         L"ЮАБЦДЕФГХИЙКЛМНО"
