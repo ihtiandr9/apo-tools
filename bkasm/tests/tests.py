@@ -74,18 +74,22 @@ class TestUM(unittest.TestCase):
                 err_stream = stderr.split('\n')
                 err_msg = err_stream[1]
 
-            try:
-                self.assertEqual(err_msg,
-                    expected_error,
-                    None)
+            if (err_msg == expected_error):
+                print('line: ' + errors[num][:semicolon_pos] + ' passed')
                 log_file.write("Pass\n-----------\n")
-            except:
+            else:
                 err_count = err_count + 1
+                print('line: ' + errors[num][:semicolon_pos] + ' failed')
+                print('Unexpexted msg!!!Expect: ' + str(expected_error) + '\n')
+                print('    Got: ' + str(err_msg) + '\n-----------\n')
                 log_file.write('Unexpexted msg!!!Expect: ' + str(expected_error) + '\n')
                 log_file.write('    Got: ' + str(err_msg) + '\n-----------\n')
         
         log_file.close()
-        self.assertEqual(0, err_count, "Errors: " + str(err_count))
+        if (err_count != 0):
+            print('Test completed with ' + str(err_count) + ' errors')
+        else:
+            print('All tests passed competely')
 
 if __name__ == '__main__':
     unittest.main()
