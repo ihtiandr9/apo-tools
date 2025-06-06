@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <cfg_tree.h>
+#include <cfgtree.h>
 #include <errors.h>
 #include <parser.h>
 #include <inbuf.h>
@@ -25,7 +25,7 @@ static Node* parse_var(Parser *self, Lexer *lexer)
 
     if (m_token.type == TOK_COLON)
     {
-        node = createLabel(l_ident);
+        node = node_create_label(l_ident);
         lexer->skipOne(lexer);
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -41,7 +41,7 @@ static Node* parse_var(Parser *self, Lexer *lexer)
             // codeflow
         }else
         {
-            node->label.target = createRegister(TOK_REGPC);
+            node->label.target = register_create(TOK_REGPC);
             cfg_tree_add_statement(node, self->prog); // add standart label
             parse_statement(self, lexer); // parse remain part of string
             node = NULL; // nothing to return, all parts were parsed
@@ -100,15 +100,15 @@ static Expr *parse_term(Parser *self, Lexer *lexer)
     switch (m_token.type)
     {
     case TOK_NUM:
-        result = createConst(m_token.value);
+        result = const_create(m_token.value);
         break;
     case TOK_IDENT:
-        result = createVariable(m_token.ident);
+        result = var_create(m_token.ident);
         free(m_ident);
         break;
     default:
         throw_error(E_UNEXPTOKEN, m_token.ident);
-        result = createConst(0);
+        result = const_create(0);
     }
     return result;
 }
@@ -123,7 +123,7 @@ static Expr *parse_multiplication(Parser *self, Lexer *lexer)
     m_token = lexer->token;
     while (m_token.type == TOK_ASTERISK)
     {
-        Expr *expr = createMultiplication(TOK_ASTERISK);
+        Expr *expr = math_create_multiplication(TOK_ASTERISK);
         expr->op.setlparam(expr, result);
         lexer->skipOne(lexer);
         lexer->skipWhile(lexer, ' ');
@@ -149,7 +149,7 @@ static Expr *parse_addition(Parser *self, Lexer *lexer)
     {
         if (m_token.type == TOK_MINUS)
         {
-            Expr *expr = createAddition(TOK_MINUS);
+            Expr *expr = math_create_addition(TOK_MINUS);
             expr->op.setlparam(expr, result);
             lexer->skipOne(lexer);
             lexer->skipWhile(lexer, ' ');
@@ -162,7 +162,7 @@ static Expr *parse_addition(Parser *self, Lexer *lexer)
         }
         if (m_token.type == TOK_PLUS)
         {
-            Expr *expr = createAddition(TOK_PLUS);
+            Expr *expr = math_create_addition(TOK_PLUS);
             expr->op.setlparam(expr, result);
             lexer->skipOne(lexer);
             lexer->skipWhile(lexer, ' ');
@@ -184,7 +184,7 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
     switch (m_token.kind)
     {
     case REG:
-        expr = createRegister(m_token.type);
+        expr = register_create(m_token.type);
         printf(INDENT INDENT "< REGISTER >: %s code %d\n", m_token.ident, expr->op.evaluate(expr));
         break;
     case CONST:
@@ -214,7 +214,7 @@ static Node* parse_op(Parser *self, Lexer *lexer)
 {
     Instruction *op;
     Lexema op_token = lexer->token;
-    Node *node = createInstruction(op_token.ident, op_token.type);
+    Node *node = node_create_instruction(op_token.ident, op_token.type);
     InbufCurrentString *currstr = inbuf_currstr();
 
     switch (op_token.type)
@@ -230,7 +230,7 @@ static Node* parse_op(Parser *self, Lexer *lexer)
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         while(lexer->token.kind == CONST){
-            node = createInstruction(op_token.ident, op_token.type);
+            node = node_create_instruction(op_token.ident, op_token.type);
             op = (Instruction *)node;
             op->lparam = parse_param(self, lexer);
             cfg_tree_add_statement(node, self->prog);

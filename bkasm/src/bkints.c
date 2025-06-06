@@ -1,7 +1,7 @@
 #include <bkasm.h>
 #include <bkints.h>
 
-static const IntBase bases[] =
+static const IntBase intBases[] =
 {
     {'H', 16},
     {'O', 8},
@@ -11,12 +11,12 @@ static const IntBase bases[] =
 
 int radix(char suffix)
 {
-    IntBase *m_base = (IntBase *)bases;
-    while (m_base->suffix != 0)
+    IntBase *intBase = (IntBase *)intBases;
+    while (intBase->suffix != 0)
     {
-        if (m_base->suffix == suffix)
+        if (intBase->suffix == suffix)
             break;
-        m_base++;
+        intBase++;
     }
-    return m_base->radix;
+    return intBase->radix;
 }

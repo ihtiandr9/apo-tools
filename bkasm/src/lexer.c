@@ -235,10 +235,10 @@ int lexer_init(Lexer *lexer, FILE *in_file)
     return 1;
 }
 
-Lexer *lexer_create(FILE *in_file)
+Lexer *lexer_create(FILE *infile)
 {
     Lexer *m_lexer = (Lexer *)malloc(sizeof(Lexer));
-    lexer_init(m_lexer, in_file);
+    lexer_init(m_lexer, infile);
     return m_lexer;
 }
 

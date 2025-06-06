@@ -2,8 +2,6 @@
 #include <errors.h>
 #include <stdio.h>
 
-static  fn_error_dispatcher error_dispatcher = 0;
-
 static void default_error_dispatcher(Error *e)
 {
     fprintf(stderr, "Error: ");
@@ -33,17 +31,16 @@ static void default_error_dispatcher(Error *e)
 
 void throw_error(eErrorType type, void *data)
 {
+    throw_error_disp(type, data, NULL);
+}
+
+void throw_error_disp(eErrorType type, void *data, fn_error_dispatcher dispatcher)
+{
     Error e;
     e.data = data;
     e.type = type;
-    if (!error_dispatcher)
+    if (!dispatcher)
         default_error_dispatcher(&e);
     else
-        error_dispatcher(&e);
+        dispatcher(&e);
 }
-
-void set_error_dipatcher(void(*_error_dispatcher)(Error*))
-{
-    error_dispatcher = _error_dispatcher;
-}
-

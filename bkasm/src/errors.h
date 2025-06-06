@@ -22,7 +22,6 @@ STRUCT(Error)
 typedef void (*fn_error_dispatcher)(Error *);
 
 void throw_error(eErrorType etype, void *data);
-
-void set_error_dipatcher(void(*_error_dipatcher)(Error*));
+void throw_error_disp(eErrorType type, void *data, fn_error_dispatcher dispatcher);
 
 #endif

@@ -7,5 +7,5 @@ STRUCT(IntBase)
     char suffix;
     int radix;
 };
-int radix(char m_ch);
+int radix(char suffix);
 #endif

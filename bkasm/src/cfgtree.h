@@ -28,15 +28,15 @@ TODO define it
 #include <nodes.h>
 
 
-STRUCT(Cfg_Tree)
+STRUCT(CfgTree)
 {
-    NodeList *first;
-    NodeList *last;
+    NodeList *firstNode;
+    NodeList *lastNode;
 };
 
-void cfg_tree_add_statement(Node *statement, Cfg_Tree *cfgtree);
-Cfg_Tree* cfgtree_create();
-void cfgtree_init(Cfg_Tree* cfgtree);
-void cfgtree_free(Cfg_Tree* cfgtree);
-void cfgtree_destroy(Cfg_Tree* cfgtree);
+void cfg_tree_add_statement(Node *statement, CfgTree *cfgtree);
+CfgTree* cfgtree_create();
+void cfgtree_init(CfgTree* cfgtree);
+void cfgtree_free(CfgTree* cfgtree);
+void cfgtree_destroy(CfgTree* cfgtree);
 #endif
