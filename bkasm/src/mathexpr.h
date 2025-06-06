@@ -51,10 +51,10 @@ STRUCT(Expr)
     } data;
 };
 
-Expr *createConst(ExprValue num);
-Expr *createRegister(ExprValue reg);
-Expr *createAddition(ExprValue operation);
-Expr *createMultiplication(ExprValue operation);
-void freeMathExpr(Expr *expr);
-Expr *createVariable(const char *ident);
+Expr *const_create(ExprValue num);
+Expr *register_create(ExprValue reg);
+Expr *math_create_addition(ExprValue operation);
+Expr *math_create_multiplication(ExprValue operation);
+void math_free(Expr *expr);
+Expr *var_create(const char *ident);
 #endif

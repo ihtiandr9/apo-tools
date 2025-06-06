@@ -4,8 +4,8 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = ../devproj/lexer.o ../devproj/main.o ../devproj/errors.o ../devproj/parser.o ../devproj/symbols.o ../devproj/inbuf.o ../devproj/nodes.o ../devproj/cfg_tree.o ../devproj/mathexpr.o ../devproj/generator.o ../devproj/bkints.o ../devproj/bkasm.o
-LINKOBJ  = ../devproj/lexer.o ../devproj/main.o ../devproj/errors.o ../devproj/parser.o ../devproj/symbols.o ../devproj/inbuf.o ../devproj/nodes.o ../devproj/cfg_tree.o ../devproj/mathexpr.o ../devproj/generator.o ../devproj/bkints.o ../devproj/bkasm.o
+OBJ      = ../devproj/lexer.o ../devproj/main.o ../devproj/errors.o ../devproj/parser.o ../devproj/symbols.o ../devproj/inbuf.o ../devproj/nodes.o ../devproj/mathexpr.o ../devproj/generator.o ../devproj/bkints.o ../devproj/bkasm.o ../devproj/asmast.o
+LINKOBJ  = ../devproj/lexer.o ../devproj/main.o ../devproj/errors.o ../devproj/parser.o ../devproj/symbols.o ../devproj/inbuf.o ../devproj/nodes.o ../devproj/mathexpr.o ../devproj/generator.o ../devproj/bkints.o ../devproj/bkasm.o ../devproj/asmast.o
 LIBS     = -L"C:/Program Files/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -m32 -pg -g3
 INCS     = -I"C:/Program Files/Dev-Cpp/MinGW64/include" -I"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"../src"
 CXXINCS  = -I"C:/Program Files/Dev-Cpp/MinGW64/include" -I"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++" -I"../src"
@@ -45,9 +45,6 @@ $(BIN): $(OBJ)
 ../devproj/nodes.o: ../src/nodes.c
 	$(CC) -c ../src/nodes.c -o ../devproj/nodes.o $(CFLAGS)
 
-../devproj/cfg_tree.o: ../src/cfg_tree.c
-	$(CC) -c ../src/cfg_tree.c -o ../devproj/cfg_tree.o $(CFLAGS)
-
 ../devproj/mathexpr.o: ../src/mathexpr.c
 	$(CC) -c ../src/mathexpr.c -o ../devproj/mathexpr.o $(CFLAGS)
 
@@ -59,3 +56,6 @@ $(BIN): $(OBJ)
 
 ../devproj/bkasm.o: ../src/bkasm.c
 	$(CC) -c ../src/bkasm.c -o ../devproj/bkasm.o $(CFLAGS)
+
+../devproj/asmast.o: ../src/asmast.c
+	$(CC) -c ../src/asmast.c -o ../devproj/asmast.o $(CFLAGS)

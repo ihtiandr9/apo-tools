@@ -48,10 +48,11 @@ STRUCT(NodeList)
     NodeList* next;
 };
 
-Node *createLabel(const char *ident);
-void clearLabel(Label *_label);
-Node *createInstruction(const char *ident, ExprValue opcode);
-void clearInstruction(Instruction *_instr);
-void clearNode(Node *node);
+Node *node_create_label(const char *ident);
+void node_clear_label(Label *_label);
+Node *node_create_instruction(const char *ident, ExprValue opcode);
+void node_clear_instruction(Instruction *_instr);
+void node_clear(Node *node);
+NodeList *nodelist_alloc();
 void nodelist_destroy(NodeList* nodelist);
 #endif

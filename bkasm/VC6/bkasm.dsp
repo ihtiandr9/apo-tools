@@ -89,15 +89,15 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\src\asmast.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\bkasm.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\bkints.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\cfg_tree.c
 # End Source File
 # Begin Source File
 
@@ -139,6 +139,10 @@ SOURCE=..\src\symbols.c
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\src\asmast.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\src\bkasm.h

@@ -8,10 +8,10 @@
 	struct XXX
 
 STRUCT(NodeList);
-STRUCT(Gfg_Tree);
+STRUCT(GfgTree);
 
 #include <stdio.h>
-extern FILE *in_file;
-extern FILE *out_file;
+extern FILE *infile;
+extern FILE *outfile;
 void exit_nicely(int);
 #endif

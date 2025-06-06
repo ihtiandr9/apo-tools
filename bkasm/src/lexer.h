@@ -92,7 +92,7 @@ STRUCT(Lexer)
 };
 
 // exports
-Lexer *lexer_create(FILE *in_file);
-int lexer_init(Lexer *lexer, FILE *in_file);
+Lexer *lexer_create(FILE *infile);
+int lexer_init(Lexer *lexer, FILE *infile);
 void lexer_free(Lexer *self);
 #endif

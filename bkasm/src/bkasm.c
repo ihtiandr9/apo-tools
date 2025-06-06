@@ -10,14 +10,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
-#include <cfg_tree.h>
+#include <asmast.h>
 
-FILE* in_file;
-FILE* out_file;
+FILE* infile;
+FILE* outfile;
 
 void exit_nicely(int errorlevel)
 {
-    fclose(in_file);
-    fclose(out_file);
+    fclose(infile);
+    fclose(outfile);
     exit(errorlevel);
 }

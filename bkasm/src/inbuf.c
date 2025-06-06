@@ -13,14 +13,14 @@
 
 static unsigned char inbuf[512];
 
-static InbufCurrentString currstr;
+static InbufCurrentString currStr;
 static int bufsize;
 static int cursym;
-static FILE *in_file;
+static FILE *infile;
 
 InbufCurrentString *inbuf_currstr()
 {
-    return (InbufCurrentString *) &currstr;
+    return (InbufCurrentString *) &currStr;
 }
 
 static void inbuf_markcurrstr()
@@ -28,9 +28,9 @@ static void inbuf_markcurrstr()
     int i;
     for (i = 0; i + cursym < bufsize; i++)
     {
-        currstr.str[i] = inbuf[cursym + i];
-        if (currstr.str[i] == 10)
-            currstr.str[i] = 0;
+        currStr.str[i] = inbuf[cursym + i];
+        if (currStr.str[i] == 10)
+            currStr.str[i] = 0;
     }
 }
 
@@ -41,7 +41,7 @@ unsigned char inbuf_next_char()
         chr = inbuf[cursym++];
     else
     {
-        bufsize = fread(inbuf, 1, 512, in_file);
+        bufsize = fread(inbuf, 1, 512, infile);
         cursym = 0;
         if (bufsize)
             chr = inbuf[cursym++];
@@ -50,7 +50,7 @@ unsigned char inbuf_next_char()
     }
     if (chr == 10)
     {
-        currstr.num++;
+        currStr.num++;
         inbuf_markcurrstr();
     }
     return chr;
@@ -58,9 +58,9 @@ unsigned char inbuf_next_char()
 
 void inbuf_init(FILE *_in_file)
 {
-    in_file = _in_file;
-    bufsize = fread(inbuf, 1, 512, in_file);
+    infile = _in_file;
+    bufsize = fread(inbuf, 1, 512, infile);
     cursym = 0;
-    currstr.num = 1;
+    currStr.num = 1;
     inbuf_markcurrstr();
 }

@@ -8,7 +8,7 @@
 ////////////////////////////////////////////
 // Instruction Node
 
-Node *createInstruction(const char *ident, ExprValue opcode)
+Node *node_create_instruction(const char *ident, ExprValue opcode)
 {
         int len = strlen(ident);
         Instruction *node = (Instruction *)malloc(sizeof(Node));
@@ -24,16 +24,16 @@ Node *createInstruction(const char *ident, ExprValue opcode)
         return (Node *)node;
 }
 
-void clearInstruction(Instruction *_instr)
+void node_clear_instruction(Instruction *_instr)
 {
         if (_instr)
         {
                 _instr->type = NODE_EMPTY;
                 free(_instr->ident);
                 _instr->ident = NULL;
-                freeMathExpr((Expr *)_instr->lparam);
+                math_free((Expr *)_instr->lparam);
                 _instr->lparam = 0;
-                freeMathExpr((Expr *)_instr->rparam);
+                math_free((Expr *)_instr->rparam);
                 _instr->rparam = 0;
         }
 }
@@ -41,7 +41,7 @@ void clearInstruction(Instruction *_instr)
 ///////////////////////////////////
 // Label Node
 
-Node *createLabel(const char *ident)
+Node *node_create_label(const char *ident)
 {
         int len = strlen(ident);
         Label *node = (Label *)malloc(sizeof(Node));
@@ -56,41 +56,51 @@ Node *createLabel(const char *ident)
         return (Node *)node;
 }
 
-void clearLabel(Label *_label)
+void node_clear_label(Label *_label)
 {
         if (_label)
         {
                 _label->type = NODE_EMPTY;
-                freeMathExpr(_label->target);
+                math_free(_label->target);
                 free(_label->ident);
                 _label->ident = NULL;
         }
 }
 
-void clearNode(Node *node)
+void node_clear(Node *node)
 {
         if (!node)
                 return;
         switch (node->type)
         {
         case NODE_INSTRUCTION:
-                clearInstruction((Instruction *)node);
+                node_clear_instruction((Instruction *)node);
                 break;
         case NODE_LABEL:
-                clearLabel((Label *)node);
+                node_clear_label((Label *)node);
                 break;
         default:
                 assert(0);
                 break;
         }
 }
+
+NodeList *nodelist_alloc()
+{
+    NodeList *nodeList;
+    nodeList = (NodeList *)malloc(sizeof(NodeList));
+    nodeList->next = 0;
+    nodeList->node.type = NODE_EMPTY;
+    return nodeList;
+}
+
 void nodelist_destroy(NodeList *nodelist)
 {
     NodeList *next = 0;
     while (nodelist)
     {
         next = nodelist->next;
-        clearNode(&nodelist->node);
+        node_clear(&nodelist->node);
         free(nodelist);
         nodelist = next;
     }

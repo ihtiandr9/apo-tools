@@ -4,13 +4,13 @@
 #include <bkasm.h>
 #include <lexer.h>
 #include <nodes.h>
-#include <cfg_tree.h>
+#include <asmast.h>
 
 // typedef union ParseResult ParseResult;
 
 STRUCT(Parser)
 {
-    Cfg_Tree *prog;
+    ASTree *prog;
     int level;
 };
 

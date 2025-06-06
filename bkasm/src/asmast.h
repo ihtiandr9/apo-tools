@@ -21,22 +21,22 @@
 TODO define it
 <term>     ::= <id> | <int> | <paren-expr>
 */
-#ifndef H_CFG_TREE_H
-#define H_CFG_TREE_H
+#ifndef H_ASTREE_H
+#define H_ASTREE_H
 
 #include <bkasm.h>
 #include <nodes.h>
 
 
-STRUCT(Cfg_Tree)
+STRUCT(ASTree)  /* Abstract syntax tree */
 {
-    NodeList *first;
-    NodeList *last;
+    NodeList *firstNode;
+    NodeList *lastNode;
 };
 
-void cfg_tree_add_statement(Node *statement, Cfg_Tree *cfgtree);
-Cfg_Tree* cfgtree_create();
-void cfgtree_init(Cfg_Tree* cfgtree);
-void cfgtree_free(Cfg_Tree* cfgtree);
-void cfgtree_destroy(Cfg_Tree* cfgtree);
+void ast_add_statement(Node *statement, ASTree *astree);
+ASTree* ast_create();
+void ast_init(ASTree* astree);
+void ast_free(ASTree* astree);
+void ast_destroy(ASTree* astree);
 #endif
