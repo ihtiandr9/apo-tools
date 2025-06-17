@@ -38,20 +38,28 @@ void const_destroy(Expr *expr)
 ////////////////////////////////////////////
 // Register expression
 
-Expr *register_create(ExprValue reg);
+Expr *register_create(ExprValue reg, const char *ident);
 
 static ExprValue register_evaluate(Expr *self)
 {
         return self->data.value;
 }
 
-Expr *register_create(ExprValue reg)
+Expr *register_create(ExprValue reg, const char *ident)
 {
         Expr *expr = (Expr *)malloc(sizeof(Expr));
-        expr->type = EXPR_REG;
-        expr->ident = NULL;
-        expr->op.evaluate = const_evaluate;
-        expr->data.value = reg;
+        int len = strlen(ident);
+        if (expr)
+        {
+                expr->type = EXPR_REG;
+                expr->op.evaluate = register_evaluate;
+                if (len > MAX_LABEL_SIZE)
+                        len = MAX_LABEL_SIZE;
+                expr->ident = (char *)malloc(len + 1);
+                strncpy(expr->ident, ident, len);
+                expr->ident[len] = '\0';
+                expr->data.value = reg;
+        }
         return (Expr *)expr;
 }
 
@@ -66,14 +74,13 @@ void register_destroy(Expr *expr)
 
 static ExprValue var_evaluate(Expr *self)
 {
-        /*FIXME
-        if (!props->resolved)
-        {
-                props->valAddr = resolveVar(self);
-                if (props->valAddr)
-                        props->resolved = 1;
-        }*/
-        return self->data.value;
+    /*FIXME
+      this function must find global label by ident,
+      set self-data.value to its target and
+      change self-type to constant
+     */
+
+    return self->data.value;
 }
 
 Expr *var_create(const char *ident)
@@ -83,7 +90,6 @@ Expr *var_create(const char *ident)
         Expr *expr = (Expr *)malloc(sizeof(Expr));
         expr->type = EXPR_VAR;
         expr->op.evaluate = var_evaluate;
-        // props->resolved = 0;
         if (len > MAX_LABEL_SIZE)
                 len = MAX_LABEL_SIZE;
         expr->ident = (char *)malloc(len + 1);
@@ -121,16 +127,19 @@ ExprOp mathops = {
 
 static Expr *math_create(ExprValue opcode)
 {
-        MathExpr *props;
-        Expr *expr = (Expr *)malloc(sizeof(Expr));
+    MathExpr props;
+    Expr *expr = (Expr *)malloc(sizeof(Expr));
+    if (expr)
+    {
+        props.opcode = opcode;
+        props.lparam = NULL;
+        props.rparam = NULL;
         expr->type = EXPR_MATH;
         expr->ident = NULL;
         expr->op = mathops;
-        props = &expr->data.mathExpr;
-        props->opcode = opcode;
-        props->lparam = NULL;
-        props->rparam = NULL;
-        return (Expr *)expr;
+        expr->data.mathExpr = props;
+    }
+    return expr;
 }
 
 void math_free(Expr *expr)
@@ -231,4 +240,17 @@ Expr *math_create_addition(ExprValue opcode)
 void math_free_addition(Expr *expr)
 {
         math_free(expr);
+}
+
+void math_print(Expr *expr)
+{
+        switch (expr->type)
+        {
+        case EXPR_REG:
+                printf(INDENT "< REG: %s code %d\n", expr->ident,
+                       expr->data.value);
+                break;
+        default:
+                break;
+        }
 }

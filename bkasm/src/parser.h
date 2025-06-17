@@ -6,8 +6,6 @@
 #include <nodes.h>
 #include <asmast.h>
 
-// typedef union ParseResult ParseResult;
-
 STRUCT(Parser)
 {
     ASTree *prog;

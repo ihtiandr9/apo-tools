@@ -43,7 +43,7 @@ STRUCT(Expr)
 {
     eExprType type;
     char *ident;
-    ExprOp op;
+    ExprOp op; /* virtual methods */
     union
     {
         MathExpr mathExpr;
@@ -52,9 +52,10 @@ STRUCT(Expr)
 };
 
 Expr *const_create(ExprValue num);
-Expr *register_create(ExprValue reg);
+Expr *register_create(ExprValue reg, const char *ident);
 Expr *math_create_addition(ExprValue operation);
 Expr *math_create_multiplication(ExprValue operation);
 void math_free(Expr *expr);
 Expr *var_create(const char *ident);
+void math_print(Expr *expr);
 #endif

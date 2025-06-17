@@ -41,7 +41,7 @@ static Node* parse_var(Parser *self, Lexer *lexer)
             // codeflow
         }else
         {
-            node->label.target = register_create(TOK_REGPC);
+            node->label.target = register_create(TOK_REGPC, "PC");
             ast_add_statement(node, self->prog); // add standart label
             parse_statement(self, lexer); // parse remain part of string
             node = NULL; // nothing to return, all parts were parsed
@@ -74,7 +74,7 @@ static void parse_comment(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             return;
         case TOK_SEMICOLON:
-            printf("< COMMENT >: skip until eol\n");
+            // printf("< COMMENT >: skip until eol\n");
             lexer->skipUntil(lexer, 10);
             lexer->skipOne(lexer);
             break;
@@ -184,19 +184,19 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
     switch (m_token.kind)
     {
     case REG:
-        expr = register_create(m_token.type);
-        printf(INDENT INDENT "< REGISTER >: %s code %d\n", m_token.ident, expr->op.evaluate(expr));
+        expr = register_create(m_token.type, m_token.ident);
+        // printf(INDENT INDENT "< REGISTER >: %s code %d\n", m_token.ident, expr->op.evaluate(expr));
         break;
     case CONST:
         switch (m_token.type)
         {
         case TOK_NUM:
             expr = parse_addition(self, lexer);
-            printf(INDENT INDENT "< IMMEDIATE >: %d\n", expr->op.evaluate(expr));
+            // printf(INDENT INDENT "< IMMEDIATE >: %d\n", expr->op.evaluate(expr));
             break;
         case TOK_IDENT:
             expr = parse_addition(self, lexer);
-            printf(INDENT INDENT "< VAR >: %s\n", expr->ident);
+            // printf(INDENT INDENT "< VAR >: %s\n", expr->ident);
             break;
         default:
             throw_error(E_UNKIDENT, m_token.ident);
@@ -293,7 +293,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
 {
     InbufCurrentString *currstr;
     Lexema m_token = lexer->token;
-    lexer->printTok(lexer->token); // debug
+    //lexer->printTok(lexer->token); // debug
     currstr = inbuf_currstr();
 
     switch (m_token.kind)
@@ -316,7 +316,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
             parse_comment(self, lexer);
             break;
         case L_EOL:
-            printf("< EMPTY STRING >\n");
+            // printf("< EMPTY STRING >\n");
             lexer->skipOne(lexer);
             break;
         case L_EOF:
