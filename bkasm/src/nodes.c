@@ -24,17 +24,17 @@ Node *node_create_instruction(const char *ident, ExprValue opcode)
         return (Node *)node;
 }
 
-void node_clear_instruction(Instruction *_instr)
+void node_clear_instruction(Instruction *instr)
 {
-        if (_instr)
+        if (instr)
         {
-                _instr->type = NODE_EMPTY;
-                free(_instr->ident);
-                _instr->ident = NULL;
-                math_free((Expr *)_instr->lparam);
-                _instr->lparam = 0;
-                math_free((Expr *)_instr->rparam);
-                _instr->rparam = 0;
+                instr->type = NODE_EMPTY;
+                free(instr->ident);
+                instr->ident = NULL;
+                math_free((Expr *)instr->lparam);
+                instr->lparam = 0;
+                math_free((Expr *)instr->rparam);
+                instr->rparam = 0;
         }
 }
 
@@ -64,6 +64,25 @@ void node_clear_label(Label *_label)
                 math_free(_label->target);
                 free(_label->ident);
                 _label->ident = NULL;
+        }
+}
+
+void node_print(Node *node)
+{
+        if (!node)
+                return;
+        switch (node->type)
+        {
+        case NODE_INSTRUCTION:
+            printf(INDENT "< OPERATION >: %s code %d\n", node->op.ident,
+                    node->op.opcode);
+                break;
+        case NODE_LABEL:
+            printf("< LABEL >: %s\n", node->label.ident);
+                break;
+        default:
+                assert(0);
+                break;
         }
 }
 

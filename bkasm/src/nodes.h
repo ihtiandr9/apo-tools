@@ -53,6 +53,7 @@ void node_clear_label(Label *_label);
 Node *node_create_instruction(const char *ident, ExprValue opcode);
 void node_clear_instruction(Instruction *_instr);
 void node_clear(Node *node);
+void node_print(Node *node);
 NodeList *nodelist_alloc();
 void nodelist_destroy(NodeList* nodelist);
 #endif

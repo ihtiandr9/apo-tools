@@ -2,7 +2,7 @@ AdjacentTempDirectory	./tests/python/lib/python3.8/site-packages/pip/_internal/r
 AppEngineManager	./tests/python/lib/python3.8/site-packages/pip/_vendor/urllib3/contrib/__pycache__/appengine.cpython-38.pyc	/^        http = AppEngineManager()$/
 ArgumentParser	./tests/python/lib/python3.8/site-packages/pip/_vendor/certifi/__main__.py	/^parser = argparse.ArgumentParser()$/
 AttributeError	./tests/python/lib/python3.8/site-packages/pip/_vendor/typing_extensions.py	/^        raise AttributeError(item)$/
-Awit	./tests/python/lib/python3.8/site-packages/pip-24.3.1.dist-info/AUTHORS.txt	/^Awit (Ah-Wit) Ghirmai$/
+Awit	./tags	/^Awit	.\/tests\/python\/lib\/python3.8\/site-packag/
 BuildBackendHookCaller	./tests/python/lib/python3.8/site-packages/pip/_vendor/pyproject_hooks/__pycache__/_impl.cpython-38.pyc	/^            hook_caller = BuildBackendHookCaller(./
 COMP_CWORD	./tests/python/lib/python3.8/site-packages/pip/_internal/commands/__pycache__/completion.cpython-38.pyc	/^            set -lx COMP_CWORD ( \\$/
 CaseInsensitiveDict	./tests/python/lib/python3.8/site-packages/pip/_vendor/cachecontrol/serialize.py	/^        response_headers: CaseInsensitiveDict[str]/
@@ -32,6 +32,7 @@ JSONDecodeError	./tests/python/lib/python3.8/site-packages/pip/_vendor/requests/
 KeyError	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/spinner.py	/^            raise KeyError(f"no spinner called {na/
 LazyZipOverHTTP	./tests/python/lib/python3.8/site-packages/pip/_internal/network/lazy_wheel.py	/^    with LazyZipOverHTTP(url, session) as zf:$/
 LibraryLoader	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/_win32_console.py	/^    windll = ctypes.LibraryLoader(ctypes.WinDLL)$/
+License	./build/.qtc/package-manager/LICENSE.conan	/^The MIT License (MIT)$/
 LookupDict	./tests/python/lib/python3.8/site-packages/pip/_vendor/requests/status_codes.py	/^codes = LookupDict(name="status_codes")$/
 MCMakeCCompilerId	./build/CMakeFiles/3.31.6/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/
 MCMakeCXXCompilerId.cpp	./build/CMakeFiles/3.31.6/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/
@@ -53,6 +54,7 @@ PurePosixPath	./tests/python/lib/python3.8/site-packages/pip/_internal/metadata/
 PyPI	./tests/python/lib/python3.8/site-packages/pip/_internal/commands/__pycache__/download.cpython-38.pyc	/^    - PyPI (and other indexes) using requirement s/
 Queue	./tests/python/lib/python3.8/site-packages/pip/_vendor/distlib/locators.py	/^        self.errors = queue.Queue()$/
 R	./tests/python/pip.pyz	/^>²4*QÅÉ5\/s©â*Í®Rä.ÞQ´çNF~§åuZˆü]ÄNDÁËtÇ£îÎo[Î/
+RIFF	./build/.qtc_clangd/.cache/clangd/index/mathexpr.c.08C03840C3B71CBC.idx	/^RIFF(/
 RLock	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/layout.py	/^        self._lock = RLock()$/
 RegexLexerz4lex	./tests/python/lib/python3.8/site-packages/pip/_vendor/pygments/__pycache__/__init__.cpython-38.pyc	/^RegexLexerz4lex() argument must be a lexer instanc/
 Renderable	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/__pycache__/logging.cpython-38.pyc	/^            message_renderable (ConsoleRenderable)/
@@ -86,7 +88,6 @@ X	./tests/python/pip.pyz	/^Øe§VEþQ—  rŽ+½X(ö\\^‡±ß__¥«+g×ñ®‚å6ÎÕ:+â/
 Z	./tests/python/lib/python3.8/site-packages/pip/_internal/metadata/__pycache__/base.cpython-38.pyc	/^eee/
 Z0d	./tests/python/lib/python3.8/site-packages/pip/_vendor/urllib3/contrib/_securetransport/__pycache__/bindings.cpython-38.pyc	/^ZdZdZdZdZdZdZdZdZdZdZdZdZ/
 ZBd	./tests/python/lib/python3.8/site-packages/pip/_vendor/truststore/__pycache__/_windows.cpython-38.pyc	/^eƒZ"ee"ƒZ#ee#ƒZ$G/
-_ExprType	./tags	/^_ExprType	src\/mathexpr.h	\/^typedef enum _ExprTyp/
 _FlatDirectoryToUrls	./tests/python/lib/python3.8/site-packages/pip/_internal/index/sources.py	/^            self._path_to_urls = _FlatDirectoryToU/
 _GLibCVersion	./tests/python/lib/python3.8/site-packages/pip/_vendor/packaging/_manylinux.py	/^    too_old_glibc2 = _GLibCVersion(2, 16)$/
 _NotHTTP	./tests/python/lib/python3.8/site-packages/pip/_internal/index/collector.py	/^        raise _NotHTTP()$/
@@ -101,9 +102,9 @@ __pip	./tests/python/lib/python3.8/site-packages/pip/_internal/commands/__pycach
 _add	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/style.py	/^        combined_style = self._add(style)$/
 _call_hook	./tests/python/lib/python3.8/site-packages/pip/_vendor/pyproject_hooks/_impl.py	/^        return self._call_hook('get_requires_for_b/
 _checkbase	./tests/python/bin/activate.fish	/^            set -l _checkbase (basename "$VIRTUAL_/
+_collect_settings	./build/.qtc/package-manager/conan.cmake	/^    _collect_settings(collected_settings)$/
+_conan_check_system_name	./build/.qtc/package-manager/conan.cmake	/^    _conan_check_system_name()$/
 _declare_state	./tests/python/lib/python3.8/site-packages/pip/_vendor/pkg_resources/__init__.py	/^_namespace_packages: dict[str | None, list[str]] =/
-_eErrorType	./tags	/^_eErrorType	src\/errors.h	\/^typedef enum _eErrorT/
-_eIdentType	./tags	/^_eIdentType	src\/lexer.h	\/^typedef enum _eIdentTy/
 _get_css_class	./tests/python/lib/python3.8/site-packages/pip/_vendor/pygments/formatters/html.py	/^            name = self._get_css_class(ttype)$/
 _implementation	./tests/python/lib/python3.8/site-packages/pip/_vendor/requests/help.py	/^    implementation_info = _implementation()$/
 _in_proc_script_path	./tests/python/lib/python3.8/site-packages/pip/_vendor/pyproject_hooks/_impl.py	/^            with _in_proc_script_path() as script:/
@@ -143,6 +144,7 @@ assemble	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/color.py	/^
 available	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/__pycache__/cells.cpython-38.pyc	/^/
 bar	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/traceback.py	/^        bar(a)$/
 bool	./tests/python/lib/python3.8/site-packages/pip/_internal/metadata/__init__.py	/^        return bool(strtobool(os.environ["_PIP_USE/
+break	./build/.qtc/package-manager/conan.cmake	/^            break()$/
 buffering	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/__pycache__/progress.cpython-38.pyc	/^        rÝ/
 build_iter_view	./tests/python/lib/python3.8/site-packages/pip/_vendor/resolvelib/resolvers.py	/^                    candidates = build_iter_view(m/
 build_url_from_netloc	./tests/python/lib/python3.8/site-packages/pip/_internal/utils/misc.py	/^    url = build_url_from_netloc(netloc)$/
@@ -164,6 +166,8 @@ cls	./tests/python/lib/python3.8/site-packages/pip/_internal/models/direct_url.p
 cmake_minimum_required	./CMakeLists.txt	/^cmake_minimum_required(VERSION 3.0...3.30)$/
 cnr	./tests/python/lib/python3.8/site-packages/pip/_vendor/pygments/formatters/__pycache__/rtf.cpython-38.pyc	/^z\\par)r\//
 compile	./tests/python/lib/python3.8/site-packages/pip/_internal/utils/encoding.py	/^ENCODING_RE = re.compile(rb"coding[:=]\\s*([-\\w.]/
+conan_parse_arguments	./build/.qtc/package-manager/conan.cmake	/^    conan_parse_arguments(${ARGV})$/
+configure_file	./build/.qtc/package-manager/conan.cmake	/^    configure_file(${ARGUMENTS_CONANFILE} ${CMAKE_/
 const_create	./src/mathexpr.c	/^Expr *const_create(ExprValue num)$/
 const_destroy	./src/mathexpr.c	/^void const_destroy(Expr *expr)$/
 const_evaluate	./src/mathexpr.c	/^static ExprValue const_evaluate(Expr *self)$/
@@ -184,6 +188,7 @@ default_error_dispatcher	./src/errors.c	/^static void default_error_dispatcher(E
 default_showtraceback	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/traceback.py	/^            default_showtraceback(*args, **kwargs)/
 defaultdict	./tests/python/lib/python3.8/site-packages/pip/_internal/operations/install/wheel.py	/^    grouped_by_dir: Dict[str, Set[str]] = collecti/
 deque	./tests/python/lib/python3.8/site-packages/pip/_vendor/distlib/util.py	/^            subs[event] = deque([subscriber])$/
+detect_libcxx	./build/.qtc/package-manager/conan_provider.cmake	/^        detect_libcxx()$/
 dict	./tests/python/lib/python3.8/site-packages/pip/_vendor/pkg_resources/__init__.py	/^            return dict(items)$/
 dirname	./tests/python/lib/python3.8/site-packages/pip/__main__.py	/^    path = os.path.dirname(os.path.dirname(__file_/
 dirs	./tests/python/lib/python3.8/site-packages/pip/_vendor/platformdirs/__pycache__/__main__.cpython-38.pyc	/^ƒ/
@@ -198,18 +203,24 @@ eIdentKind	./src/lexer.h	/^} eIdentKind;$/
 eIdentType	./src/lexer.h	/^} eIdentType;$/
 eNodeType	./src/nodes.h	/^} eNodeType;$/
 egg	./tests/python/lib/python3.8/site-packages/pip/_vendor/distlib/__pycache__/database.cpython-38.pyc	/^        Yield .dist-info and\/or .egg(-info) distr/
+else	./build/.qtc/package-manager/auto-setup.cmake	/^      else()$/
+elseif	./build/.qtc/package-manager/conan_provider.cmake	/^        elseif(CMAKE_SYSTEM_NAME STREQUAL "QNX")$/
 encode	./tests/python/lib/python3.8/site-packages/pip/_vendor/idna/compat.py	/^    return encode(label)$/
 endforeach	./build/CMakeFiles/3.31.6/CMakeCXXCompiler.cmake	/^    endforeach()$/
+endfunction	./build/.qtc/package-manager/conan.cmake	/^endfunction()$/
+endif	./build/.qtc/package-manager/auto-setup.cmake	/^          endif()$/
+endmacro	./build/.qtc/package-manager/conan.cmake	/^endmacro()$/
 entry_points	./tests/python/lib/python3.8/site-packages/pip/_vendor/pygments/plugin.py	/^    groups = entry_points()$/
 eqd	./tests/python/lib/python3.8/site-packages/pip/_vendor/pkg_resources/__pycache__/__init__.cpython-38.pyc	/^j`geeVdf/
 error	./tests/python/lib/python3.8/site-packages/pip/_internal/commands/cache.py	/^            logger.error("pip cache commands can n/
 escape	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/console.py	/^                    text = escape(text)$/
 evaluate_link	./tests/python/lib/python3.8/site-packages/pip/_internal/index/__pycache__/package_finder.cpython-38.pyc	/^        See LinkEvaluator.evaluate_link() for deta/
 exc_info	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/traceback.py	/^            exc_type, exc_value, traceback = sys.e/
+execute_process	./build/.qtc/package-manager/conan_provider.cmake	/^        execute_process(COMMAND xcrun --find ${com/
 exit	./tests/python/lib/python3.8/site-packages/pip/_vendor/pygments/__main__.py	/^    sys.exit(main(sys.argv))$/
 extend	./tests/python/lib/python3.8/site-packages/pip/_internal/build_env.py	/^            args.extend(["-i", index_urls[0]])$/
 field	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/console.py	/^    buffer: List[Segment] = field(default_factory=/
-file	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/__pycache__/file_proxy.cpython-38.pyc	/^eedœdd„Zddœdd„Zedœdd„ZdS/
+file	./build/.qtc/package-manager/auto-setup.cmake	/^        file(APPEND "${toolchainFile}"$/
 fileno	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/__pycache__/_fileno.cpython-38.pyc	/^r2/
 filter	./tests/python/lib/python3.8/site-packages/pip/_vendor/pygments/filter.py	/^        yield from filter_.filter(lexer, stream)$/
 finalize	./tests/python/lib/python3.8/site-packages/pip/_vendor/urllib3/packages/backports/__pycache__/weakref_finalize.cpython-38.pyc	/^    finalize(obj, func, *args, **kwargs) returns a/
@@ -222,6 +233,7 @@ from_markup	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/panel.py
 from_path	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/syntax.py	/^        syntax = Syntax.from_path($/
 frozenset	./tests/python/lib/python3.8/site-packages/pip/_vendor/urllib3/util/request.py	/^SKIPPABLE_HEADERS = frozenset(["accept-encoding", /
 func	./tests/python/lib/python3.8/site-packages/pip/_internal/resolution/resolvelib/found_candidates.py	/^        candidate = func()$/
+function	./build/.qtc/package-manager/conan.cmake	/^function(conan_cmake_generate_conanfile DEFAULT_GE/
 g	./tests/python/pip.pyz	/^?[^©ˆ®ºËg(¾äYqZöp:£ {—8&SM*…¼—7)G±MuGŠI/
 get	./tests/python/lib/python3.8/site-packages/pip/_internal/cli/autocompletion.py	/^    if not os.environ.get("COMP_WORDS") or not os./
 getLogger	./tests/python/lib/python3.8/site-packages/pip/_internal/build_env.py	/^logger = logging.getLogger(__name__)$/
@@ -232,6 +244,7 @@ get_console_script_specs	./tests/python/lib/python3.8/site-packages/pip/_interna
 get_default_environment	./tests/python/lib/python3.8/site-packages/pip/_internal/operations/check.py	/^    env = get_default_environment()$/
 get_distribution	./tests/python/lib/python3.8/site-packages/pip/_internal/build_env.py	/^                dist = env.get_distribution(req.na/
 get_export_entry	./tests/python/lib/python3.8/site-packages/pip/_vendor/distlib/util.py	/^            entry = get_export_entry(s)$/
+get_filename_component	./build/.qtc/package-manager/auto-setup.cmake	/^    get_filename_component(vpkg_root ${vpkg_progra/
 get_host	./tests/python/lib/python3.8/site-packages/pip/_vendor/requests/cookies.py	/^        return self.get_host()$/
 get_lexer_by_name	./tests/python/lib/python3.8/site-packages/pip/_vendor/pygments/cmdline.py	/^            cls = get_lexer_by_name(name)$/
 get_netloc_and_auth	./tests/python/lib/python3.8/site-packages/pip/_internal/vcs/versioncontrol.py	/^        netloc, user_pass = cls.get_netloc_and_aut/
@@ -289,7 +302,7 @@ lexer_print_tok	./src/lexer.c	/^static void lexer_print_tok(Lexema token)$/
 lexer_skip_one	./src/lexer.c	/^static void lexer_skip_one(Lexer *self)$/
 lexer_skip_until	./src/lexer.c	/^static void lexer_skip_until(Lexer *self, unsigned/
 lexer_skip_while	./src/lexer.c	/^static void lexer_skip_while(Lexer *self, unsigned/
-list	./tests/python/lib/python3.8/site-packages/pip/_internal/commands/search.py	/^    return list(packages.values())$/
+list	./build/.qtc/package-manager/conan_provider.cmake	/^        list(GET VERSION_LIST 0 _COMPILER_VERSION)/
 load_verify_locations	./tests/python/lib/python3.8/site-packages/pip/_vendor/distlib/util.py	/^                context.load_verify_locations(cafi/
 loads	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/json.py	/^        data = loads(json)$/
 location	./tests/python/lib/python3.8/site-packages/pip/_internal/index/collector.py	/^                f"{len(lines)} location(s) to sear/
@@ -315,6 +328,7 @@ math_free_multiplication	./src/mathexpr.c	/^void math_free_multiplication(Expr *
 math_set_lparam	./src/mathexpr.c	/^void math_set_lparam(Expr *self, Expr *val)$/
 math_set_rparam	./src/mathexpr.c	/^void math_set_rparam(Expr *self, Expr *val)$/
 max	./tests/python/lib/python3.8/site-packages/pip/_vendor/pygments/sphinxext.py	/^        column_lengths = [max([len(row[column]) fo/
+message	./build/.qtc/package-manager/conan.cmake	/^            message(FATAL_ERROR "Conan outdated. I/
 message_about_scripts_not_on_PATH	./tests/python/lib/python3.8/site-packages/pip/_internal/operations/install/wheel.py	/^        msg = message_about_scripts_not_on_PATH(ge/
 middle	./tests/python/lib/python3.8/site-packages/pip/_vendor/requests/sessions.py	/^            man-in-the-middle (MitM) attacks. Sett/
 min	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/measure.py	/^        minimum = min(max(0, minimum), maximum)$/
@@ -327,6 +341,7 @@ node_clear_instruction	./src/nodes.c	/^void node_clear_instruction(Instruction *
 node_clear_label	./src/nodes.c	/^void node_clear_label(Label *_label)$/
 node_create_instruction	./src/nodes.c	/^Node *node_create_instruction(const char *ident, E/
 node_create_label	./src/nodes.c	/^Node *node_create_label(const char *ident)$/
+node_print	./src/nodes.c	/^void node_print(Node *node)$/
 nodelist_alloc	./src/nodes.c	/^NodeList *nodelist_alloc()$/
 nodelist_destroy	./src/nodes.c	/^void nodelist_destroy(NodeList *nodelist)$/
 normalize_version_info	./tests/python/lib/python3.8/site-packages/pip/_internal/models/target_python.py	/^            py_version_info = normalize_version_in/
@@ -335,6 +350,7 @@ now	./tests/python/lib/python3.8/site-packages/pip/_vendor/cachecontrol/heuristi
 null	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/ansi.py	/^        self.style = Style.null()$/
 object	./tests/python/lib/python3.8/site-packages/pip/_internal/operations/build/build_tracker.py	/^    non_existent_marker = object()$/
 of	./tests/python/lib/python3.8/site-packages/pip/_internal/__pycache__/build_env.cpython-38.pyc	/^        - conflicting requirements: set of (instal/
+old_conan_cmake_install	./build/.qtc/package-manager/conan.cmake	/^                old_conan_cmake_install(SETTINGS $/
 open	./tests/python/lib/python3.8/site-packages/pip/_vendor/distlib/wheel.py	/^            with zf.open(record_name) as bf:$/
 open_spinner	./tests/python/lib/python3.8/site-packages/pip/_internal/build_env.py	/^        with open_spinner(f"Installing {kind}") as/
 package_releases	./tests/python/lib/python3.8/site-packages/pip/_vendor/distlib/locators.py	/^        versions = self.client.package_releases(na/
@@ -389,7 +405,7 @@ replace	./tests/python/lib/python3.8/site-packages/pip/_internal/metadata/_json.
 repr	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/color.py	/^        return repr(self)$/
 request	./tests/python/lib/python3.8/site-packages/pip/_vendor/urllib3/util/__pycache__/timeout.cpython-38.pyc	/^       response = http.request('GET', 'http:\/\/ex/
 resolve	./tests/python/lib/python3.8/site-packages/pip/_internal/resolution/resolvelib/__pycache__/resolver.cpython-38.pyc	/^        Nzmust call resolve() first)ÚweightsT)/
-return	./tests/python/lib/python3.8/site-packages/pip/_vendor/typing_extensions.py	/^            return (tp.__origin__, *tp.__metadata_/
+return	./build/.qtc/package-manager/conan.cmake	/^                    return()$/
 rgb	./tests/python/lib/python3.8/site-packages/pip/_vendor/rich/__pycache__/color_triplet.cpython-38.pyc	/^        zrgb(ú,ú)r/
 rstrip	./tests/python/lib/python3.8/site-packages/pip/_vendor/pygments/cmdline.py	/^        largs = [arg.rstrip('s') for arg in argns./
 search	./tests/python/lib/python3.8/site-packages/pip/_vendor/distro/distro.py	/^        match = re.search(r"^([^\\s]+)\\s+([\\d\\./
@@ -410,7 +426,7 @@ split	./tests/python/lib/python3.8/site-packages/pip/_internal/metadata/pkg_reso
 splitlines	./tests/python/lib/python3.8/site-packages/pip/_vendor/distro/distro.py	/^        content = self._to_str(stdout).splitlines(/
 startswith	./tests/python/lib/python3.8/site-packages/pip/_vendor/platformdirs/macos.py	/^        is_homebrew = sys.prefix.startswith("\/opt/
 str	./tests/python/lib/python3.8/site-packages/pip/_internal/commands/list.py	/^            info["latest_version"] = str(dist.late/
-string	./tests/python/lib/python3.8/site-packages/pip/_vendor/distro/__pycache__/distro.cpython-38.pyc	/^          An empty string (the default) will cause/
+string	./build/.qtc/package-manager/conan.cmake	/^        string(TOUPPER ${ARG} _arg_name)$/
 strings	./tests/python/lib/python3.8/site-packages/pip/_internal/utils/__pycache__/glibc.cpython-38.pyc	/^    Returns a tuple of strings (lib, version) whic/
 strip	./tests/python/lib/python3.8/site-packages/pip/_vendor/packaging/metadata.py	/^    return [k.strip() for k in data.split(",")]$/
 strongconnect	./tests/python/lib/python3.8/site-packages/pip/_vendor/distlib/util.py	/^                    strongconnect(successor)$/
@@ -446,6 +462,7 @@ var_free	./src/mathexpr.c	/^void var_free(Expr *expr)$/
 var_resolve	./src/generator.c	/^ExprValue* var_resolve(Expr *var)$/
 variantz	./tests/python/lib/python3.8/site-packages/pip/_vendor/packaging/__pycache__/metadata.cpython-38.pyc	/^CommonMarkÚvariantz(valid Markdown variants for {/
 version	./tests/python/lib/python3.8/site-packages/pip/_internal/index/package_finder.py	/^                    "Existing installed version (%/
+w	./build/.qtc_clangd/.cache/clangd/index/unistd.h.4957E2CBEF0B97CE.idx	/^/
 warn	./tests/python/lib/python3.8/site-packages/pip/_vendor/distro/distro.py	/^    warnings.warn($/
 warning	./tests/python/lib/python3.8/site-packages/pip/_internal/network/auth.py	/^            logger.warning($/
 where	./tests/python/lib/python3.8/site-packages/pip/_vendor/requests/__pycache__/certs.cpython-38.pyc	/^environment, you can change the definition of wher/

@@ -29,8 +29,6 @@ void ast_add_statement(Node *statement, ASTree *astree)
                 astree->lastNode = astree->firstNode;
             }
             astree->lastNode->node = *statement;
-            printf(INDENT "< OPERATION >: %s code %d\n", astree->lastNode->node.op.ident,
-                    astree->lastNode->node.op.opcode);
             break;
         case NODE_LABEL:
             if (astree->lastNode)
@@ -44,12 +42,12 @@ void ast_add_statement(Node *statement, ASTree *astree)
                 astree->lastNode = astree->firstNode;
             }
             astree->lastNode->node = *statement;
-            printf("< LABEL >: %s\n", astree->lastNode->node.label.ident);
             break;
         default:
             assert(0);
             return;
     }
+    node_print(statement);
     free(statement);
 }
 
