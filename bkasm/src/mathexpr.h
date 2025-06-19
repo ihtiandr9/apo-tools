@@ -57,5 +57,5 @@ Expr *math_create_addition(ExprValue operation);
 Expr *math_create_multiplication(ExprValue operation);
 void math_free(Expr *expr);
 Expr *var_create(const char *ident);
-void math_print(Expr *expr);
+void math_print_expression(Expr *expr);
 #endif
