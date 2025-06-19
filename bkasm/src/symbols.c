@@ -32,8 +32,8 @@ int is_digit(char ch)
 int is_alfa(char ch)
 {
     int i = 0;
-    
-	for (i = 0; i < sizeof(alfas) - 1; i++)
+
+    for (i = 0; i < sizeof(alfas) - 1; i++)
     {
         if (ch == alfas[i])
             break;
