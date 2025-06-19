@@ -87,8 +87,8 @@ void node_print(Node *node)
     assert(node);
     switch (node->type)
     {
+        Instruction instr;
         case NODE_INSTRUCTION:
-            Instruction instr;
             instr = node->op;
             printf("< OPERATION >: %s code %d\n", instr.ident,
                    instr.opcode);
