@@ -185,18 +185,15 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
     {
     case REG:
         expr = register_create(m_token.type, m_token.ident);
-        // printf(INDENT INDENT "< REGISTER >: %s code %d\n", m_token.ident, expr->op.evaluate(expr));
         break;
     case CONST:
         switch (m_token.type)
         {
         case TOK_NUM:
             expr = parse_addition(self, lexer);
-            // printf(INDENT INDENT "< IMMEDIATE >: %d\n", expr->op.evaluate(expr));
             break;
         case TOK_IDENT:
             expr = parse_addition(self, lexer);
-            // printf(INDENT INDENT "< VAR >: %s\n", expr->ident);
             break;
         default:
             throw_error(E_UNKIDENT, m_token.ident);

@@ -88,17 +88,20 @@ void node_print(Node *node)
     switch (node->type)
     {
         Instruction instr;
+        Label label;
         case NODE_INSTRUCTION:
             instr = node->op;
             printf("< OPERATION >: %s code %d\n", instr.ident,
                    instr.opcode);
             if(instr.lparam)
-                math_print(instr.lparam);
+                math_print_expression(instr.lparam);
             if(instr.rparam)
-                math_print(instr.rparam);
+                math_print_expression(instr.rparam);
             break;
         case NODE_LABEL:
-            printf("< LABEL >: %s\n", node->label.ident);
+            label = node->label;
+            printf("< LABEL >: %s\n", label.ident);
+            math_print_expression(label.target);
             break;
         default:
             assert(0);
