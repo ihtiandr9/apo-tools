@@ -78,7 +78,7 @@ static int lexer_next_tok(Lexer *self)
     self->token.ident = 0;
     currstr = inbuf_currstr();
 
-    while (self->token.type == TOK_NONE)
+    for (;self->token.type == TOK_NONE;)
     {
         if (m_ch == CH_NULL)
             m_ch = inbuf_next_char();
@@ -91,7 +91,7 @@ static int lexer_next_tok(Lexer *self)
         }
 
         m_sym = self->symbols;
-        while (m_sym->len != 0)
+        for ( ;m_sym->len != 0; )
         {
             if (*(m_sym->ident) == m_ch)
             {
@@ -111,7 +111,7 @@ static int lexer_next_tok(Lexer *self)
             int len = 0;
             char *endbuf;
 
-            while (is_digit(m_ch))
+            for (;is_digit(m_ch);)
             {
                 ident = (char *)realloc(ident, len + 2);
                 ident[len++] = m_ch;
@@ -130,7 +130,7 @@ static int lexer_next_tok(Lexer *self)
         {
             char *ident = 0;
             int len = 0;
-            while (is_alfa(m_ch) || is_digit(m_ch))
+            for ( ;is_alfa(m_ch) || is_digit(m_ch);)
             {
                 // collect identifier
                 ident = (char *)realloc(ident, len + 2);
@@ -139,7 +139,7 @@ static int lexer_next_tok(Lexer *self)
                 m_ch = inbuf_next_char();
             }
             m_sym = self->words;
-            while (m_sym->len != 0)
+            for ( ;m_sym->len != 0;)
             {
                 // compare with keywords
                 if (!strcmp(ident, m_sym->ident))
@@ -203,18 +203,12 @@ static void lexer_skip_one(Lexer *self)
 
 static void lexer_skip_while(Lexer *self, unsigned char symbol)
 {
-    while (self->ch == symbol && self->ch != 0xff)
-    {
-        self->ch = inbuf_next_char();
-    }
+    for ( ;self->ch == symbol && self->ch != 0xff;self->ch = inbuf_next_char());
 }
 
 static void lexer_skip_until(Lexer *self, unsigned char symbol)
 {
-    while (self->ch != symbol && self->ch != 0xff)
-    {
-        self->skipOne(self);
-    }
+    for (;self->ch != symbol && self->ch != 0xff; self->skipOne(self));
     self->nextTok(self);
 }
 

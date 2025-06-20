@@ -11,12 +11,12 @@ static const IntBase intBases[] =
 
 int radix(char suffix)
 {
-    IntBase *intBase = (IntBase *)intBases;
-    while (intBase->suffix != 0)
+    int i;
+    for (i=0; intBases[i].suffix; )
     {
-        if (intBase->suffix == suffix)
+        if (intBases[i].suffix == suffix)
             break;
-        intBase++;
+        i++;
     }
-    return intBase->radix;
+    return intBases[i].radix;
 }
