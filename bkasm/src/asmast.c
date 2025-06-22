@@ -17,35 +17,35 @@ void ast_add_statement(Node *statement, ASTree *astree)
         return;
     switch (statement->type)
     {
-        case NODE_INSTRUCTION:
-            if (astree->lastNode)
-            {
-                astree->lastNode->next = nodelist_alloc();
-                astree->lastNode = astree->lastNode->next;
-            }
-            else
-            {
-                astree->firstNode = nodelist_alloc();
-                astree->lastNode = astree->firstNode;
-            }
-            astree->lastNode->node = *statement;
-            break;
-        case NODE_LABEL:
-            if (astree->lastNode)
-            {
-                astree->lastNode->next = nodelist_alloc();
-                astree->lastNode = astree->lastNode->next;
-            }
-            else
-            {
-                astree->firstNode = nodelist_alloc();
-                astree->lastNode = astree->firstNode;
-            }
-            astree->lastNode->node = *statement;
-            break;
-        default:
-            assert(0);
-            return;
+    case NODE_INSTRUCTION:
+        if (astree->lastNode)
+        {
+            astree->lastNode->next = nodelist_alloc();
+            astree->lastNode = astree->lastNode->next;
+        }
+        else
+        {
+            astree->firstNode = nodelist_alloc();
+            astree->lastNode = astree->firstNode;
+        }
+        astree->lastNode->node = *statement;
+        break;
+    case NODE_LABEL:
+        if (astree->lastNode)
+        {
+            astree->lastNode->next = nodelist_alloc();
+            astree->lastNode = astree->lastNode->next;
+        }
+        else
+        {
+            astree->firstNode = nodelist_alloc();
+            astree->lastNode = astree->firstNode;
+        }
+        astree->lastNode->node = *statement;
+        break;
+    default:
+        assert(0);
+        return;
     }
     node_print(statement);
     free(statement);
