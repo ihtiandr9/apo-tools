@@ -22,14 +22,14 @@
 
 int main(int argc, char *argv[])
 {
-    Edb *pEdb;
+    Edb edb;
 	int cmd;
     fd_in = DEFAULT_FD_IN;
     fd_out = DEFAULT_FD_OUT;
 	cmd = CMD_UNPACK;
     if (argc <= 1)
     {
-        throw_error(E_CMDREQ, 0);        
+        throw_error(E_CMDREQ, 0);
     }
     else
     {
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
             cmd = CMD_UNPACK;
         else
         {
-            throw_error(E_UNKNOWNCMD, argv[1]);            
+            throw_error(E_UNKNOWNCMD, argv[1]);
         }
     }
     if (argc > 2)
@@ -53,20 +53,19 @@ int main(int argc, char *argv[])
 
     if (fd_in < 0)
     {
-        throw_error(E_NOEXIST, argv[2]);        
+        throw_error(E_NOEXIST, argv[2]);
     }
     if (fd_out < 0)
     {
-        throw_error(E_CREATE, argv[3]);        
+        throw_error(E_CREATE, argv[3]);
     }
-    pEdb = edb_create(fd_in, fd_out);
-    if (CMD_UNPACK == cmd)
-        pEdb->unpack(pEdb);
-    else if (CMD_PACK == cmd)
-        pEdb->pack(pEdb);
+    edb_init(fd_in, fd_out, &edb);
 
-    fclose(fd_in);
-    fclose(fd_out);
-    free(pEdb);
+    if (CMD_UNPACK == cmd)
+        edb.unpack(&edb);
+    else if (CMD_PACK == cmd)
+        edb.pack(&edb);
+
+    exit_nicely(0);
     return 0;
 }

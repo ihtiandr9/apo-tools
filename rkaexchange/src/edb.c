@@ -166,16 +166,19 @@ static int edb_pack(ptrEdb this)
     return pack(this->fd_in, this->fd_out);
 }
 
+void edb_init(FILE *fd_in, FILE *fd_out, ptrEdb pEdb)
+{
+    pEdb->fd_in = fd_in;
+    pEdb->fd_out = fd_out;
+    pEdb->unpack = edb_unpack;
+    pEdb->pack = edb_pack;
+}
+
 ptrEdb edb_create(FILE *fd_in, FILE *fd_out)
 {
     ptrEdb m_pEdb = malloc(sizeof(Edb));
-    if (m_pEdb)
-    {
-        m_pEdb->fd_in = fd_in;
-        m_pEdb->fd_out = fd_out;
-        m_pEdb->unpack = edb_unpack;
-        m_pEdb->pack = edb_pack;
-    }
+    assert(m_pEdb);
+    edb_init(fd_in, fd_out, m_pEdb);
     return m_pEdb;
 }
 
