@@ -11,21 +11,19 @@ Node *node_create_instruction(const char *ident, ExprValue opcode)
 {
     int len;
     Node *node;
-    Instruction op;
     len = strlen(ident);
     if (len > MAX_LABEL_SIZE)
         len = MAX_LABEL_SIZE;
     node = (Node *)malloc(sizeof(Node));
     if(node)
     {
-        op.type = NODE_INSTRUCTION;
-        op.opcode = opcode;
-        op.lparam = NULL;
-        op.rparam = NULL;
-        op.ident = (char *)malloc(len + 1);
-        strncpy(op.ident, ident, len);
-        op.ident[len] = '\0';
-        node->op = op;
+        node->op.type = NODE_INSTRUCTION;
+        node->op.opcode = opcode;
+        node->op.lparam = NULL;
+        node->op.rparam = NULL;
+        node->op.ident = (char *)malloc(len + 1);
+        strncpy(node->op.ident, ident, len);
+        node->op.ident[len] = '\0';
     }
     return (Node *)node;
 }
