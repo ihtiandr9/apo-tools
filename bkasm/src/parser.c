@@ -121,7 +121,7 @@ static Expr *parse_multiplication(Parser *self, Lexer *lexer)
     lexer->skipWhile(lexer, ' ');
     lexer->nextTok(lexer);
     m_token = lexer->token;
-    while (m_token.type == TOK_ASTERISK)
+    for (; m_token.type == TOK_ASTERISK; )
     {
         Expr *expr = math_create_multiplication(TOK_ASTERISK);
         expr->op.setlparam(expr, result);
@@ -145,7 +145,7 @@ static Expr *parse_addition(Parser *self, Lexer *lexer)
     lexer->skipWhile(lexer, ' ');
     lexer->nextTok(lexer);
     m_token = lexer->token;
-    while (m_token.type == TOK_PLUS || m_token.type == TOK_MINUS)
+    for (; m_token.type == TOK_PLUS || m_token.type == TOK_MINUS;)
     {
         if (m_token.type == TOK_MINUS)
         {
@@ -226,7 +226,8 @@ static Node* parse_op(Parser *self, Lexer *lexer)
         lexer->skipWhile(lexer, ',');
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
-        while(lexer->token.kind == CONST){
+        for(; lexer->token.kind == CONST; )
+        {
             node = node_create_instruction(op_token.ident, op_token.type);
             op = (Instruction *)node;
             op->lparam = parse_param(self, lexer);
@@ -345,7 +346,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
 
 void parser_parse(Parser *self, Lexer *lexer)
 {
-    while (lexer->nextTok(lexer))
+    for (; lexer->nextTok(lexer);)
     {
         parse_statement(self, lexer);
         lexer->skipWhile(lexer, ' ');
