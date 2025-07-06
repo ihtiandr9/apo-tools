@@ -48,12 +48,14 @@ void ast_add_statement(Node *statement, ASTree *astree)
             break;
         
         case TOK_IDENT:
-            if(statement->label.target->type == EXPR_MATH)
-                statement->label.target->op.evaluate(statement->label.target);
-            NodeList* old_nodelist = astree->vars;
-            astree->vars = nodelist_alloc();
-            astree->vars->next = old_nodelist;
-            astree->vars->node = *statement;
+			{
+	            NodeList* old_nodelist = astree->vars;
+			    if(statement->label.target->type == EXPR_MATH)
+	                statement->label.target->op.evaluate(statement->label.target);
+	            astree->vars = nodelist_alloc();
+	            astree->vars->next = old_nodelist;
+				astree->vars->node = *statement;
+			}
             break;
 
         default:
