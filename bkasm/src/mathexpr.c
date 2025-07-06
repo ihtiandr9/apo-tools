@@ -214,6 +214,7 @@ static ExprValue math_evaluate_addition(Expr *self)
         ExprValue result = 0;
         ExprValue lparam = props.lparam->op.evaluate(props.lparam);
         ExprValue rparam = props.rparam->op.evaluate(props.rparam);
+        assert(self);
         switch (props.opcode)
         {
         case TOK_PLUS:
@@ -242,13 +243,46 @@ void math_free_addition(Expr *expr)
         math_free(expr);
 }
 
-void math_print(Expr *expr)
+void math_print_operation(ExprValue opcode)
+{
+        switch (opcode)
+        {
+        case TOK_ASTERISK:
+                printf(INDENT " * ");
+                break;
+        
+        case TOK_PLUS:
+                printf(INDENT " + ");
+                break;
+        
+        case TOK_MINUS:
+                printf(INDENT " - ");
+                break;
+        
+        default:
+                break;
+        }
+}
+
+void math_print_expression(Expr *expr)
 {
         switch (expr->type)
         {
         case EXPR_REG:
                 printf(INDENT "< REG: %s code %d\n", expr->ident,
                        expr->data.value);
+                break;
+        case EXPR_CONST:
+                printf(INDENT "< IMMEDIATE >: %d\n", expr->op.evaluate(expr));
+                break;
+        case EXPR_VAR:        
+                printf(INDENT "< VAR >: %s\n", expr->ident);
+                break;
+        case EXPR_MATH:        
+                printf(INDENT "< MATH >:\n" INDENT);
+                math_print_expression(expr->data.mathExpr.lparam);
+                math_print_operation(expr->data.mathExpr.opcode);
+                math_print_expression(expr->data.mathExpr.rparam);
                 break;
         default:
                 break;
