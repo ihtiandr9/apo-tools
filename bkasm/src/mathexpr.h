@@ -33,11 +33,13 @@ STRUCT(MathExpr)
     ExprValue opcode;
 };
 
+/* FIXME delete block
 STRUCT(Variable)
 {
     ExprValue dirty;
     ExprValue *ref;
 };
+*/
 
 STRUCT(Expr)
 {
