@@ -84,4 +84,5 @@ void ast_destroy(ASTree *astree)
         astree->firstNode = 0;
         astree->lastNode = 0;
     }
+    free(astree);
 }
