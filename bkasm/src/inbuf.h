@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 typedef struct InbufCurrentString InbufCurrentString;
 struct InbufCurrentString

@@ -14,7 +14,6 @@ static void parse_statement(Parser *self, Lexer *lexer);
 
 static Node* parse_var(Parser *self, Lexer *lexer)
 {
-    // Label *target;
     Node *node;
 
     Lexema m_token = lexer->token;
@@ -37,9 +36,9 @@ static Node* parse_var(Parser *self, Lexer *lexer)
             node->label.target = parse_param(self, lexer);
             lexer->skipUntil(lexer, 10);
             parse_comment(self, lexer);
-            // pass node throw standart
-            // codeflow
-        }else
+            // pass node throw standart codeflow
+        }
+        else
         {
             node->label.target = register_create(TOK_REGPC, "PC");
             ast_add_statement(node, self->prog); // add standart label
@@ -74,7 +73,6 @@ static void parse_comment(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             return;
         case TOK_SEMICOLON:
-            // printf("< COMMENT >: skip until eol\n");
             lexer->skipUntil(lexer, 10);
             lexer->skipOne(lexer);
             break;
@@ -174,7 +172,7 @@ static Expr *parse_addition(Parser *self, Lexer *lexer)
             m_token = lexer->token;
         }
     }
-        return result;
+    return result;
 }
 
 static Expr *parse_param(Parser *self, Lexer *lexer)
@@ -216,7 +214,7 @@ static Node* parse_op(Parser *self, Lexer *lexer)
 
     switch (op_token.type)
     {
-        // multibyte arrays
+    // multibyte arrays
     case TOK_DB:
         op = (Instruction *)node;
         lexer->skipWhile(lexer, ' ');
