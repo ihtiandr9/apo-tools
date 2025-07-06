@@ -6,3 +6,4 @@ Makefile
 *.bin
 *.lst
 *.layout
+.obsidian
