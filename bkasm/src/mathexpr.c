@@ -4,12 +4,6 @@
 #include <assert.h>
 #include <string.h>
 
-// forward-decls{
-
-ExprValue *var_resolve(Expr *self);
-
-// }
-
 ////////////////////////////////////////////
 // ConsExpr
 
