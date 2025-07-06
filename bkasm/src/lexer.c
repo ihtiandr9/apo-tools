@@ -153,9 +153,9 @@ static int lexer_next_tok(Lexer *self)
                 free(ident);
                 continue;
             }
-            if (len < 255) // default is ident
+            if (len < 255) // default is variable
             {
-                self->token.kind = CONST;
+                self->token.kind = VAR;
                 self->token.type = TOK_IDENT;
                 self->token.ident = ident;
                 self->token.len = len;

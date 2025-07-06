@@ -30,7 +30,7 @@ STRUCT(Instruction)
 STRUCT(Label)
 {
     eNodeType type;
-    int target_type;
+    eIdentType target_type;
     char *ident;
     Expr* target;
 };

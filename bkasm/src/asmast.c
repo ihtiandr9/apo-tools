@@ -31,17 +31,34 @@ void ast_add_statement(Node *statement, ASTree *astree)
         astree->lastNode->node = *statement;
         break;
     case NODE_LABEL:
-        if (astree->lastNode)
+        switch (statement->label.target_type)
         {
-            astree->lastNode->next = nodelist_alloc();
-            astree->lastNode = astree->lastNode->next;
+        case TOK_REGPC:
+            if (astree->lastNode)
+            {
+                astree->lastNode->next = nodelist_alloc();
+                astree->lastNode = astree->lastNode->next;
+            }
+            else
+            {
+                astree->firstNode = nodelist_alloc();
+                astree->lastNode = astree->firstNode;
+            }
+            astree->lastNode->node = *statement;
+            break;
+        
+        case TOK_IDENT:
+            if(statement->label.target->type == EXPR_MATH)
+                statement->label.target->op.evaluate(statement->label.target);
+            NodeList* old_nodelist = astree->vars;
+            astree->vars = nodelist_alloc();
+            astree->vars->next = old_nodelist;
+            astree->vars->node = *statement;
+            break;
+
+        default:
+            break;
         }
-        else
-        {
-            astree->firstNode = nodelist_alloc();
-            astree->lastNode = astree->firstNode;
-        }
-        astree->lastNode->node = *statement;
         break;
     default:
         assert(0);
@@ -62,6 +79,7 @@ void ast_init(ASTree* astree)
 {
     astree->firstNode = NULL;
     astree->lastNode = NULL;
+    astree->vars = NULL;
 }
 
 void ast_free(ASTree *astree)
@@ -81,8 +99,13 @@ void ast_destroy(ASTree *astree)
         {
             nodelist_destroy(astree->firstNode);
         }
+        if (astree->vars)
+        {
+            nodelist_destroy(astree->vars);
+        }
         astree->firstNode = 0;
         astree->lastNode = 0;
+        astree->vars = 0;
     }
     free(astree);
 }

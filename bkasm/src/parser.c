@@ -34,6 +34,7 @@ static Node* parse_var(Parser *self, Lexer *lexer)
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
             node->label.target = parse_param(self, lexer);
+            node->label.target_type = TOK_IDENT;
             lexer->skipUntil(lexer, 10);
             parse_comment(self, lexer);
             // pass node throw standart codeflow
@@ -41,6 +42,7 @@ static Node* parse_var(Parser *self, Lexer *lexer)
         else
         {
             node->label.target = register_create(TOK_REGPC, "PC");
+            node->label.target_type = TOK_REGPC;
             ast_add_statement(node, self->prog); // add standart label
             parse_statement(self, lexer); // parse remain part of string
             node = NULL; // nothing to return, all parts were parsed
@@ -184,13 +186,12 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
     case REG:
         expr = register_create(m_token.type, m_token.ident);
         break;
+    case VAR:
     case CONST:
         switch (m_token.type)
         {
-        case TOK_NUM:
-            expr = parse_addition(self, lexer);
-            break;
         case TOK_IDENT:
+        case TOK_NUM:
             expr = parse_addition(self, lexer);
             break;
         default:
@@ -294,7 +295,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
 
     switch (m_token.kind)
     {
-    case CONST:
+    case VAR:
         switch (m_token.type)
         {
         case TOK_IDENT:
