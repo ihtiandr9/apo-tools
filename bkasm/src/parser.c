@@ -43,7 +43,7 @@ static Node* parse_var(Parser *self, Lexer *lexer)
         {
             node->label.target = register_create(TOK_REGPC, "PC");
             node->label.target_type = TOK_REGPC;
-            ast_add_statement(node, self->prog); // add standart label
+            ast_add_statement(node, self->ast); // add standart label
             parse_statement(self, lexer); // parse remain part of string
             node = NULL; // nothing to return, all parts were parsed
         }
@@ -221,7 +221,7 @@ static Node* parse_op(Parser *self, Lexer *lexer)
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         op->lparam = parse_param(self, lexer);
-        ast_add_statement(node, self->prog);
+        ast_add_statement(node, self->ast);
         lexer->skipWhile(lexer, ',');
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -230,7 +230,7 @@ static Node* parse_op(Parser *self, Lexer *lexer)
             node = node_create_instruction(op_token.ident, op_token.type);
             op = (Instruction *)node;
             op->lparam = parse_param(self, lexer);
-            ast_add_statement(node, self->prog);
+            ast_add_statement(node, self->ast);
             lexer->skipWhile(lexer, ',');
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
@@ -299,7 +299,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
         switch (m_token.type)
         {
         case TOK_IDENT:
-            ast_add_statement(parse_var(self, lexer), self->prog);
+            ast_add_statement(parse_var(self, lexer), self->ast);
             break;
         default:
             fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
@@ -327,7 +327,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
         }
         break;
     case OP:
-        ast_add_statement(parse_op(self, lexer), self->prog);
+        ast_add_statement(parse_op(self, lexer), self->ast);
         lexer->nextTok(lexer);
         parse_comment(self, lexer);
         break;
@@ -355,8 +355,8 @@ void parser_parse(Parser *self, Lexer *lexer)
 int parser_init(Parser *parser)
 {
     parser->level = 0;
-    parser->prog = ast_create();
-    ast_init(parser->prog);
+    parser->ast = ast_create();
+    ast_init(parser->ast);
     return 1;
 }
 Parser *parser_create(void)

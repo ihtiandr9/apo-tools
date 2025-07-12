@@ -8,7 +8,7 @@
 
 STRUCT(Parser)
 {
-    ASTree *prog;
+    ASTree *ast;
     int level;
 };
 

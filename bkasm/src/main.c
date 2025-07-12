@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     parser_init(&m_parser);
     parser_parse(&m_parser, &m_lexer);
 
-    ast_destroy(m_parser.prog);
+    ast_destroy(m_parser.ast);
     exit_nicely(0);
     return 0;
 }
