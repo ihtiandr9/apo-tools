@@ -6,6 +6,7 @@
 #define STRUCT(XXX)         \
 	typedef struct XXX XXX; \
 	struct XXX
+#define MAX_PROG_SIZE 4096
 
 STRUCT(NodeList);
 STRUCT(GfgTree);

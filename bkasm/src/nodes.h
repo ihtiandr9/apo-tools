@@ -21,7 +21,7 @@ typedef enum _NodeType
 STRUCT(Instruction)
 {
     eNodeType type;
-    int opcode;
+    eIdentType opcode;
     char *ident;
     Expr* lparam;
     Expr* rparam;
