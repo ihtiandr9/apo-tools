@@ -1,0 +1,63 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"launch": {
+		"version": "0.2.0",
+    "configurations": [
+        {
+            "miDebuggerPath": "C:\\Program Files (x86)\\Dev-Cpp\\MinGW64\\bin\\gdb.exe",
+			"name": "(gdb-win) test.asm",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bkasm",
+            "args": ["test.asm"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/tests",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Включить автоматическое форматирование для gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Задать для варианта приложения дизассемблирования значение Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "miDebuggerPath": "C:\\Program Files (x86)\\Dev-Cpp\\MinGW64\\bin\\gdb.exe",
+			"name": "(gdb-win) errors.txt",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bkasm",
+            "args": ["errors.txt"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/tests",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Включить автоматическое форматирование для gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Задать для варианта приложения дизассемблирования значение Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+
+    ]
+	}
+}

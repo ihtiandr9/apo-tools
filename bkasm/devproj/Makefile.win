@@ -1,0 +1,61 @@
+# Project: bkasm
+# Makefile created by Dev-C++ 5.9.2
+
+CPP      = g++.exe -D__DEBUG__
+CC       = gcc.exe -D__DEBUG__
+WINDRES  = windres.exe
+OBJ      = ../devproj/lexer.o ../devproj/main.o ../devproj/errors.o ../devproj/parser.o ../devproj/symbols.o ../devproj/inbuf.o ../devproj/nodes.o ../devproj/mathexpr.o ../devproj/generator.o ../devproj/bkints.o ../devproj/bkasm.o ../devproj/asmast.o
+LINKOBJ  = ../devproj/lexer.o ../devproj/main.o ../devproj/errors.o ../devproj/parser.o ../devproj/symbols.o ../devproj/inbuf.o ../devproj/nodes.o ../devproj/mathexpr.o ../devproj/generator.o ../devproj/bkints.o ../devproj/bkasm.o ../devproj/asmast.o
+LIBS     = -L"C:/Program Files/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -m32 -pg -g3
+INCS     = -I"C:/Program Files/Dev-Cpp/MinGW64/include" -I"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"../src"
+CXXINCS  = -I"C:/Program Files/Dev-Cpp/MinGW64/include" -I"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++" -I"../src"
+BIN      = bkasm.exe
+CXXFLAGS = $(CXXINCS) -m32 -pg -g3
+CFLAGS   = $(INCS) -m32 -pg -g3
+RM       = rm.exe -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+../devproj/lexer.o: ../src/lexer.c
+	$(CC) -c ../src/lexer.c -o ../devproj/lexer.o $(CFLAGS)
+
+../devproj/main.o: ../src/main.c
+	$(CC) -c ../src/main.c -o ../devproj/main.o $(CFLAGS)
+
+../devproj/errors.o: ../src/errors.c
+	$(CC) -c ../src/errors.c -o ../devproj/errors.o $(CFLAGS)
+
+../devproj/parser.o: ../src/parser.c
+	$(CC) -c ../src/parser.c -o ../devproj/parser.o $(CFLAGS)
+
+../devproj/symbols.o: ../src/symbols.c
+	$(CC) -c ../src/symbols.c -o ../devproj/symbols.o $(CFLAGS)
+
+../devproj/inbuf.o: ../src/inbuf.c
+	$(CC) -c ../src/inbuf.c -o ../devproj/inbuf.o $(CFLAGS)
+
+../devproj/nodes.o: ../src/nodes.c
+	$(CC) -c ../src/nodes.c -o ../devproj/nodes.o $(CFLAGS)
+
+../devproj/mathexpr.o: ../src/mathexpr.c
+	$(CC) -c ../src/mathexpr.c -o ../devproj/mathexpr.o $(CFLAGS)
+
+../devproj/generator.o: ../src/generator.c
+	$(CC) -c ../src/generator.c -o ../devproj/generator.o $(CFLAGS)
+
+../devproj/bkints.o: ../src/bkints.c
+	$(CC) -c ../src/bkints.c -o ../devproj/bkints.o $(CFLAGS)
+
+../devproj/bkasm.o: ../src/bkasm.c
+	$(CC) -c ../src/bkasm.c -o ../devproj/bkasm.o $(CFLAGS)
+
+../devproj/asmast.o: ../src/asmast.c
+	$(CC) -c ../src/asmast.c -o ../devproj/asmast.o $(CFLAGS)
