@@ -1,5 +1,5 @@
 ORG      1100H        ;None
-INTS:    EQU START-2  ;Error: Syntax error in expression: variable START not found
+INTS:    EQU START-2  ;Undefined variable START
 mov a,b               ;Error: Unexpected symbol: "m" (may be in lowercase)
 START:   JMP EXIT1    ;None
 START:   JMP EXIT1, 8 ;Error: Unexpected symbol: "," (may be in lowercase)

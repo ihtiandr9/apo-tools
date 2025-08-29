@@ -57,7 +57,7 @@ Node *node_create_label(const char *ident)
     node = (Node *)malloc(sizeof(Node));
     if(node)
     {
-        label.type = NODE_LABEL;
+        label.type = NODE_VAR;
         label.target = NULL;
         label.target_type = 0;
         label.ident = (char *)malloc(len + 1);
@@ -95,7 +95,7 @@ void node_print(Node *node)
         if(instr.rparam)
             math_print_expression(instr.rparam);
         break;
-    case NODE_LABEL:
+    case NODE_VAR:
         label = node->label;
         printf("< LABEL >: %s\n", label.ident);
         math_print_expression(label.target);
@@ -115,7 +115,7 @@ void node_clear(Node *node)
     case NODE_INSTRUCTION:
         node_clear_instruction((Instruction *)node);
         break;
-    case NODE_LABEL:
+    case NODE_VAR:
         node_clear_label((Label *)node);
         break;
     default:

@@ -14,8 +14,7 @@ typedef enum _NodeType
 {
     NODE_EMPTY = 0,
     NODE_INSTRUCTION,
-    NODE_LABEL,
-    //NODE_GLOBALVAR,
+    NODE_VAR,
 } eNodeType;
 
 STRUCT(Instruction)

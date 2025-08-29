@@ -4,28 +4,21 @@
 #include <codegen.h>
 
 char prog[MAX_PROG_SIZE];
-NodeList *vars = NULL;
 
-NodeList *vars_get(){
-    return vars;
-}
-
-void vars_set(NodeList *nodelist){
-    vars = nodelist;
-}
-
-void codegen_print_labels(ASTree* ast){
-    NodeList* var;
+void codegen_print_labels(){
+  /*
+   NodeList* var;
     printf("GEN: labels\n");
     for (var = ast -> vars; var; var = var->next)
     {
         printf("DEBUG: %s type label: %d\n", var->node.label.ident, var->node.label.target->op.evaluate(var->node.label.target));
     }
+ */
 }
+
 int codegen_generate(Node *node, int pc, ASTree *ast)
 {
     int size = 0;
-    vars_set(ast->vars);
     if (node->type == NODE_INSTRUCTION)
     {
         switch (node->op.opcode)
@@ -37,9 +30,7 @@ int codegen_generate(Node *node, int pc, ASTree *ast)
             fprintf(stderr, "ERROR: unknown token %s\n", node->label.ident);
             break;
         }
-        /* code */
     }
-
     return size;
 }
 
@@ -58,7 +49,7 @@ int codegen_evaluate_params(Node *node, int pc, ASTree *ast)
                     break;
             }
             break;
-        case NODE_LABEL:
+        case NODE_VAR:
             if (node->label.target_type = TOK_REGPC)
             {
                 Node *label = node_create_label(node->label.ident);

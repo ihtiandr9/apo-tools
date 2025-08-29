@@ -10,6 +10,7 @@
 #endif
 #endif
 #include <asmast.h>
+#include <asmvars.h>
 
 void ast_add_statement(Node *statement, ASTree *astree)
 {
@@ -30,10 +31,10 @@ void ast_add_statement(Node *statement, ASTree *astree)
         }
         astree->lastNode->node = *statement;
         break;
-    case NODE_LABEL:
+    case NODE_VAR:
         switch (statement->label.target_type)
         {
-        case TOK_REGPC:
+        case TOK_REGPC: // unresolved label postponed to linker
             if (astree->lastNode)
             {
                 astree->lastNode->next = nodelist_alloc();
@@ -47,14 +48,11 @@ void ast_add_statement(Node *statement, ASTree *astree)
             astree->lastNode->node = *statement;
             break;
         
-        case TOK_IDENT:
+        case TOK_IDENT: // variable declaration
 			{
-	            NodeList* old_nodelist = astree->vars;
 			    if(statement->label.target->type == EXPR_MATH)
 	                statement->label.target->op.evaluate(statement->label.target);
-	            astree->vars = nodelist_alloc();
-	            astree->vars->next = old_nodelist;
-				astree->vars->node = *statement;
+                    hash_push(statement->label.ident, statement->label.target->op.evaluate(statement->label.target));
 			}
             break;
 
@@ -81,7 +79,6 @@ void ast_init(ASTree* astree)
 {
     astree->firstNode = NULL;
     astree->lastNode = NULL;
-    astree->vars = NULL;
 }
 
 void ast_free(ASTree *astree)
@@ -101,13 +98,8 @@ void ast_destroy(ASTree *astree)
         {
             nodelist_destroy(astree->firstNode);
         }
-        if (astree->vars)
-        {
-            nodelist_destroy(astree->vars);
-        }
         astree->firstNode = 0;
         astree->lastNode = 0;
-        astree->vars = 0;
     }
     free(astree);
 }

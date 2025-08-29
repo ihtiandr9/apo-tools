@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <string.h>
 #include <asmast.h>
-#include <codegen.h>
+#include <asmvars.h>
 
 ////////////////////////////////////////////
 // ConsExpr
@@ -68,18 +68,21 @@ void register_destroy(Expr *expr)
 
 static ExprValue var_evaluate(Expr *self)
 {
-    NodeList* var;
     char error_msg[100];
-    if(bkasm_stage > PARSE_STAGE){
-        for (var = vars_get(); var; var = var->next)
-        {
-            if (strcmp(var->node.label.ident, self->ident) == 0)
+    int value;
+    if (self->ident)
+    {
+            if (!hash_value(self->ident, &value))
             {
-                return var->node.label.target->op.evaluate(var->node.label.target);
+                return value;
             }
-        }
-        sprintf(error_msg, "variable %s not found", self->ident);
-        throw_error(E_SYNTAXERROR, error_msg);
+            else if (bkasm_stage > PARSE_STAGE)
+            {
+             
+                fprintf(stderr, "Error: undefined variable %s\n", self->ident);
+                sprintf(error_msg, "Error: undefined variable %s\n", self->ident);
+                throw_error(E_SYNTAXERROR, error_msg);
+            }
     }
     return 0;
 }

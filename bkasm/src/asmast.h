@@ -32,7 +32,6 @@ STRUCT(ASTree)  /* Abstract syntax tree */
 {
     NodeList *firstNode;
     NodeList *lastNode;
-    NodeList *vars;
 };
 
 void ast_add_statement(Node *statement, ASTree *astree);
