@@ -1,0 +1,57 @@
+{
+    // Используйте IntelliSense, чтобы узнать о возможных атрибутах.
+    // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
+    // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "gdb",
+            "request": "launch",
+            "name": "BSD unpack",
+            "target": "${workspaceFolder}/build/rkaexchange",
+            "arguments": "unpack test.rka",
+            "cwd": "${workspaceFolder}/src",
+            "valuesFormatting": "parseText"
+        },
+        {
+            "type": "gdb",
+            "request": "launch",
+            "name": "BSD pack",
+            "target": "${workspaceFolder}/build/rkaexchange",
+            "arguments": "pack test.asm",
+            "cwd": "${workspaceFolder}/src",
+            "valuesFormatting": "parseText"
+        },
+        {
+            "name": "(gdb) pack",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/rkaexchange",
+            "args": [
+                "pack",
+                "test.asm"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/src",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+        },
+        {
+            "name": "(gdb) unpack",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/rkaexchange",
+            "args": [
+                "unpack",
+                "test.rka",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/src",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+        }
+
+    ]
+}
