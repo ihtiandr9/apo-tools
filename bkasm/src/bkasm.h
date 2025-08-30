@@ -8,7 +8,9 @@
 	typedef struct XXX XXX; \
 	struct XXX
 #define MAX_PROG_SIZE 4096
-#define VAR_COUNT 256
+#define MAX_VAR_COUNT 256
+#define MAX_ERR_MSG_LEN 50
+
 
 STRUCT(NodeList);
 STRUCT(GfgTree);

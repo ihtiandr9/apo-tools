@@ -51,11 +51,7 @@ void ast_add_statement(Node *statement, ASTree *astree)
             break;
         
         case TOK_IDENT: // variable declaration
-			{
-			    if(statement->label.target->type == EXPR_MATH)
-	                statement->label.target->op.evaluate(statement->label.target);
-                    asmvars_add(statement->label.ident, statement->label.target->op.evaluate(statement->label.target));
-			}
+            asmvars_add(statement->label.ident, statement->label.target->op.evaluate(statement->label.target));
             break;
 
         default:

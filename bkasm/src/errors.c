@@ -22,6 +22,9 @@ static void default_error_dispatcher(Error *e)
     case E_SYNTAXERROR:
         fprintf(stderr, "Syntax error in expression: %s\n", (char*)e->data);
         break;
+    case E_LINKERERROR:
+        fprintf(stderr, "Linker error: %s\n", (char*)e->data);
+        break;
     default:
         fprintf(stderr, "Unknown error\n");
         exit_nicely(-1);

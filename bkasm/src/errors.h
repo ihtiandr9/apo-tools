@@ -8,7 +8,8 @@ typedef enum _eErrorType
     E_UNEXPSYM,
     E_UNEXPTOKEN,
     E_UNKKEYWORD,
-    E_SYNTAXERROR
+    E_SYNTAXERROR,
+    E_LINKERERROR
 } eErrorType;
 
 STRUCT(Error)
