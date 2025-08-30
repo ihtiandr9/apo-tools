@@ -30,3 +30,8 @@ int asmvars_value(const char key[], int *result)
             return hash_value(key, result, asmvars, VAR_COUNT);
         }
 }
+
+void asmvars_print()
+{
+    hash_print(asmvars);
+}

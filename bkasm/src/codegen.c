@@ -53,7 +53,7 @@ int codegen_evaluate_params(Node *node, int pc, ASTree *ast)
             }
             break;
         case NODE_VAR:
-            if (node->label.target_type = TOK_REGPC)
+            if (node->label.target_type == TOK_REGPC)
             {
                 Node *label = node_create_label(node->label.ident);
                 label->label.target_type = TOK_IDENT;
