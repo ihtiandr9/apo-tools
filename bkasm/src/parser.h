@@ -1,10 +1,10 @@
 #ifndef H_PARSER_H
 #define H_PARSER_H
 
-#include <bkasm.h>
-#include <lexer.h>
-#include <nodes.h>
-#include <asmast.h>
+//{ forward declarations
+STRUCT(Lexer);
+STRUCT(ASTree);
+//}
 
 STRUCT(Parser)
 {

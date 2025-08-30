@@ -1,11 +1,14 @@
-#include <bkasm.h>
-#include <mathexpr.h>
-#include <errors.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
-#include <asmast.h>
-#include <asmvars.h>
+#include "bkasm.h"
+#include "mathexpr.h"
+#include "asmast.h"
+#include "asmvars.h"
+#include "assert.h"
+#include "bkasm.h"
+#include "errors.h"
+#include "lexer.h"
 
 ////////////////////////////////////////////
 // ConsExpr
@@ -72,7 +75,7 @@ static ExprValue var_evaluate(Expr *self)
     int value;
     if (self->ident)
     {
-            if (!hash_value(self->ident, &value))
+            if (!asmvars_value(self->ident, &value))
             {
                 return value;
             }

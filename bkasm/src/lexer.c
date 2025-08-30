@@ -1,12 +1,12 @@
 #include <stdio.h>
-#include <bkasm.h>
-#include <errors.h>
-#include <string.h>
 #include <stdlib.h>
-#include <symbols.h>
-#include <inbuf.h>
-#include <lexer.h>
-#include <bkints.h>
+#include <string.h>
+#include "bkasm.h"
+#include "lexer.h"
+#include "bkints.h"
+#include "errors.h"
+#include "inbuf.h"
+#include "symbols.h"
 
 // imports
 extern const char eof_sym;

@@ -8,10 +8,11 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <bkasm.h>
-#include <lexer.h>
-#include <parser.h>
-#include <codegen.h>
+#include "bkasm.h"
+#include "asmast.h"
+#include "codegen.h"
+#include "lexer.h"
+#include "parser.h"
 
 int main(int argc, char *argv[])
 {

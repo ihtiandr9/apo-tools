@@ -1,5 +1,5 @@
-#include <bkasm.h>
-#include <bkints.h>
+#include "bkasm.h"
+#include "bkints.h"
 
 static const IntBase intBases[] =
 {

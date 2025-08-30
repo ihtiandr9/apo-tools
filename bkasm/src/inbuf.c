@@ -9,7 +9,8 @@
 #endif
 #endif
 #endif
-#include <inbuf.h>
+#include "bkasm.h"
+#include "inbuf.h"
 
 static const char* inbuf;
 

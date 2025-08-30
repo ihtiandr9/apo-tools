@@ -1,7 +1,10 @@
-#include <bkasm.h>
-#include <mathexpr.h>
-#include <asmast.h>
-#include <codegen.h>
+#include <stdio.h>
+#include "bkasm.h"
+#include "codegen.h"
+#include "asmast.h"
+#include "lexer.h"
+#include "mathexpr.h"
+#include "nodes.h"
 
 char prog[MAX_PROG_SIZE];
 

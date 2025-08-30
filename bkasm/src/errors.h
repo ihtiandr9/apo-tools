@@ -1,8 +1,6 @@
 #ifndef H_ERRORS_H
 #define H_ERRORS_H
 
-#include <bkasm.h>
-
 typedef enum _eErrorType
 {
     E_SUCCESS,

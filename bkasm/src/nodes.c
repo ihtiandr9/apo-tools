@@ -1,9 +1,12 @@
-#include <mathexpr.h>
-#include <nodes.h>
-#include <errors.h>
-#include <stdlib.h>
 #include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include "bkasm.h"
+#include "nodes.h"
+#include "errors.h"
+#include "lexer.h"
+#include "mathexpr.h"
 ////////////////////////////////////////////
 // Instruction Node
 

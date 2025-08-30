@@ -1,8 +1,6 @@
 #ifndef H_MATHEXPR_H
 #define H_MATHEXPR_H
 
-#include <lexer.h>
-
 // { forward decl
 
 STRUCT(Expr);
@@ -32,14 +30,6 @@ STRUCT(MathExpr)
     Expr *rparam;
     ExprValue opcode;
 };
-
-/* FIXME delete block
-STRUCT(Variable)
-{
-    ExprValue dirty;
-    ExprValue *ref;
-};
-*/
 
 STRUCT(Expr)
 {

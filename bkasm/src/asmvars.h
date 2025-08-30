@@ -1,3 +1,6 @@
+#ifndef H_ASMVARS_H
+#define H_ASMVARS_H
 
-void hash_push(const char key[], int val);
-int hash_value(const char key[], int *result);
+void asmvars_add(const char key[], int val);
+int asmvars_value(const char key[], int *result);
+#endif

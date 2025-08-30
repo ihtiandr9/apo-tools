@@ -24,9 +24,8 @@ TODO define it
 #ifndef H_ASTREE_H
 #define H_ASTREE_H
 
-#include <bkasm.h>
-#include <nodes.h>
-
+STRUCT(NodeList);  /* Node list */
+typedef union Node Node;      /* Node */
 
 STRUCT(ASTree)  /* Abstract syntax tree */
 {

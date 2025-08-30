@@ -1,5 +1,4 @@
 
-#include <bkasm.h>
 #ifndef WIN32
 #ifndef _Windows
 #ifndef __MSDOS__
@@ -10,7 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
-#include <asmast.h>
+#include "bkasm.h"
+#include "asmast.h"
 
 FILE* infile;
 FILE* outfile;

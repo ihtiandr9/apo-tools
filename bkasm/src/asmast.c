@@ -1,4 +1,3 @@
-#include <bkasm.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -9,8 +8,11 @@
 #endif
 #endif
 #endif
-#include <asmast.h>
-#include <asmvars.h>
+#include "bkasm.h"
+#include "asmast.h"
+#include "asmvars.h"
+#include "mathexpr.h"
+#include "nodes.h"
 
 void ast_add_statement(Node *statement, ASTree *astree)
 {
@@ -52,7 +54,7 @@ void ast_add_statement(Node *statement, ASTree *astree)
 			{
 			    if(statement->label.target->type == EXPR_MATH)
 	                statement->label.target->op.evaluate(statement->label.target);
-                    hash_push(statement->label.ident, statement->label.target->op.evaluate(statement->label.target));
+                    asmvars_add(statement->label.ident, statement->label.target->op.evaluate(statement->label.target));
 			}
             break;
 

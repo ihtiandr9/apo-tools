@@ -1,11 +1,13 @@
-#include <bkasm.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <assert.h>
-#include <asmast.h>
-#include <errors.h>
-#include <parser.h>
-#include <inbuf.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "bkasm.h"
+#include "parser.h"
+#include "asmast.h"
+#include "errors.h"
+#include "inbuf.h"
+#include "mathexpr.h"
+#include "nodes.h"
 
 static void parse_comment(Parser *self, Lexer *lexer);
 static Node* parse_op(Parser *self, Lexer *lexer);

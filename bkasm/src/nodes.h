@@ -1,12 +1,12 @@
 #ifndef H_NODES_H
 #define H_NODES_H
-
-#include <bkasm.h>
-#include <mathexpr.h>
+#include <lexer.h>
 
 // { forward decl
 
 typedef union Node Node;
+typedef int ExprValue;
+STRUCT(Expr);
 
 // }==================================
 
@@ -55,4 +55,5 @@ void node_clear(Node *node);
 void node_print(Node *node);
 NodeList *nodelist_alloc();
 void nodelist_destroy(NodeList* nodelist);
+
 #endif

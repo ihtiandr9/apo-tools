@@ -1,6 +1,5 @@
 #ifndef H_BKINTS_H
 #define H_BKINTS_H
-#include <bkasm.h>
 
 STRUCT(IntBase)
 {
@@ -8,4 +7,5 @@ STRUCT(IntBase)
     int radix;
 };
 int radix(char suffix);
+
 #endif
