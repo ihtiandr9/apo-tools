@@ -16,7 +16,7 @@ unsigned int hashf(const char key[])
 void hash_push(const char key[], int val, HashVar table[], int size)
 {
     unsigned int index = hashf(key) % size;
-    for(char ch = table[index].name[0]; ch != 0 && ch != -1 && index < size; ++index)
+    for(char ch = table[index].name[0]; ch != 0 && ch != -1 && index < size && strcmp(key, table[index].name); ++index)
         ch = table[index].name[0];
     strcpy(table[index].name, key);
     table[index].val = val;
@@ -24,16 +24,12 @@ void hash_push(const char key[], int val, HashVar table[], int size)
 
 int hash_value(const char key[], int *result, HashVar table[], int size)
 {
-    char ch, errmsg[100];
+    char ch, err_msg[MAX_ERR_MSG_LEN];
     unsigned char index = hashf(key);
     for (ch = table[index].name[0]; index < size && ( ch == -1 || strcmp(key, table[index].name)); ++index)
     {
         if (ch == 0)
-        {
-            sprintf(errmsg, "\nUndefined variable %s\n", key);
-            throw_error(E_SYNTAXERROR, errmsg);
             return -1;
-        }
         ch = table[index].name[0];
     }
     if (result)
@@ -46,5 +42,16 @@ int hash_value(const char key[], int *result, HashVar table[], int size)
         fprintf(stderr, "ERROR: internal error\n");
         fprintf(stderr, "null pointer to return value\n");
         return -1;
+    }
+}
+
+void hash_print(HashVar table[])
+{
+    for (int i = 0; i < MAX_VAR_COUNT; i++)
+    {
+        if (table[i].name[0] != 0)
+        {
+            printf("%s = %d\n", table[i].name, table[i].val);
+        }
     }
 }

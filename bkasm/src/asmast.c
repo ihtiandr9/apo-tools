@@ -37,6 +37,7 @@ void ast_add_statement(Node *statement, ASTree *astree)
         switch (statement->label.target_type)
         {
         case TOK_REGPC: // unresolved label postponed to linker
+        case TOK_IDENT: // variable declaration
             if (astree->lastNode)
             {
                 astree->lastNode->next = nodelist_alloc();
@@ -48,14 +49,8 @@ void ast_add_statement(Node *statement, ASTree *astree)
                 astree->lastNode = astree->firstNode;
             }
             astree->lastNode->node = *statement;
-            break;
         
-        case TOK_IDENT: // variable declaration
-			{
-			    if(statement->label.target->type == EXPR_MATH)
-	                statement->label.target->op.evaluate(statement->label.target);
-                    asmvars_add(statement->label.ident, statement->label.target->op.evaluate(statement->label.target));
-			}
+            asmvars_add(statement->label.ident, statement->label.target->op.evaluate(statement->label.target));
             break;
 
         default:

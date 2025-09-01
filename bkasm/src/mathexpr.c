@@ -71,7 +71,7 @@ void register_destroy(Expr *expr)
 
 static ExprValue var_evaluate(Expr *self)
 {
-    char error_msg[100];
+    char err_msg[MAX_ERR_MSG_LEN];
     int value;
     if (self->ident)
     {
@@ -83,8 +83,8 @@ static ExprValue var_evaluate(Expr *self)
             {
              
                 fprintf(stderr, "Error: undefined variable %s\n", self->ident);
-                sprintf(error_msg, "Error: undefined variable %s\n", self->ident);
-                throw_error(E_SYNTAXERROR, error_msg);
+                sprintf(err_msg, "Error: undefined variable %s\n", self->ident);
+                throw_error(E_SYNTAXERROR, err_msg);
             }
     }
     return 0;
@@ -185,21 +185,21 @@ void math_free(Expr *expr)
 static ExprValue math_evaluate_multiplication(Expr *self)
 {
     ExprValue result = 0;
-    MathExpr expr = self->data.mathExpr;
-    ExprValue lparam = expr.lparam->op.evaluate(expr.lparam);
-    ExprValue rparam = expr.rparam->op.evaluate(expr.rparam);
-    switch (expr.opcode)
+    MathExpr props = self->data.mathExpr;
+    ExprValue lparam = props.lparam->op.evaluate(props.lparam);
+    ExprValue rparam = props.rparam->op.evaluate(props.rparam);
+    switch (props.opcode)
     {
     case TOK_ASTERISK:
         result = lparam * rparam;
-        if(expr.lparam-> type == EXPR_CONST
-                && expr.rparam -> type == EXPR_CONST)
+        if(props.lparam-> type == EXPR_CONST
+                && props.rparam -> type == EXPR_CONST)
         {
             self -> type = EXPR_CONST;
             self -> op.evaluate = const_evaluate;
             self -> data.value = result;
-            math_free(expr.lparam);
-            math_free(expr.rparam);
+            math_free(props.lparam);
+            math_free(props.rparam);
         }
         break;
     default:
@@ -229,16 +229,34 @@ static ExprValue math_evaluate_addition(Expr *self)
 {
     MathExpr props = self->data.mathExpr;
     ExprValue result = 0;
-    ExprValue lparam = props.lparam->op.evaluate(props.lparam);
+    ExprValue lparam =props.lparam->op.evaluate(props.lparam);
     ExprValue rparam = props.rparam->op.evaluate(props.rparam);
     assert(self);
     switch (props.opcode)
     {
     case TOK_PLUS:
         result = lparam + rparam;
+        if(props.lparam-> type == EXPR_CONST
+                && props.rparam -> type == EXPR_CONST)
+        {
+            self -> type = EXPR_CONST;
+            self -> op.evaluate = const_evaluate;
+            self -> data.value = result;
+            math_free(props.lparam);
+            math_free(props.rparam);
+        }
         break;
     case TOK_MINUS:
         result = lparam - rparam;
+        if(props.lparam-> type == EXPR_CONST
+                && props.rparam -> type == EXPR_CONST)
+        {
+            self -> type = EXPR_CONST;
+            self -> op.evaluate = const_evaluate;
+            self -> data.value = result;
+            math_free(props.lparam);
+            math_free(props.rparam);
+        }
         break;
     default:
         assert(0);
