@@ -10,40 +10,38 @@
 
 char prog[MAX_PROG_SIZE];
 
-int codegen_generate(Node *node, int pc, ASTree *ast)
+void codegen_generate(Node *node, int pc, int size)
 {
-    int size = 0;
     char err_msg[MAX_ERR_MSG_LEN];
 
     if (node->type == NODE_INSTRUCTION)
     {
-        switch (node->op.opcode)
+        if(size)
         {
-        case TOK_ORG:
-            size = node->op.lparam->op.evaluate(node->op.lparam);
-            break;
-        default:
-            sprintf(err_msg, "Unexpected instruction:\n unknown opcode %s\n", node->op.ident);
-            throw_error(E_LINKERERROR, err_msg);
-            break;
+            prog[pc] = node->op.opcode;
+            prog[pc + 1] = node->op.lparam->op.evaluate(node->op.lparam);
         }
     }
-    return size;
 }
 
-int codegen_evaluate_params(Node *node, int pc, ASTree *ast)
+int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
 {
     char err_msg[MAX_ERR_MSG_LEN];
     int size = 0;
     switch (node->type)
     {
-    case NODE_INSTRUCTION:
+    case NODE_INSTRUCTION:  // Evaluate instructions and params to get size of instruction only, not to generate code.
+                            // Evaluates params and returns size of instruction
         switch (node->op.opcode)
         {
-        case TOK_CALL:
+        case TOK_CALL: // 2 bytes one param instructions
         case TOK_JMP:
         case TOK_JZ:
             size = 3;
+            node->op.lparam->op.evaluate(node->op.lparam);
+            break;
+        case TOK_DB:
+            size = 1;
             node->op.lparam->op.evaluate(node->op.lparam);
             break;
         case TOK_ORG:
@@ -70,6 +68,8 @@ int codegen_evaluate_params(Node *node, int pc, ASTree *ast)
         throw_error(E_LINKERERROR, "\n Unknown NodeType\n");
         break;
     }
+    if(bkasm_stage == GENERATE_STAGE && size != 0 && node->type == NODE_INSTRUCTION )
+        codegen_generate(node, pc, size);
     return size;
 }
 
@@ -83,15 +83,8 @@ char* codegen_link(ASTree* ast)
     {
         for(it = ast->firstNode; it; it = it -> next)
         {
-            if (bkasm_stage == GENERATE_STAGE)
-            {
-                instrSize = codegen_generate(&it->node, pc, ast);
-                printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); //FIXME remove
-            }
-            else
-            {
-                instrSize = codegen_evaluate_params(&it->node, pc, ast);
-            }
+            instrSize = codegen_evaluate_ast(&it->node, pc, ast);
+            printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); // FIXME remove
             pc += instrSize;
         }
         pc = 0;
@@ -99,4 +92,3 @@ char* codegen_link(ASTree* ast)
     asmvars_print();
     return prog;
 }
-
