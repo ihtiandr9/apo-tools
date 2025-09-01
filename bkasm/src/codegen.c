@@ -9,6 +9,7 @@
 #include "nodes.h"
 
 char prog[MAX_PROG_SIZE];
+int code_org = 0;
 
 void codegen_generate(Node *node, int pc, int size)
 {
@@ -34,6 +35,14 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
                             // Evaluates params and returns size of instruction
         switch (node->op.opcode)
         {
+        case TOK_DCR: // 0 bytes 0 params instructions
+        case TOK_INR:
+        case TOK_MOV:
+        case TOK_ADD:
+        case TOK_SUB:
+        case TOK_AND:
+            size = 1;
+            break;
         case TOK_CALL: // 2 bytes one param instructions
         case TOK_JMP:
         case TOK_JZ:
@@ -45,7 +54,8 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             node->op.lparam->op.evaluate(node->op.lparam);
             break;
         case TOK_ORG:
-            size = node->op.lparam->op.evaluate(node->op.lparam);
+            code_org = node->op.lparam->op.evaluate(node->op.lparam);
+            size = code_org; 
             break;
         default:
             sprintf(err_msg, "Unexpected instruction:\n unknown opcode %s\n", node->op.ident);
@@ -87,8 +97,10 @@ char* codegen_link(ASTree* ast)
             printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); // FIXME remove
             pc += instrSize;
         }
-        pc = 0;
+        if(bkasm_stage == EVAL_STAGE)
+            pc = 0;
     }
     asmvars_print();
+    printf("codesize = %d\n", pc - code_org);
     return prog;
 }

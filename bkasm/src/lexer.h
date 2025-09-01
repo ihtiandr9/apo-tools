@@ -18,6 +18,8 @@ typedef enum _eIdentType
     TOK_NONE = 0,
 
     // Mnemonics
+    TOK_ADD,
+    TOK_AND,
     TOK_ANI,
     TOK_CALL,
     TOK_COLON,
@@ -37,6 +39,7 @@ typedef enum _eIdentType
     TOK_MVI,
     TOK_ORG,
     TOK_RET,
+    TOK_SUB,
     TOK_XCHG,
 
     // Registers
