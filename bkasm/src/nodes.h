@@ -24,6 +24,8 @@ STRUCT(Instruction)
     char *ident;
     Expr* lparam;
     Expr* rparam;
+    Expr* immediate;    // lparam or rparam if is math or const or var. set to NULL if is reg
+                        // have to be evalued at EVAL_STAGE
 };
 
 STRUCT(Label)

@@ -8,19 +8,45 @@
 #include "mathexpr.h"
 #include "nodes.h"
 
-char prog[MAX_PROG_SIZE];
+unsigned char prog[MAX_PROG_SIZE];
 int code_org = 0;
 
 void codegen_generate(Node *node, int pc, int size)
 {
     char err_msg[MAX_ERR_MSG_LEN];
+    int i;
+    Expr *immediate_param = node->op.immediate;
+
+    
 
     if (node->type == NODE_INSTRUCTION)
     {
-        if(size)
+        if (node->op.opcode == TOK_DB || node->op.opcode == TOK_ORG) // non-executable instructions - implement later TODO
+            ;
+        else
         {
-            prog[pc] = node->op.opcode;
-            prog[pc + 1] = node->op.lparam->op.evaluate(node->op.lparam);
+            if (size > 1 && immediate_param == NULL)
+            {
+                sprintf(err_msg, "Missing immediate parameter for instruction %s\n", node->op.ident);
+                throw_error(E_LINKERERROR, err_msg);
+                exit_nicely(E_LINKERERROR);
+            }
+
+            for (i = 0; i < size; i++)
+            {
+                switch (i)
+                {
+                case 0:
+                    prog[i + pc - code_org] = node->op.opcode;
+                    break;
+                case 1:
+                    prog[i + pc - code_org] = immediate_param->op.evaluate(immediate_param);
+                    break;
+                case 2:
+                    prog[i + pc - code_org] = immediate_param->op.evaluate(immediate_param) / 256;
+                    break;
+                }
+            }
         }
     }
 }
@@ -35,26 +61,56 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
                             // Evaluates params and returns size of instruction
         switch (node->op.opcode)
         {
-        case TOK_DCR: // 0 bytes 0 params instructions
+        case TOK_DCR: // 0 bytes 0 immediate params instructions
+        case TOK_DCX:
+        case TOK_EI:
         case TOK_INR:
+        case TOK_INX:
         case TOK_MOV:
         case TOK_ADD:
+        case TOK_LHLD:
+        case TOK_XCHG:
+        case TOK_RET:
         case TOK_SUB:
         case TOK_AND:
             size = 1;
             break;
-        case TOK_CALL: // 2 bytes one param instructions
+        case TOK_ANI: // 1 byte 1 immediate param instructions rparam may be NULL
+        case TOK_MVI:
+            node->op.lparam->op.evaluate(node->op.lparam);
+            if (node->op.lparam->type != EXPR_REG)
+                node->op.immediate = node->op.lparam;
+            if(node->op.rparam)
+            {
+                node->op.rparam->op.evaluate(node->op.rparam);
+                if(node->op.rparam->type != EXPR_REG)
+                    node->op.immediate = node->op.rparam;
+            }
+            size = 2;
+            break;
+        case TOK_CALL: // 2 bytes one immediate param instructions rparam may be NULL
         case TOK_JMP:
         case TOK_JZ:
-            size = 3;
+        case TOK_LXI:
             node->op.lparam->op.evaluate(node->op.lparam);
+            if (node->op.lparam->type != EXPR_REG)
+                node->op.immediate = node->op.lparam;
+            if(node->op.rparam)
+            {
+                node->op.rparam->op.evaluate(node->op.rparam);
+                if(node->op.rparam->type != EXPR_REG)
+                    node->op.immediate = node->op.rparam;
+            }
+            size = 3;
             break;
         case TOK_DB:
             size = 1;
             node->op.lparam->op.evaluate(node->op.lparam);
+            node->op.immediate = node->op.lparam;
             break;
         case TOK_ORG:
             code_org = node->op.lparam->op.evaluate(node->op.lparam);
+            node->op.immediate = node->op.lparam;
             size = code_org; 
             break;
         default:

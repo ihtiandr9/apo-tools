@@ -10,11 +10,11 @@
 #include "nodes.h"
 
 static void parse_comment(Parser *self, Lexer *lexer);
-static Node* parse_op(Parser *self, Lexer *lexer);
+static Node *parse_op(Parser *self, Lexer *lexer);
 static Expr *parse_param(Parser *self, Lexer *lexer);
 static void parse_statement(Parser *self, Lexer *lexer);
 
-static Node* parse_var(Parser *self, Lexer *lexer)
+static Node *parse_var(Parser *self, Lexer *lexer)
 {
     Node *node;
 
@@ -31,7 +31,7 @@ static Node* parse_var(Parser *self, Lexer *lexer)
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         m_token = lexer->token;
-        if(m_token.type == TOK_EQU)
+        if (m_token.type == TOK_EQU)
         {
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
@@ -46,8 +46,8 @@ static Node* parse_var(Parser *self, Lexer *lexer)
             node->label.target = register_create(TOK_REGPC, "PC");
             node->label.target_type = TOK_REGPC;
             ast_add_statement(node, self->ast); // add standart label
-            parse_statement(self, lexer); // parse remain part of string
-            node = NULL; // nothing to return, all parts were parsed
+            parse_statement(self, lexer);       // parse remain part of string
+            node = NULL;                        // nothing to return, all parts were parsed
         }
         free(l_ident);
     }
@@ -123,7 +123,7 @@ static Expr *parse_multiplication(Parser *self, Lexer *lexer)
     lexer->skipWhile(lexer, ' ');
     lexer->nextTok(lexer);
     m_token = lexer->token;
-    for (; m_token.type == TOK_ASTERISK; )
+    for (; m_token.type == TOK_ASTERISK;)
     {
         Expr *expr = math_create_multiplication(TOK_ASTERISK);
         expr->op.setlparam(expr, result);
@@ -208,7 +208,7 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
     return expr;
 }
 
-static Node* parse_op(Parser *self, Lexer *lexer)
+static Node *parse_op(Parser *self, Lexer *lexer)
 {
     Instruction *op;
     Lexema op_token = lexer->token;
@@ -227,7 +227,7 @@ static Node* parse_op(Parser *self, Lexer *lexer)
         lexer->skipWhile(lexer, ',');
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
-        for(; lexer->token.kind == CONST; )
+        for (; lexer->token.kind == CONST;)
         {
             node = node_create_instruction(op_token.ident, op_token.type);
             op = (Instruction *)node;
@@ -292,7 +292,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
 {
     InbufCurrentString *currstr;
     Lexema m_token = lexer->token;
-    //lexer->printTok(lexer->token); // debug
+    // lexer->printTok(lexer->token); // debug
     currstr = inbuf_currstr();
 
     switch (m_token.kind)
@@ -333,6 +333,23 @@ static void parse_statement(Parser *self, Lexer *lexer)
         lexer->nextTok(lexer);
         parse_comment(self, lexer);
         break;
+    case INT:
+    {
+        Node *internal = node_create_label("ENDPRG");
+        m_token = lexer->token;
+        if (m_token.type == TOK_END)
+        {
+            internal->label.target = register_create(TOK_REGPC, "PC");
+            internal->label.target_type = TOK_REGPC;
+            ast_add_statement(internal, self->ast); // add standart label
+            lexer->skipOne(lexer);
+            lexer->skipWhile(lexer, ' ');
+            lexer->nextTok(lexer);
+            parse_statement(self, lexer); // parse remain part of string
+            internal = NULL;              // nothing to return, all parts were parsed
+        }
+    }
+    break;
     case KIND_NONE: // if unexpectd symbol detected
         lexer->skipUntil(lexer, 10);
         lexer->skipOne(lexer);

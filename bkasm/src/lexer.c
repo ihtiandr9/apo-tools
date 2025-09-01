@@ -22,7 +22,6 @@ static const Lexema words[] =
     {OP, TOK_ANI, "ANI", 0, 3},
     {OP, TOK_DCR, "DCR", 0, 3},
     {OP, TOK_DCX, "DCX", 0, 3},
-    {OP, TOK_END, "END", 0, 3},
     {OP, TOK_EQU, "EQU", 0, 3},
     {OP, TOK_INR, "INR", 0, 3},
     {OP, TOK_INX, "INX", 0, 3},
@@ -48,6 +47,7 @@ static const Lexema words[] =
     {REG, TOK_REGHL, "HL", 0, 2},
     {REG, TOK_REGBC, "BC", 0, 2},
     {REG, TOK_REGDE, "DE", 0, 2},
+    {INT, TOK_END, "END", 0, 3},
     {KIND_NONE, TOK_NONE, 0, 0, 0},
 };
 

@@ -10,7 +10,8 @@ typedef enum _eIdentKind
     REG,
     SYM,
     CONST,
-    VAR
+    VAR,
+    INT,
 } eIdentKind;
 
 typedef enum _eIdentType

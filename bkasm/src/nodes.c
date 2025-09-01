@@ -24,6 +24,7 @@ Node *node_create_instruction(const char *ident, ExprValue opcode)
         node->op.opcode = opcode;
         node->op.lparam = NULL;
         node->op.rparam = NULL;
+        node->op.immediate = NULL;
         node->op.ident = (char *)malloc(len + 1);
         strncpy(node->op.ident, ident, len);
         node->op.ident[len] = '\0';
