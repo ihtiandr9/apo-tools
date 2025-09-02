@@ -93,6 +93,10 @@ SOURCE=..\src\asmast.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\asmvars.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\bkasm.c
 # End Source File
 # Begin Source File
@@ -101,11 +105,15 @@ SOURCE=..\src\bkints.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\codegen.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\errors.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\generator.c
+SOURCE=..\src\hashtable.c
 # End Source File
 # Begin Source File
 
@@ -145,6 +153,10 @@ SOURCE=..\src\asmast.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\asmvars.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\bkasm.h
 # End Source File
 # Begin Source File
@@ -157,7 +169,15 @@ SOURCE=..\src\cfg_tree.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\codegen.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\errors.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\hashtable.h
 # End Source File
 # Begin Source File
 
