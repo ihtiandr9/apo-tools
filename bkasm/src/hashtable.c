@@ -43,7 +43,7 @@ int hash_value(const char key[], int *result, HashVar table[], int size)
     else
     {
 		sprintf(err_msg, "ERROR: internal error\n %s", "null pointer to return value\n");
-        fprintf(stderr, err_msg);
+        throw_error(E_INTERNALERROR, err_msg);
         return -1;
     }
 }
