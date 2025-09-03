@@ -139,7 +139,7 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
     return size;
 }
 
-char* codegen_link(ASTree* ast)
+unsigned char* codegen_link(ASTree* ast)
 {
     int pc = 0;
     int instrSize;

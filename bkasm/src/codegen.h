@@ -5,7 +5,7 @@
 STRUCT(ASTree);
 STRUCT(NodeList);
 
-char* codegen_link(ASTree* ast);
+unsigned char* codegen_link(ASTree* ast);
 NodeList* vars_get();
 
 #endif
