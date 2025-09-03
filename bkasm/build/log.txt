@@ -1,0 +1,277 @@
+line: 1
+program text size=28
+DEBUG: instruction size: 4352 pc: 0
+DEBUG: instruction size: 4352 pc: 0
+codesize = 0
+Pass
+-----------
+line: 2
+program text size=48
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 0 pc: 0
+INTS = -2
+codesize = 0
+Pass
+-----------
+line: 3
+program text size=75
+codesize = 0
+Pass
+-----------
+line: 4
+program text size=48
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 3 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 3 pc: 0
+START = 0
+codesize = 3
+Pass
+-----------
+line: 5
+program text size=33
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 3 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 3 pc: 0
+START = 0
+codesize = 3
+Pass
+-----------
+line: 6
+program text size=75
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 3 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 3 pc: 0
+START = 0
+codesize = 3
+Pass
+-----------
+line: 7
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 8
+program text size=19
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 1 pc: 0
+codesize = 1
+Pass
+-----------
+line: 9
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 10
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 11
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 12
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 13
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 14
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 15
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 16
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 17
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 18
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 19
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 20
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 21
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 22
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 23
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 24
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 25
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 26
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 27
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 28
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
+line: 29
+program text size=28
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+DEBUG: instruction size: 0 pc: 0
+DEBUG: instruction size: 1 pc: 0
+START = 0
+codesize = 1
+Pass
+-----------
