@@ -61,18 +61,19 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
                             // Evaluates params and returns size of instruction
         switch (node->op.opcode)
         {
-        case TOK_DCR: // 0 bytes 0 immediate params instructions
+        case TOK_ADD: // 0 bytes 0 immediate params instructions
+        case TOK_AND:
+        case TOK_DCR:
         case TOK_DCX:
         case TOK_EI:
         case TOK_INR:
         case TOK_INX:
-        case TOK_MOV:
-        case TOK_ADD:
         case TOK_LHLD:
-        case TOK_XCHG:
+        case TOK_MOV:
+        case TOK_NOP:
         case TOK_RET:
         case TOK_SUB:
-        case TOK_AND:
+        case TOK_XCHG:
             size = 1;
             break;
         case TOK_ANI: // 1 byte 1 immediate param instructions rparam may be NULL

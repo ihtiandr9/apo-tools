@@ -1,30 +1,79 @@
-ORG      1100H        ;None
-INTS:    EQU START-2  ;Undefined variable START
-mov a,b               ;Error: Unexpected symbol: "m" (may be in lowercase)
-START:   JMP EXIT1    ;Undefined variable EXIT1
-START:   JMP START + 100H  ;None
-START:   JMP EXIT1, 8 ;Error: Unexpected symbol: "," (may be in lowercase)
-START:   INR A        ;None
-INR B        ;None
-START:   INR C        ;None
-START:   INR D        ;None
-START:   INR E        ;None
-START:   INR H        ;None
-START:   INR L        ;None
-START:   INR M        ;None
-START:   DCR A        ;None
-START:   DCR B        ;None
-START:   DCR C        ;None
-START:   DCR D        ;None
-START:   DCR E        ;None
-START:   DCR H        ;None
-START:   DCR L        ;None
-START:   DCR M        ;None
-START:   INX B        ;None
-START:   INX D        ;None
-START:   INX H        ;None
-START:   INX SP       ;None
-START:   DCX B        ;None
-START:   DCX D        ;None
-START:   DCX H        ;None
-START:   DCX SP       ;None
+ORG     1100H               ;None
+START:  NOP                 ;None
+START:  LXI B, START        ;None
+START:  STAX D              ;None
+START:  INX  B              ;None
+START:  INR  B              ;None
+START:  DCR  B              ;None
+START:  MVI  B, 29H         ;None
+START:  RLC                 ;None
+START:  NOP                 ;None
+START:  DAD  B              ;None
+START:  LDAX B              ;None
+START:  DCX  B              ;None
+START:  INR  C              ;None
+START:  DCR  C              ;None
+START:  MVI  C, 10H         ;None
+START:  NOP                 ;None
+START:  LXI  D              ;None
+START:  STAX D              ;None
+START:  INX  D              ;None
+START:  INR  D              ;None
+START:  DCR  D              ;None
+START:  MVI  D, 10H         ;None
+START:  RAL                 ;None
+START:  NOP                 ;None
+START:  DAD  D              ;None
+START:  LDAX D              ;None
+START:  DCX  D              ;None
+START:  INR  E              ;None
+START:  DCR  E              ;None
+START:  MVI  E, 0           ;None
+START:  RAR                 ;None
+START:  RIM                 ;None
+START:  LXI  H, 0           ;None
+START:  SHLD START          ;None
+START:  INX  H              ;None
+START:  INR  H              ;None
+START:  DCR  H              ;None
+START:  MVI  H, 0           ;None
+START:  DAA                 ;None
+START:  NOP                 ;None
+START:  DAD  H              ;None
+START:  LHLD START          ;None
+START:  DCX  H              ;None
+START:  INR  L              ;None
+START:  DCR  L              ;None
+START:  MVI  L, 20H         ;None
+START:  CMA                 ;None
+START:  NOP                 ;None
+START:  NOP                 ;None
+INTS:   EQU START-2         ;Undefined variable START
+mov a,b                     ;Error: Unexpected symbol: "m" (may be in lowercase)
+START:  JMP EXIT1           ;Undefined variable EXIT1
+START:  JMP START + 100H    ;None
+START:  JMP EXIT1, 8        ;Error: Unexpected symbol: "," (may be in lowercase)
+START:  INR A               ;None
+INR B                       ;None
+START:  INR C               ;None
+START:  INR D               ;None
+START:  INR E               ;None
+START:  INR H               ;None
+START:  INR L               ;None
+START:  INR M               ;None
+START:  DCR A               ;None
+START:  DCR B               ;None
+START:  DCR C               ;None
+START:  DCR D               ;None
+START:  DCR E               ;None
+START:  DCR H               ;None
+START:  DCR L               ;None
+START:  DCR M               ;None
+START:  INX B               ;None
+START:  INX D               ;None
+START:  INX H               ;None
+START:  INX SP              ;None
+START:  DCX B               ;None
+START:  DCX D               ;None
+START:  DCX H               ;None
+START:  DCX SP              ;None

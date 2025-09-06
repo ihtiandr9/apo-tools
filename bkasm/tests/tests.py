@@ -47,6 +47,8 @@ class TestUM(unittest.TestCase):
         errors = err_file.readlines()
         err_file.close()
 
+        print("\n ---------- \n Test keywords started\n")
+
         if(self.osname == "nt"):
             suffix = ".exe"
         else:

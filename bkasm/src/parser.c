@@ -263,6 +263,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
     case TOK_INX:
     case TOK_JMP:
     case TOK_JZ:
+    case TOK_LDAX:
     case TOK_LHLD:
     case TOK_ORG:
         op = (Instruction *)node;
@@ -273,9 +274,11 @@ static Node *parse_op(Parser *self, Lexer *lexer)
     // NULL operand mnemonics
     case TOK_EI:
     case TOK_END:
+    case TOK_NOP:
     case TOK_RET:
     case TOK_XCHG:
         op = (Instruction *)node;
+        lexer->skipWhile(lexer, ' ');
         break;
     case TOK_SEMICOLON: // no operation pass-throw comment
         break;

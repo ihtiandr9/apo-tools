@@ -1,6 +1,7 @@
 ; ОПИСАНИЕ ПРОГРАММЫ
 ORG 1100H
   JMP START
+ERRLINE:  NOP
 
 ;             КОНСТАНТЫ И СТРОКИ
 ENDL:   DB 0DH, 0AH, 0
