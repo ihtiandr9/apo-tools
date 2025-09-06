@@ -1,30 +1,45 @@
-ORG      1100H        ;None
-INTS:    EQU START-2  ;Undefined variable START
-mov a,b               ;Error: Unexpected symbol: "m" (may be in lowercase)
-START:   JMP EXIT1    ;Undefined variable EXIT1
-START:   JMP START + 100H  ;None
-START:   JMP EXIT1, 8 ;Error: Unexpected symbol: "," (may be in lowercase)
-START:   INR A        ;None
-INR B        ;None
-START:   INR C        ;None
-START:   INR D        ;None
-START:   INR E        ;None
-START:   INR H        ;None
-START:   INR L        ;None
-START:   INR M        ;None
-START:   DCR A        ;None
-START:   DCR B        ;None
-START:   DCR C        ;None
-START:   DCR D        ;None
-START:   DCR E        ;None
-START:   DCR H        ;None
-START:   DCR L        ;None
-START:   DCR M        ;None
-START:   INX B        ;None
-START:   INX D        ;None
-START:   INX H        ;None
-START:   INX SP       ;None
-START:   DCX B        ;None
-START:   DCX D        ;None
-START:   DCX H        ;None
-START:   DCX SP       ;None
+ORG     1100H               ;None
+START:  NOP                 ;None
+START:  LXI B, START        ;None
+START:  STAX D              ;None
+START:  INX  B              ;None
+START:  INR  B              ;None
+START:  DCR  B              ;None
+START:  MVI  B, 29H         ;None
+START:  RLC                 ;None
+START:  NOP                 ;None
+START:  DAD  B              ;None
+START:  LDAX B              ;None
+START:  DCX  B              ;None
+START:  INR  C              ;None
+START:  NOP                 ;None
+START:  NOP                 ;None
+INTS:   EQU START-2         ;Undefined variable START
+mov a,b                     ;Error: Unexpected symbol: "m" (may be in lowercase)
+START:  JMP EXIT1           ;Undefined variable EXIT1
+START:  JMP START + 100H    ;None
+START:  JMP EXIT1, 8        ;Error: Unexpected symbol: "," (may be in lowercase)
+START:  INR A               ;None
+INR B                       ;None
+START:  INR C               ;None
+START:  INR D               ;None
+START:  INR E               ;None
+START:  INR H               ;None
+START:  INR L               ;None
+START:  INR M               ;None
+START:  DCR A               ;None
+START:  DCR B               ;None
+START:  DCR C               ;None
+START:  DCR D               ;None
+START:  DCR E               ;None
+START:  DCR H               ;None
+START:  DCR L               ;None
+START:  DCR M               ;None
+START:  INX B               ;None
+START:  INX D               ;None
+START:  INX H               ;None
+START:  INX SP              ;None
+START:  DCX B               ;None
+START:  DCX D               ;None
+START:  DCX H               ;None
+START:  DCX SP              ;None
