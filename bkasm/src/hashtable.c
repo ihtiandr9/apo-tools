@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "bkasm.h"
-#include "errors.h"
 #include "hashtable.h"
 
 unsigned int hashf(const char key[])

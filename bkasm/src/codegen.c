@@ -17,7 +17,7 @@ void codegen_generate(Node *node, int pc, int size)
     int i;
     Expr *immediate_param = node->op.immediate;
 
-    
+    if(size == 0) return;
 
     if (node->type == NODE_INSTRUCTION)
     {
@@ -61,28 +61,72 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
                             // Evaluates params and returns size of instruction
         switch (node->op.opcode)
         {
-        case TOK_ADD: // 0 bytes 0 immediate params instructions
+
+        // 0 bytes 0 immediate params instructions
+        case TOK_ADC:
+        case TOK_ADD:
+        case TOK_ANA:
         case TOK_AND:
+        case TOK_CMA:
+        case TOK_CMC:
+        case TOK_CMP:
+        case TOK_DAA:
+        case TOK_DAD:
         case TOK_DCR:
         case TOK_DCX:
+        case TOK_DI:
         case TOK_EI:
+        case TOK_HLT:
         case TOK_INR:
         case TOK_INX:
+        case TOK_JM:
+        case TOK_LDAX:
         case TOK_LHLD:
         case TOK_MOV:
         case TOK_NOP:
-        case TOK_RET:
+        case TOK_ORA:
+        case TOK_ORI:
+        case TOK_PCHL:
+        case TOK_POP:
+        case TOK_PUSH:
         case TOK_RAL:
+        case TOK_RAR:
+        case TOK_RC:
+        case TOK_RET:
+        case TOK_RIM:
         case TOK_RLC:
-        case TOK_SUB:
+        case TOK_RM:
+        case TOK_RNC:
+        case TOK_RNZ:
+        case TOK_RP:
+        case TOK_RPE:
+        case TOK_RPO:
+        case TOK_RRC:
+        case TOK_RZ:
+        case TOK_SBB:
+        case TOK_SBI:
+        case TOK_SHLD:
+        case TOK_SIM:
+        case TOK_SPHL:
         case TOK_STAX:
-        case TOK_DAD:
-        case TOK_LDAX:
+        case TOK_STC:
+        case TOK_SUB:
+        case TOK_SUI:
         case TOK_XCHG:
+        case TOK_XRA:
+        case TOK_XRI:
+        case TOK_XTHL:
             size = 1;
             break;
-        case TOK_ANI: // 1 byte 1 immediate param instructions rparam may be NULL
+
+        // 1 byte 1 immediate param instructions rparam may be NULL
+        case TOK_ACI:
+        case TOK_ADI:
+        case TOK_ANI:
+        case TOK_CPI:
         case TOK_MVI:
+        case TOK_OUT:
+        case TOK_RST:
             node->op.lparam->op.evaluate(node->op.lparam);
             if (node->op.lparam->type != EXPR_REG)
                 node->op.immediate = node->op.lparam;
@@ -94,10 +138,29 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             }
             size = 2;
             break;
-        case TOK_CALL: // 2 bytes one immediate param instructions rparam may be NULL
+
+        // 2 bytes one immediate param instructions rparam may be NULL
+        case TOK_CALL:
+        case TOK_CC:
+        case TOK_CM:
+        case TOK_CNC:
+        case TOK_CNZ:
+        case TOK_CP:
+        case TOK_CPE:
+        case TOK_CPO:
+        case TOK_CZ:
+        case TOK_IN:
+        case TOK_JC:
         case TOK_JMP:
+        case TOK_JNC:
+        case TOK_JNZ:
+        case TOK_JP:
+        case TOK_JPE:
+        case TOK_JPO:
         case TOK_JZ:
+        case TOK_LDA:
         case TOK_LXI:
+        case TOK_STA:
             node->op.lparam->op.evaluate(node->op.lparam);
             if (node->op.lparam->type != EXPR_REG)
                 node->op.immediate = node->op.lparam;
@@ -140,7 +203,7 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         throw_error(E_LINKERERROR, "\n Unknown NodeType\n");
         break;
     }
-    if(bkasm_stage == GENERATE_STAGE && size != 0 && node->type == NODE_INSTRUCTION )
+    if(bkasm_stage == GENERATE_STAGE && node->type == NODE_INSTRUCTION )
         codegen_generate(node, pc, size);
     return size;
 }

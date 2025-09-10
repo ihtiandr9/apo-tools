@@ -3,6 +3,7 @@
 *.layout
 *.lst
 *.o
+*.swp
 .obsidian
 Makefile
 build

@@ -55,7 +55,7 @@ class TestUM(unittest.TestCase):
             suffix = ""
 
         exe_path = abspath(join(dirname(__file__), "../build/bkasm" + suffix))
-        for num in range(50):
+        for num in range(263):
             expected_error = errors[num].replace('\n','')
             semicolon_pos = expected_error.find(';')
             expected_error = expected_error[semicolon_pos + 1:]
@@ -90,11 +90,14 @@ class TestUM(unittest.TestCase):
                 log_file.write('Unexpexted msg!!!Expect: ' + str(expected_error) + '\n')
                 log_file.write('    Got: ' + str(err_msg) + '\n-----------\n')
         
-        log_file.close()
         if (err_count != 0):
+            log_file.write('Test completed with ' + str(err_count) + ' errors')
             print('Test completed with ' + str(err_count) + ' errors')
         else:
+            log_file.write('All tests passed competely')
             print('All tests passed competely')
+
+        log_file.close()
 
 if __name__ == '__main__':
     unittest.main()

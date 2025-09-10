@@ -241,9 +241,9 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         break;
 
     // two opernds mnemonics
-    case TOK_MVI:
-    case TOK_MOV:
     case TOK_LXI:
+    case TOK_MOV:
+    case TOK_MVI:
         op = (Instruction *)node;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -255,32 +255,91 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         lexer->skipWhile(lexer, ' ');
         break;
     // one operand mnemonics
+    case TOK_ACI:
+    case TOK_ADC:
+    case TOK_ADD:
+    case TOK_ADI:
+    case TOK_ANA:
     case TOK_ANI:
     case TOK_CALL:
+    case TOK_CC:
+    case TOK_CM:
+    case TOK_CMP:
+    case TOK_CNC:
+    case TOK_CNZ:
+    case TOK_CP:
+    case TOK_CPE:
+    case TOK_CPI:
+    case TOK_CPO:
+    case TOK_CZ:
     case TOK_DAD:
     case TOK_DCR:
     case TOK_DCX:
+    case TOK_IN:
     case TOK_INR:
     case TOK_INX:
+    case TOK_JC:
+    case TOK_JM:
     case TOK_JMP:
+    case TOK_JNC:
+    case TOK_JNZ:
+    case TOK_JP:
+    case TOK_JPE:
+    case TOK_JPO:
     case TOK_JZ:
+    case TOK_LDA:
     case TOK_LDAX:
-    case TOK_STAX:
     case TOK_LHLD:
+    case TOK_ORA:
     case TOK_ORG:
+    case TOK_ORI:
+    case TOK_OUT:
+    case TOK_POP:
+    case TOK_PUSH:
+    case TOK_RST:
+    case TOK_SBB:
+    case TOK_SBI:
+    case TOK_SHLD:
+    case TOK_STA:
+    case TOK_STAX:
+    case TOK_SUB:
+    case TOK_SUI:
+    case TOK_XRA:
+    case TOK_XRI:
         op = (Instruction *)node;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
         op->lparam = parse_param(self, lexer);
         break;
     // NULL operand mnemonics
+    case TOK_CMA:
+    case TOK_CMC:
+    case TOK_DAA:
+    case TOK_DI:
     case TOK_EI:
     case TOK_END:
+    case TOK_HLT:
     case TOK_NOP:
-    case TOK_RET:
+    case TOK_PCHL:
     case TOK_RAL:
+    case TOK_RAR:
+    case TOK_RC:
+    case TOK_RET:
+    case TOK_RIM:
     case TOK_RLC:
+    case TOK_RM:
+    case TOK_RNC:
+    case TOK_RNZ:
+    case TOK_RP:
+    case TOK_RPE:
+    case TOK_RPO:
+    case TOK_RRC:
+    case TOK_RZ:
+    case TOK_SIM:
+    case TOK_SPHL:
+    case TOK_STC:
     case TOK_XCHG:
+    case TOK_XTHL:
         op = (Instruction *)node;
         lexer->skipWhile(lexer, ' ');
         break;
