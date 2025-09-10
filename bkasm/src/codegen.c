@@ -72,7 +72,12 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_MOV:
         case TOK_NOP:
         case TOK_RET:
+        case TOK_RAL:
+        case TOK_RLC:
         case TOK_SUB:
+        case TOK_STAX:
+        case TOK_DAD:
+        case TOK_LDAX:
         case TOK_XCHG:
             size = 1;
             break;

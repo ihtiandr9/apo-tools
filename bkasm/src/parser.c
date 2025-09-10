@@ -257,6 +257,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
     // one operand mnemonics
     case TOK_ANI:
     case TOK_CALL:
+    case TOK_DAD:
     case TOK_DCR:
     case TOK_DCX:
     case TOK_INR:
@@ -264,6 +265,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
     case TOK_JMP:
     case TOK_JZ:
     case TOK_LDAX:
+    case TOK_STAX:
     case TOK_LHLD:
     case TOK_ORG:
         op = (Instruction *)node;
@@ -276,6 +278,8 @@ static Node *parse_op(Parser *self, Lexer *lexer)
     case TOK_END:
     case TOK_NOP:
     case TOK_RET:
+    case TOK_RAL:
+    case TOK_RLC:
     case TOK_XCHG:
         op = (Instruction *)node;
         lexer->skipWhile(lexer, ' ');

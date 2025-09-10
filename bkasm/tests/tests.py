@@ -55,8 +55,14 @@ class TestUM(unittest.TestCase):
             suffix = ""
 
         exe_path = abspath(join(dirname(__file__), "../build/bkasm" + suffix))
-        for num in range(29):
-            log_file.write('line: ' + str(num + 1) + '\n')
+        for num in range(50):
+            expected_error = errors[num].replace('\n','')
+            semicolon_pos = expected_error.find(';')
+            expected_error = expected_error[semicolon_pos + 1:]
+            print('line '+ str(num + 1) + ': ' 
+                           + errors[num][:semicolon_pos] )
+            log_file.write('line '+ str(num + 1) + ': ' 
+                           + errors[num][:semicolon_pos] + '\n')
             log_file.flush()
             process = subprocess.Popen([exe_path],
                 universal_newlines = True,
@@ -65,9 +71,6 @@ class TestUM(unittest.TestCase):
                 stderr = subprocess.PIPE)
             process.stdin.write(errors[num])    
             stdout, stderr = process.communicate()
-            expected_error = errors[num].replace('\n','')
-            semicolon_pos = expected_error.find(';')
-            expected_error = expected_error[semicolon_pos + 1:]
             if(expected_error == 'None'):
                 expected_error = None
 
@@ -77,12 +80,12 @@ class TestUM(unittest.TestCase):
                 err_msg = err_stream[1]
 
             if (err_msg == expected_error):
-                print('line: ' + errors[num][:semicolon_pos] + ' passed')
+                print("Passed\n-----------\n")
                 log_file.write("Pass\n-----------\n")
             else:
                 err_count = err_count + 1
-                print('line: ' + errors[num][:semicolon_pos] + ' failed')
-                print('Unexpexted msg!!!Expect: ' + str(expected_error) + '\n')
+                print('Failed')
+                print('Unexpexted msg!!!Expect: ' + str(expected_error) )
                 print('    Got: ' + str(err_msg) + '\n-----------\n')
                 log_file.write('Unexpexted msg!!!Expect: ' + str(expected_error) + '\n')
                 log_file.write('    Got: ' + str(err_msg) + '\n-----------\n')

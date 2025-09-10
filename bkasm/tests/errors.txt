@@ -15,7 +15,7 @@ START:  INR  C              ;None
 START:  DCR  C              ;None
 START:  MVI  C, 10H         ;None
 START:  NOP                 ;None
-START:  LXI  D              ;None
+START:  LXI  D, 80H         ;None
 START:  STAX D              ;None
 START:  INX  D              ;None
 START:  INR  D              ;None
