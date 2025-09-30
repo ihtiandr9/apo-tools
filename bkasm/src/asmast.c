@@ -34,7 +34,7 @@ void ast_add_statement(Node *statement, ASTree *astree)
         astree->lastNode->node = *statement;
         break;
     case NODE_VAR:
-        switch (statement->label.target_type)
+        switch (statement->u.label.target_type)
         {
         case TOK_REGPC: // unresolved label postponed to linker
         case TOK_IDENT: // variable declaration
@@ -50,7 +50,7 @@ void ast_add_statement(Node *statement, ASTree *astree)
             }
             astree->lastNode->node = *statement;
         
-            asmvars_add(statement->label.ident, statement->label.target->op.evaluate(statement->label.target));
+            asmvars_add(statement->ident, statement->u.label.target->op.evaluate(statement->u.label.target));
             break;
 
         default:
