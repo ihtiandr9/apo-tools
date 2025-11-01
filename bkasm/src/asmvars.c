@@ -41,5 +41,5 @@ int asmvars_value(const char key[], int *result)
 
 void asmvars_print()
 {
-    hash_print(asmvars);
+    hash_print(asmvars, MAX_VAR_COUNT);
 }

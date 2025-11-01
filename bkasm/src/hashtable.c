@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include "bkasm.h"
 #include "hashtable.h"
 
 unsigned int hashf(const char key[])
@@ -12,7 +11,7 @@ unsigned int hashf(const char key[])
     return hash;
 }
 
-void hash_push(const char key[], int val, HashVar table[], int size)
+void hash_push(const char key[], int val, HashVar table[], unsigned int size)
 {
     unsigned int index = hashf(key) % size;
 	char ch;
@@ -23,15 +22,15 @@ void hash_push(const char key[], int val, HashVar table[], int size)
     table[index].val = val;
 }
 
-int hash_value(const char key[], int *result, HashVar table[], int size)
+int hash_value(const char key[], int *result, HashVar table[], unsigned int size)
 {
-    char ch, err_msg[MAX_ERR_MSG_LEN];
+    char ch;
     unsigned char index = hashf(key);
 
-    for (ch = table[index].name[0]; index < size && ( ch == -1 || strcmp(key, table[index].name)); ++index)
+    for (ch = table[index].name[0]; index < size && (ch == -1 || strcmp(key, table[index].name)); ++index)
     {
         if (ch == 0)
-            return -1;
+            return -2;
         ch = table[index].name[0];
     }
     if (result)
@@ -40,17 +39,13 @@ int hash_value(const char key[], int *result, HashVar table[], int size)
         return 0;
     }
     else
-    {
-        sprintf(err_msg, "ERROR: internal error\n %s", "null pointer to return value\n");
-        fprintf(stderr, "%s", err_msg);
         return -1;
-    }
 }
 
-void hash_print(HashVar table[])
+void hash_print(HashVar table[], unsigned int size)
 {
-	int i;
-    for (i = 0; i < MAX_VAR_COUNT; i++)
+	unsigned int i;
+    for (i = 0; i < size; i++)
     {
         if (table[i].name[0] != 0)
         {
@@ -58,3 +53,18 @@ void hash_print(HashVar table[])
         }
     }
 }
+
+const char* hash_text_error(int err)
+{
+    static const char* errs[] = {
+        "ERROR: internal error\n null pointer to return value\n",
+        "ERROR: internal error\n key not found in table\n"
+    };
+    static const char* unknown = "ERROR: unknown error\n";
+
+    if (err >= -2 && err < 0) {
+        return errs[-err - 1];
+    }
+    return unknown;  // Никогда не возвращаем NULL
+}
+
