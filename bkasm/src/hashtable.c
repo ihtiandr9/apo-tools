@@ -14,7 +14,7 @@ unsigned int hashf(const char key[])
 void hash_push(const char key[], int val, HashVar table[], unsigned int size)
 {
     unsigned int index = hashf(key) % size;
-	char ch;
+	signed char ch;
 
     for(ch = table[index].name[0]; ch != 0 && ch != -1 && index < size && strcmp(key, table[index].name); ++index)
         ch = table[index].name[0];
@@ -24,7 +24,7 @@ void hash_push(const char key[], int val, HashVar table[], unsigned int size)
 
 int hash_value(const char key[], int *result, HashVar table[], unsigned int size)
 {
-    char ch;
+    signed char ch;
     unsigned char index = hashf(key);
 
     for (ch = table[index].name[0]; index < size && (ch == -1 || strcmp(key, table[index].name)); ++index)
