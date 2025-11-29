@@ -1,29 +1,264 @@
-ORG      1100H        ;None
-INTS:    EQU START-2  ;Undefined variable START
-mov a,b               ;Error: Unexpected symbol: "m" (may be in lowercase)
-START:   JMP EXIT1    ;None
-START:   JMP EXIT1, 8 ;Error: Unexpected symbol: "," (may be in lowercase)
-START:   INR A        ;None
-INR B        ;None
-START:   INR C        ;None
-START:   INR D        ;None
-START:   INR E        ;None
-START:   INR H        ;None
-START:   INR L        ;None
-START:   INR M        ;None
-START:   DCR A        ;None
-START:   DCR B        ;None
-START:   DCR C        ;None
-START:   DCR D        ;None
-START:   DCR E        ;None
-START:   DCR H        ;None
-START:   DCR L        ;None
-START:   DCR M        ;None
-START:   INX B        ;None
-START:   INX D        ;None
-START:   INX H        ;None
-START:   INX SP       ;None
-START:   DCX B        ;None
-START:   DCX D        ;None
-START:   DCX H        ;None
-START:   DCX SP       ;None
+START:  NOP                 ;None
+START:  LXI B, START        ;None
+START:  STAX D              ;None
+START:  INX  B              ;None
+START:  INR  B              ;None
+START:  DCR  B              ;None
+START:  MVI  B, 29H         ;None
+START:  RLC                 ;None
+START:  NOP                 ;None
+START:  DAD  B              ;None
+START:  LDAX B              ;None
+START:  DCX  B              ;None
+START:  INR  C              ;None
+START:  DCR  C              ;None
+START:  MVI  C, 10H         ;None
+START:  RRC                 ;None
+START:  NOP                 ;None
+START:  LXI  D, 80H         ;None
+START:  STAX D              ;None
+START:  INX  D              ;None
+START:  INR  D              ;None
+START:  DCR  D              ;None
+START:  MVI  D, 10H         ;None
+START:  RAL                 ;None
+START:  NOP                 ;None
+START:  DAD  D              ;None
+START:  LDAX D              ;None
+START:  DCX  D              ;None
+START:  INR  E              ;None
+START:  DCR  E              ;None
+START:  MVI  E, 0           ;None
+START:  RAR                 ;None
+START:  RIM                 ;None
+START:  LXI  H, 0           ;None
+START:  SHLD START          ;None
+START:  INX  H              ;None
+START:  INR  H              ;None
+START:  DCR  H              ;None
+START:  MVI  H, 0           ;None
+START:  DAA                 ;None
+START:  NOP                 ;None
+START:  DAD  H              ;None
+START:  LHLD START          ;None
+START:  DCX  H              ;None
+START:  INR  L              ;None
+START:  DCR  L              ;None
+START:  MVI  L, 20H         ;None
+START:  CMA                 ;None
+START:  SIM                 ;None
+START:  LXI  SP, START      ;None
+START:  STA  START          ;None
+START:  INX  SP             ;None
+START:  INR  M              ;None
+START:  DCR  M              ;None
+START:  MVI  M, 20H         ;None
+START:  STC                 ;None
+START:  NOP                 ;None
+START:  DAD  SP             ;None
+START:  LDA  START          ;None
+START:  DCX  SP             ;None
+START:  INR  A              ;None
+START:  DCR  A              ;None
+START:  MVI  A, 10H         ;None
+START:  CMC                 ;None
+START:  MOV  B, B           ;None
+START:  MOV  B, C           ;None
+START:  MOV  B, D           ;None
+START:  MOV  B, E           ;None
+START:  MOV  B, H           ;None
+START:  MOV  B, L           ;None
+START:  MOV  B, M           ;None
+START:  MOV  B, A           ;None
+START:  MOV  C, B           ;None
+START:  MOV  C, C           ;None
+START:  MOV  C, D           ;None
+START:  MOV  C, E           ;None
+START:  MOV  C, H           ;None
+START:  MOV  C, L           ;None
+START:  MOV  C, M           ;None
+START:  MOV  C, A           ;None
+START:  MOV  D, B           ;None
+START:  MOV  D, C           ;None
+START:  MOV  D, D           ;None
+START:  MOV  D, E           ;None
+START:  MOV  D, H           ;None
+START:  MOV  D, L           ;None
+START:  MOV  D, M           ;None
+START:  MOV  D, A           ;None
+START:  MOV  E, B           ;None
+START:  MOV  E, C           ;None
+START:  MOV  E, D           ;None
+START:  MOV  E, E           ;None
+START:  MOV  E, H           ;None
+START:  MOV  E, L           ;None
+START:  MOV  E, M           ;None
+START:  MOV  E, A           ;None
+START:  MOV  H, B           ;None
+START:  MOV  H, C           ;None
+START:  MOV  H, D           ;None
+START:  MOV  H, E           ;None
+START:  MOV  H, H           ;None
+START:  MOV  H, L           ;None
+START:  MOV  H, M           ;None
+START:  MOV  H, A           ;None
+START:  MOV  L, B           ;None
+START:  MOV  L, C           ;None
+START:  MOV  L, D           ;None
+START:  MOV  L, E           ;None
+START:  MOV  L, H           ;None
+START:  MOV  L, L           ;None
+START:  MOV  L, M           ;None
+START:  MOV  L, A           ;None
+START:  MOV  M, B           ;None
+START:  MOV  M, C           ;None
+START:  MOV  M, D           ;None
+START:  MOV  M, E           ;None
+START:  MOV  M, H           ;None
+START:  MOV  M, L           ;None
+START:  HLT                 ;None
+START:  MOV  M, A           ;None
+START:  MOV  A, B           ;None
+START:  MOV  A, C           ;None
+START:  MOV  A, D           ;None
+START:  MOV  A, E           ;None
+START:  MOV  A, H           ;None
+START:  MOV  A, L           ;None
+START:  MOV  A, M           ;None
+START:  MOV  A, A           ;None
+START:  ADD  B              ;None
+START:  ADD  C              ;None
+START:  ADD  D              ;None
+START:  ADD  E              ;None
+START:  ADD  H              ;None
+START:  ADD  L              ;None
+START:  ADD  M              ;None
+START:  ADD  A              ;None
+START:  ADC  B              ;None
+START:  ADC  C              ;None
+START:  ADC  D              ;None
+START:  ADC  E              ;None
+START:  ADC  H              ;None
+START:  ADC  L              ;None
+START:  ADC  M              ;None
+START:  ADC  A              ;None
+START:  SUB  B              ;None
+START:  SUB  C              ;None
+START:  SUB  D              ;None
+START:  SUB  E              ;None
+START:  SUB  H              ;None
+START:  SUB  L              ;None
+START:  SUB  M              ;None
+START:  SUB  A              ;None
+START:  SBB  B              ;None
+START:  SBB  C              ;None
+START:  SBB  D              ;None
+START:  SBB  E              ;None
+START:  SBB  H              ;None
+START:  SBB  L              ;None
+START:  SBB  M              ;None
+START:  SBB  A              ;None
+START:  ANA  B              ;None
+START:  ANA  C              ;None
+START:  ANA  D              ;None
+START:  ANA  E              ;None
+START:  ANA  H              ;None
+START:  ANA  L              ;None
+START:  ANA  M              ;None
+START:  ANA  A              ;None
+START:  XRA  B              ;None
+START:  XRA  C              ;None
+START:  XRA  D              ;None
+START:  XRA  E              ;None
+START:  XRA  H              ;None
+START:  XRA  L              ;None
+START:  XRA  M              ;None
+START:  XRA  A              ;None
+START:  ORA  B              ;None
+START:  ORA  C              ;None
+START:  ORA  D              ;None
+START:  ORA  E              ;None
+START:  ORA  H              ;None
+START:  ORA  L              ;None
+START:  ORA  M              ;None
+START:  ORA  A              ;None
+START:  CMP  B              ;None
+START:  CMP  C              ;None
+START:  CMP  D              ;None
+START:  CMP  E              ;None
+START:  CMP  H              ;None
+START:  CMP  L              ;None
+START:  CMP  M              ;None
+START:  CMP  A              ;None
+START:  RNZ                 ;None
+START:  POP  B              ;None
+START:  JNZ  START          ;None
+START:  JMP  27CH           ;None
+START:  CNZ  START          ;None
+START:  PUSH B              ;None
+START:  ADI  20H            ;None
+START:  RST  0              ;None
+START:  RZ                  ;None
+START:  RET                 ;None
+START:  JZ   START          ;None
+START:  NOP                 ;None
+START:  CZ   START          ;None
+START:  CALL START          ;None
+START:  ACI  40H            ;None
+START:  RST  1              ;None
+START:  RNC                 ;None
+START:  POP  D              ;None
+START:  JNC  START          ;None
+START:  OUT  23H            ;None
+START:  CNC  START          ;None
+START:  PUSH D              ;None
+START:  SUI  67H            ;None
+START:  RST  2              ;None
+START:  RC                  ;None
+START:  NOP                 ;None
+START:  JC   START          ;None
+START:  IN   23OH           ;None
+START:  CC   START          ;None
+START:  NOP                 ;None
+START:  SBI  20H            ;None
+START:  RST  3              ;None
+START:  RPO                 ;None
+START:  POP  H              ;None
+START:  JPO  START          ;None
+START:  XTHL                ;None
+START:  CPO  START          ;None
+START:  PUSH H              ;None
+START:  ANI  0AAH           ;None
+START:  RST  4              ;None
+START:  RPE                 ;None
+START:  PCHL                ;None
+START:  JPE  START          ;None
+START:  XCHG                ;None
+START:  CPE  START          ;None
+START:  NOP                 ;None
+START:  XRI  128            ;None
+START:  RST  5              ;None
+START:  RP                  ;None
+START:  POP  PSW            ;None
+START:  JP   START          ;None
+START:  DI                  ;None
+START:  CP   START          ;None
+START:  PUSH PSW            ;None
+START:  ORI  20H            ;None
+START:  RST  6              ;None
+START:  RM                  ;None
+START:  SPHL                ;None
+START:  JM   START          ;None
+START:  EI                  ;None
+START:  CM   START          ;None
+START:  NOP                 ;None
+START:  CPI  89H            ;None
+START:  RST  7              ;None
+START:  NOP                 ;None
+ORG     1100H               ;None
+INTS:   EQU START-2         ;Undefined variable START
+mov a,b                     ;Error: Unexpected symbol: "m" (may be in lowercase)
+START:  JMP EXIT1           ;Undefined variable EXIT1
+START:  JMP START + 100H    ;None
+START:  JMP EXIT1, 8        ;Error: Unexpected symbol: "," (may be in lowercase)
+

@@ -25,7 +25,7 @@ TODO define it
 #define H_ASTREE_H
 
 STRUCT(NodeList);  /* Node list */
-typedef union Node Node;      /* Node */
+STRUCT(Node);      /* Node */
 
 STRUCT(ASTree)  /* Abstract syntax tree */
 {

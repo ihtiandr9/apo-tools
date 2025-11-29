@@ -4,7 +4,7 @@
 
 // { forward decl
 
-typedef union Node Node;
+// typedef union Node Node;
 typedef int ExprValue;
 STRUCT(Expr);
 
@@ -19,26 +19,28 @@ typedef enum _NodeType
 
 STRUCT(Instruction)
 {
-    eNodeType type;
     eIdentType opcode;
-    char *ident;
     Expr* lparam;
     Expr* rparam;
+    Expr* immediate;    // lparam or rparam if is math or const or var. set to NULL if is reg
+                        // have to be evalued at EVAL_STAGE
 };
 
 STRUCT(Label)
 {
-    eNodeType type;
     eIdentType target_type;
-    char *ident;
     Expr* target;
 };
 
-union Node
+STRUCT(Node)
 {
     eNodeType type;
-    Instruction op;
-    Label label;
+    char *ident;
+    union
+    {
+        Instruction op;
+        Label label;
+    } u;
 };
 
 STRUCT(NodeList)

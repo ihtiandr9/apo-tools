@@ -30,10 +30,10 @@ int asmvars_value(const char key[], int *result)
     else
     {
         hash_result = hash_value(key, result, asmvars, MAX_VAR_COUNT);
-        if (hash_result == -1 && bkasm_stage > PARSE_STAGE)
+        if (hash_result == -1 && bkasm_stage > EVAL_STAGE)
         {
             sprintf(err_msg, "\nUndefined variable %s\n", key);
-            throw_error(E_SYNTAXERROR, err_msg);
+            throw_error(E_LINKERERROR, err_msg);
         }
     }
     return hash_result;
@@ -41,5 +41,5 @@ int asmvars_value(const char key[], int *result)
 
 void asmvars_print()
 {
-    hash_print(asmvars);
+    hash_print(asmvars, MAX_VAR_COUNT);
 }

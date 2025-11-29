@@ -8,61 +8,194 @@
 #include "mathexpr.h"
 #include "nodes.h"
 
-char prog[MAX_PROG_SIZE];
+unsigned char prog[MAX_PROG_SIZE];
+int code_org = 0;
 
-int codegen_generate(Node *node, int pc, ASTree *ast)
+void codegen_generate(Node *node, int pc, int size)
 {
-    int size = 0;
     char err_msg[MAX_ERR_MSG_LEN];
+    int i;
+    Expr *immediate_param = node->u.op.immediate;
+
+    if(size == 0) return;
 
     if (node->type == NODE_INSTRUCTION)
     {
-        switch (node->op.opcode)
+        if (node->u.op.opcode == TOK_DB || node->u.op.opcode == TOK_ORG) // non-executable instructions - implement later TODO
+            ;
+        else
         {
-        case TOK_ORG:
-            size = node->op.lparam->op.evaluate(node->op.lparam);
-            break;
-        default:
-            sprintf(err_msg, "Unexpected instruction:\n unknown opcode %s\n", node->op.ident);
-            throw_error(E_LINKERERROR, err_msg);
-            break;
+            if (size > 1 && immediate_param == NULL)
+            {
+                sprintf(err_msg, "Missing immediate parameter for instruction %s\n", node->ident);
+                throw_error(E_LINKERERROR, err_msg);
+                exit_nicely(E_LINKERERROR);
+            }
+
+            for (i = 0; i < size; i++)
+            {
+                switch (i)
+                {
+                case 0:
+                    prog[i + pc - code_org] = node->u.op.opcode;
+                    break;
+                case 1:
+                    prog[i + pc - code_org] = immediate_param->op.evaluate(immediate_param);
+                    break;
+                case 2:
+                    prog[i + pc - code_org] = immediate_param->op.evaluate(immediate_param) / 256;
+                    break;
+                }
+            }
         }
     }
-    return size;
 }
 
-int codegen_evaluate_params(Node *node, int pc, ASTree *ast)
+int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
 {
     char err_msg[MAX_ERR_MSG_LEN];
     int size = 0;
     switch (node->type)
     {
-    case NODE_INSTRUCTION:
-        switch (node->op.opcode)
+    case NODE_INSTRUCTION:  // Evaluate instructions and params to get size of instruction only, not to generate code.
+                            // Evaluates params and returns size of instruction
+        switch (node->u.op.opcode)
         {
+
+        // 0 bytes 0 immediate params instructions
+        case TOK_ADC:
+        case TOK_ADD:
+        case TOK_ANA:
+        case TOK_AND:
+        case TOK_CMA:
+        case TOK_CMC:
+        case TOK_CMP:
+        case TOK_DAA:
+        case TOK_DAD:
+        case TOK_DCR:
+        case TOK_DCX:
+        case TOK_DI:
+        case TOK_EI:
+        case TOK_HLT:
+        case TOK_INR:
+        case TOK_INX:
+        case TOK_JM:
+        case TOK_LDAX:
+        case TOK_LHLD:
+        case TOK_MOV:
+        case TOK_NOP:
+        case TOK_ORA:
+        case TOK_ORI:
+        case TOK_PCHL:
+        case TOK_POP:
+        case TOK_PUSH:
+        case TOK_RAL:
+        case TOK_RAR:
+        case TOK_RC:
+        case TOK_RET:
+        case TOK_RIM:
+        case TOK_RLC:
+        case TOK_RM:
+        case TOK_RNC:
+        case TOK_RNZ:
+        case TOK_RP:
+        case TOK_RPE:
+        case TOK_RPO:
+        case TOK_RRC:
+        case TOK_RZ:
+        case TOK_SBB:
+        case TOK_SBI:
+        case TOK_SHLD:
+        case TOK_SIM:
+        case TOK_SPHL:
+        case TOK_STAX:
+        case TOK_STC:
+        case TOK_SUB:
+        case TOK_SUI:
+        case TOK_XCHG:
+        case TOK_XRA:
+        case TOK_XRI:
+        case TOK_XTHL:
+            size = 1;
+            break;
+
+        // 1 byte 1 immediate param instructions rparam may be NULL
+        case TOK_ACI:
+        case TOK_ADI:
+        case TOK_ANI:
+        case TOK_CPI:
+        case TOK_MVI:
+        case TOK_OUT:
+        case TOK_RST:
+            node->u.op.lparam->op.evaluate(node->u.op.lparam);
+            if (node->u.op.lparam->type != EXPR_REG)
+                node->u.op.immediate = node->u.op.lparam;
+            if(node->u.op.rparam)
+            {
+                node->u.op.rparam->op.evaluate(node->u.op.rparam);
+                if(node->u.op.rparam->type != EXPR_REG)
+                    node->u.op.immediate = node->u.op.rparam;
+            }
+            size = 2;
+            break;
+
+        // 2 bytes one immediate param instructions rparam may be NULL
         case TOK_CALL:
+        case TOK_CC:
+        case TOK_CM:
+        case TOK_CNC:
+        case TOK_CNZ:
+        case TOK_CP:
+        case TOK_CPE:
+        case TOK_CPO:
+        case TOK_CZ:
+        case TOK_IN:
+        case TOK_JC:
         case TOK_JMP:
+        case TOK_JNC:
+        case TOK_JNZ:
+        case TOK_JP:
+        case TOK_JPE:
+        case TOK_JPO:
         case TOK_JZ:
+        case TOK_LDA:
+        case TOK_LXI:
+        case TOK_STA:
+            node->u.op.lparam->op.evaluate(node->u.op.lparam);
+            if (node->u.op.lparam->type != EXPR_REG)
+                node->u.op.immediate = node->u.op.lparam;
+            if(node->u.op.rparam)
+            {
+                node->u.op.rparam->op.evaluate(node->u.op.rparam);
+                if(node->u.op.rparam->type != EXPR_REG)
+                    node->u.op.immediate = node->u.op.rparam;
+            }
             size = 3;
-            node->op.lparam->op.evaluate(node->op.lparam);
+            break;
+        case TOK_DB:
+            size = 1;
+            node->u.op.lparam->op.evaluate(node->u.op.lparam);
+            node->u.op.immediate = node->u.op.lparam;
             break;
         case TOK_ORG:
-            size = node->op.lparam->op.evaluate(node->op.lparam);
+            code_org = node->u.op.lparam->op.evaluate(node->u.op.lparam);
+            node->u.op.immediate = node->u.op.lparam;
+            size = code_org; 
             break;
         default:
-            sprintf(err_msg, "Unexpected instruction:\n unknown opcode %s\n", node->op.ident);
+            sprintf(err_msg, "Unexpected instruction:\n unknown opcode %s\n", node->ident);
             throw_error(E_LINKERERROR, err_msg);
             break;
         }
         break;
     case NODE_VAR:
-        switch (node->label.target_type)
+        switch (node->u.label.target_type)
         {
         case TOK_REGPC:
-            asmvars_add(node->label.ident, pc);
+            asmvars_add(node->ident, pc);
             break;
         case TOK_IDENT:
-            asmvars_add(node->label.ident, node->label.target->op.evaluate(node->label.target));
+            asmvars_add(node->ident, node->u.label.target->op.evaluate(node->u.label.target));
             break;
         }
         break;
@@ -70,10 +203,12 @@ int codegen_evaluate_params(Node *node, int pc, ASTree *ast)
         throw_error(E_LINKERERROR, "\n Unknown NodeType\n");
         break;
     }
+    if(bkasm_stage == GENERATE_STAGE && node->type == NODE_INSTRUCTION )
+        codegen_generate(node, pc, size);
     return size;
 }
 
-char* codegen_link(ASTree* ast)
+unsigned char* codegen_link(ASTree* ast)
 {
     int pc = 0;
     int instrSize;
@@ -83,20 +218,14 @@ char* codegen_link(ASTree* ast)
     {
         for(it = ast->firstNode; it; it = it -> next)
         {
-            if (bkasm_stage == GENERATE_STAGE)
-            {
-                instrSize = codegen_generate(&it->node, pc, ast);
-                printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); //FIXME remove
-            }
-            else
-            {
-                instrSize = codegen_evaluate_params(&it->node, pc, ast);
-            }
+            instrSize = codegen_evaluate_ast(&it->node, pc, ast);
+            printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); // FIXME remove
             pc += instrSize;
         }
-        pc = 0;
+        if(bkasm_stage == EVAL_STAGE)
+            pc = 0;
     }
     asmvars_print();
+    printf("codesize = %d\n", pc - code_org);
     return prog;
 }
-

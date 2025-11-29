@@ -20,13 +20,14 @@ Node *node_create_instruction(const char *ident, ExprValue opcode)
     node = (Node *)malloc(sizeof(Node));
     if(node)
     {
-        node->op.type = NODE_INSTRUCTION;
-        node->op.opcode = opcode;
-        node->op.lparam = NULL;
-        node->op.rparam = NULL;
-        node->op.ident = (char *)malloc(len + 1);
-        strncpy(node->op.ident, ident, len);
-        node->op.ident[len] = '\0';
+        node->type = NODE_INSTRUCTION;
+        node->u.op.opcode = opcode;
+        node->u.op.lparam = NULL;
+        node->u.op.rparam = NULL;
+        node->u.op.immediate = NULL;
+        node->ident = (char *)malloc(len + 1);
+        strncpy(node->ident, ident, len);
+        node->ident[len] = '\0';
     }
     return (Node *)node;
 }
@@ -35,9 +36,6 @@ void node_clear_instruction(Instruction *op)
 {
     if (op)
     {
-        op->type = NODE_EMPTY;
-        free(op->ident);
-        op->ident = NULL;
         math_free((Expr *)op->lparam);
         op->lparam = 0;
         math_free((Expr *)op->rparam);
@@ -51,7 +49,6 @@ void node_clear_instruction(Instruction *op)
 Node *node_create_label(const char *ident)
 {
     int len;
-    Label label;
     Node *node;
 
     len = strlen(ident);
@@ -60,13 +57,12 @@ Node *node_create_label(const char *ident)
     node = (Node *)malloc(sizeof(Node));
     if(node)
     {
-        label.type = NODE_VAR;
-        label.target = NULL;
-        label.target_type = 0;
-        label.ident = (char *)malloc(len + 1);
-        strncpy(label.ident, ident, len);
-        label.ident[len] = '\0';
-        node->label = label;
+        node->type = NODE_VAR;
+        node->u.label.target = NULL;
+        node->u.label.target_type = 0;
+        node->ident = (char *)malloc(len + 1);
+        strncpy(node->ident, ident, len);
+        node->ident[len] = '\0';
     }
     return (Node *)node;
 }
@@ -75,10 +71,7 @@ void node_clear_label(Label *label)
 {
     if (label)
     {
-        label->type = NODE_EMPTY;
         math_free(label->target);
-        free(label->ident);
-        label->ident = NULL;
     }
 }
 
@@ -90,8 +83,8 @@ void node_print(Node *node)
         Instruction instr;
         Label label;
     case NODE_INSTRUCTION:
-        instr = node->op;
-        printf("< OPERATION >: %s code %d\n", instr.ident,
+        instr = node->u.op;
+        printf("< OPERATION >: %s code %d\n", node->ident,
                instr.opcode);
         if(instr.lparam)
             math_print_expression(instr.lparam);
@@ -99,8 +92,8 @@ void node_print(Node *node)
             math_print_expression(instr.rparam);
         break;
     case NODE_VAR:
-        label = node->label;
-        printf("< LABEL >: %s\n", label.ident);
+        label = node->u.label;
+        printf("< LABEL >: %s\n", node->ident);
         math_print_expression(label.target);
         break;
     default:
@@ -116,14 +109,19 @@ void node_clear(Node *node)
     switch (node->type)
     {
     case NODE_INSTRUCTION:
-        node_clear_instruction((Instruction *)node);
+        node_clear_instruction(&node->u.op);
         break;
     case NODE_VAR:
-        node_clear_label((Label *)node);
+        node_clear_label(&node->u.label);
         break;
     default:
         assert(0);
         break;
+    }
+    if (node->ident)
+    {
+        free(node->ident);
+        node->ident = 0;
     }
 }
 

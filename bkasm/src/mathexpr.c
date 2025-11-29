@@ -81,10 +81,8 @@ static ExprValue var_evaluate(Expr *self)
             }
             else if (bkasm_stage > PARSE_STAGE)
             {
-             
-                fprintf(stderr, "Error: undefined variable %s\n", self->ident);
-                sprintf(err_msg, "Error: undefined variable %s\n", self->ident);
-                throw_error(E_SYNTAXERROR, err_msg);
+                sprintf(err_msg, "\nUndefined variable %s\n", self->ident);
+                throw_error(E_LINKERERROR, err_msg);
             }
     }
     return 0;
