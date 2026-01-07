@@ -16,37 +16,47 @@ void codegen_generate(Node *node, int pc, int size)
     char err_msg[MAX_ERR_MSG_LEN];
     int i;
     Expr *immediate_param = node->u.op.immediate;
+    ExprValue immediate_value;
 
     if(size == 0) return;
 
     if (node->type == NODE_INSTRUCTION)
     {
-        if (node->u.op.opcode == TOK_DB || node->u.op.opcode == TOK_ORG) // non-executable instructions - implement later TODO
-            ;
-        else
+        switch(node->u.op.instr_type)
         {
-            if (size > 1 && immediate_param == NULL)
-            {
-                sprintf(err_msg, "Missing immediate parameter for instruction %s\n", node->ident);
-                throw_error(E_LINKERERROR, err_msg);
-                exit_nicely(E_LINKERERROR);
-            }
+            case TOK_DB:
+                prog[pc] = immediate_param->op.evaluate(immediate_param);
 
-            for (i = 0; i < size; i++)
-            {
-                switch (i)
+            case TOK_ORG: // non-executable instructions - implement later TODO
+                break;
+            default:
+                if (size > 1)
                 {
-                case 0:
-                    prog[i + pc - code_org] = node->u.op.opcode;
-                    break;
-                case 1:
-                    prog[i + pc - code_org] = immediate_param->op.evaluate(immediate_param);
-                    break;
-                case 2:
-                    prog[i + pc - code_org] = immediate_param->op.evaluate(immediate_param) / 256;
-                    break;
+                    if (immediate_param == NULL)
+                    {
+                        sprintf(err_msg, "\nMissing immediate parameter for instruction %s", node->ident);
+                        throw_error(E_LINKERERROR, err_msg);
+                        exit_nicely(E_LINKERERROR);
+                    }
+                    else
+                        immediate_value = immediate_param->op.evaluate(immediate_param);
                 }
-            }
+
+                for (i = 0; i < size; i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            prog[i + pc - code_org] = node->u.op.opcode;
+                            break;
+                        case 1:
+                            prog[i + pc - code_org] = immediate_value;
+                            break;
+                        case 2:
+                            prog[i + pc - code_org] = immediate_value/256;
+                            break;
+                    }
+                }
         }
     }
 }
@@ -57,38 +67,26 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
     int size = 0;
     switch (node->type)
     {
-    case NODE_INSTRUCTION:  // Evaluate instructions and params to get size of instruction only, not to generate code.
-                            // Evaluates params and returns size of instruction
-        switch (node->u.op.opcode)
+    case NODE_INSTRUCTION:
+    case NODE_PSEUDO:
+        /* Evaluate instructions and params to get size of instruction only, not to generate code.
+         * Evaluates params and returns size of instruction
+         */
+
+        switch (node->u.op.instr_type)
         {
 
         // 0 bytes 0 immediate params instructions
-        case TOK_ADC:
-        case TOK_ADD:
-        case TOK_ANA:
-        case TOK_AND:
         case TOK_CMA:
         case TOK_CMC:
-        case TOK_CMP:
         case TOK_DAA:
-        case TOK_DAD:
-        case TOK_DCR:
-        case TOK_DCX:
         case TOK_DI:
         case TOK_EI:
         case TOK_HLT:
-        case TOK_INR:
-        case TOK_INX:
         case TOK_JM:
-        case TOK_LDAX:
-        case TOK_LHLD:
-        case TOK_MOV:
         case TOK_NOP:
-        case TOK_ORA:
         case TOK_ORI:
         case TOK_PCHL:
-        case TOK_POP:
-        case TOK_PUSH:
         case TOK_RAL:
         case TOK_RAR:
         case TOK_RC:
@@ -103,19 +101,45 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_RPO:
         case TOK_RRC:
         case TOK_RZ:
-        case TOK_SBB:
         case TOK_SBI:
-        case TOK_SHLD:
         case TOK_SIM:
         case TOK_SPHL:
-        case TOK_STAX:
         case TOK_STC:
-        case TOK_SUB:
         case TOK_SUI:
         case TOK_XCHG:
-        case TOK_XRA:
         case TOK_XRI:
         case TOK_XTHL:
+            size = 1;
+            break;
+        case TOK_MOV:
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3) | node->u.op.rparam->data.value;
+            size = 1;
+            break;
+        case TOK_ADD:
+        case TOK_ADC:
+        case TOK_ANA:
+        case TOK_AND:
+        case TOK_CMP:
+        case TOK_ORA:
+        case TOK_SBB:
+        case TOK_SUB:
+        case TOK_XRA:
+            node->u.op.opcode |= node->u.op.rparam->data.value;
+            size = 1;
+            break;
+        case TOK_INR:
+        case TOK_DCR:
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
+            size = 1;
+            break;
+        case TOK_DAD:
+        case TOK_LDAX:
+        case TOK_STAX:
+        case TOK_POP:
+        case TOK_PUSH:
+        case TOK_INX:
+        case TOK_DCX:
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 4);
             size = 1;
             break;
 
@@ -159,7 +183,9 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_JPO:
         case TOK_JZ:
         case TOK_LDA:
+        case TOK_LHLD:
         case TOK_LXI:
+        case TOK_SHLD:
         case TOK_STA:
             node->u.op.lparam->op.evaluate(node->u.op.lparam);
             if (node->u.op.lparam->type != EXPR_REG)
@@ -183,7 +209,7 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             size = code_org; 
             break;
         default:
-            sprintf(err_msg, "Unexpected instruction:\n unknown opcode %s\n", node->ident);
+            sprintf(err_msg, "\nUnexpected instruction: unknown opcode %s", node->ident);
             throw_error(E_LINKERERROR, err_msg);
             break;
         }
@@ -200,7 +226,7 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         }
         break;
     default:
-        throw_error(E_LINKERERROR, "\n Unknown NodeType\n");
+        throw_error(E_LINKERERROR, "\nUnknown NodeType");
         break;
     }
     if(bkasm_stage == GENERATE_STAGE && node->type == NODE_INSTRUCTION )
@@ -213,6 +239,7 @@ unsigned char* codegen_link(ASTree* ast)
     int pc = 0;
     int instrSize;
     NodeList *it;
+    FILE *file;
 
     for(bkasm_stage = EVAL_STAGE; bkasm_stage <= GENERATE_STAGE; bkasm_stage ++)
     {
@@ -227,5 +254,8 @@ unsigned char* codegen_link(ASTree* ast)
     }
     asmvars_print();
     printf("codesize = %d\n", pc - code_org);
+    file = fopen("prog.bin", "wb");
+    fwrite(prog, 1, pc - code_org, file);
+    fclose(file);
     return prog;
 }

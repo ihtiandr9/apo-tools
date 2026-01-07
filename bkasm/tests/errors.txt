@@ -191,11 +191,11 @@ START:  CMP  L              ;None
 START:  CMP  M              ;None
 START:  CMP  A              ;None
 START:  RNZ                 ;None
-START:  POP  B              ;None
+START:  POP  PSW            ;None
 START:  JNZ  START          ;None
 START:  JMP  27CH           ;None
 START:  CNZ  START          ;None
-START:  PUSH B              ;None
+START:  PUSH PSW            ;None
 START:  ADI  20H            ;None
 START:  RST  0              ;None
 START:  RZ                  ;None
@@ -227,7 +227,6 @@ START:  POP  H              ;None
 START:  JPO  START          ;None
 START:  XTHL                ;None
 START:  CPO  START          ;None
-START:  PUSH H              ;None
 START:  ANI  0AAH           ;None
 START:  RST  4              ;None
 START:  RPE                 ;None
@@ -256,9 +255,41 @@ START:  CPI  89H            ;None
 START:  RST  7              ;None
 START:  NOP                 ;None
 ORG     1100H               ;None
+START:  EQU START-2         ;None
 INTS:   EQU START-2         ;Undefined variable START
 mov a,b                     ;Error: Unexpected symbol: "m" (may be in lowercase)
 START:  JMP EXIT1           ;Undefined variable EXIT1
 START:  JMP START + 100H    ;None
 START:  JMP EXIT1, 8        ;Error: Unexpected symbol: "," (may be in lowercase)
-
+START:  MVI 29H, B          ;Left operand of MVI must be a register
+START:  MVI B, C            ;Right operand of MVI must be an immediate value
+START:  MOV B, 29H          ;Both operands of MOV must be registers
+START:  ADD 123             ;Operand of ADD must be a register
+START:  SUB 456             ;Operand of SUB must be a register
+START:  MOV X, A            ;Both operands of MOV must be registers
+START:  MVI Y, 10H          ;Left operand of MVI must be a register
+START:  LXI Z, 100H         ;Undefined variable Z
+START:  JMP UNKNOWN         ;Undefined variable UNKNOWN
+START:  CALL MISSING        ;Undefined variable MISSING
+START:  LDA NONEXIST        ;Undefined variable NONEXIST
+START:  STA NOWHERE         ;Undefined variable NOWHERE
+START:  LHLD GONE           ;Undefined variable GONE
+START:  SHLD LOST           ;Undefined variable LOST
+mov b,c                     ;Error: Unexpected symbol: "m" (may be in lowercase)
+jmp start, 5                ;Error: Unexpected symbol: "j" (may be in lowercase)
+mvi a, b, c                 ;Error: Unexpected symbol: "m" (may be in lowercase)
+add a, b                    ;Error: Unexpected symbol: "a" (may be in lowercase)
+START:  MVI A, B            ;Right operand of MVI must be an immediate value
+START:  MVI H, D            ;Right operand of MVI must be an immediate value
+START:  MVI M, E            ;Right operand of MVI must be an immediate value
+START:  MOV A, 255          ;Both operands of MOV must be registers
+START:  MOV H, 0            ;Both operands of MOV must be registers
+START:  MOV M, 128          ;Both operands of MOV must be registers
+START:  ADD 0               ;Operand of ADD must be a register
+START:  ADC 255             ;Operand of ADC must be a register
+START:  SUB 1               ;Operand of SUB must be a register
+START:  SBB 2               ;Operand of SBB must be a register
+START:  ANA 3               ;Operand of ANA must be a register
+START:  XRA 4               ;Operand of XRA must be a register
+START:  ORA 5               ;Operand of ORA must be a register
+START:  CMP 6               ;Operand of CMP must be a register

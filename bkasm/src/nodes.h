@@ -15,11 +15,13 @@ typedef enum _NodeType
     NODE_EMPTY = 0,
     NODE_INSTRUCTION,
     NODE_VAR,
+    NODE_PSEUDO,
 } eNodeType;
 
 STRUCT(Instruction)
 {
-    eIdentType opcode;
+    eIdentType instr_type;
+    ExprValue opcode;
     Expr* lparam;
     Expr* rparam;
     Expr* immediate;    // lparam or rparam if is math or const or var. set to NULL if is reg
@@ -51,7 +53,7 @@ STRUCT(NodeList)
 
 Node *node_create_label(const char *ident);
 void node_clear_label(Label *_label);
-Node *node_create_instruction(const char *ident, ExprValue opcode);
+Node *node_create_instruction(const char *ident, eIdentType instr_type, ExprValue opcode);
 void node_clear_instruction(Instruction *_instr);
 void node_clear(Node *node);
 void node_print(Node *node);

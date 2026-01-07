@@ -21,6 +21,7 @@ void ast_add_statement(Node *statement, ASTree *astree)
     switch (statement->type)
     {
     case NODE_INSTRUCTION:
+    case NODE_PSEUDO:
         if (astree->lastNode)
         {
             astree->lastNode->next = nodelist_alloc();

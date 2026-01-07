@@ -55,7 +55,7 @@ class TestUM(unittest.TestCase):
             suffix = ""
 
         exe_path = abspath(join(dirname(__file__), "../build/bkasm" + suffix))
-        for num in range(263):
+        for num in range(len(errors)):
             expected_error = errors[num].replace('\n','')
             semicolon_pos = expected_error.find(';')
             expected_error = expected_error[semicolon_pos + 1:]

@@ -10,7 +10,7 @@
 ////////////////////////////////////////////
 // Instruction Node
 
-Node *node_create_instruction(const char *ident, ExprValue opcode)
+Node *node_create_instruction(const char *ident, eIdentType instr_type, ExprValue opcode)
 {
     int len;
     Node *node;
@@ -21,6 +21,7 @@ Node *node_create_instruction(const char *ident, ExprValue opcode)
     if(node)
     {
         node->type = NODE_INSTRUCTION;
+        node->u.op.instr_type = instr_type;
         node->u.op.opcode = opcode;
         node->u.op.lparam = NULL;
         node->u.op.rparam = NULL;
@@ -85,7 +86,7 @@ void node_print(Node *node)
     case NODE_INSTRUCTION:
         instr = node->u.op;
         printf("< OPERATION >: %s code %d\n", node->ident,
-               instr.opcode);
+               instr.instr_type);
         if(instr.lparam)
             math_print_expression(instr.lparam);
         if(instr.rparam)
@@ -109,6 +110,7 @@ void node_clear(Node *node)
     switch (node->type)
     {
     case NODE_INSTRUCTION:
+    case NODE_PSEUDO:
         node_clear_instruction(&node->u.op);
         break;
     case NODE_VAR:
