@@ -4,4 +4,4 @@ if [ "$OS" == "FreeBSD" ]; then
 else
   MAKE=make
 fi
-  $MAKE -f Makefile.gnu $1
+  $MAKE -j4 -f Build/Makefile.gnu $1

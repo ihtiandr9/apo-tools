@@ -1,0 +1,4 @@
+{
+    "cmake.sourceDirectory": "${workspaceFolder}/Build",
+    "cmake.buildDirectory": "${workspaceFolder}/Build/CMake.MinGW"
+}
