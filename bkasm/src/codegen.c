@@ -25,7 +25,8 @@ void codegen_generate(Node *node, int pc, int size)
         switch(node->u.op.instr_type)
         {
             case TOK_DB:
-                prog[pc] = immediate_param->op.evaluate(immediate_param);
+                prog[pc - code_org] = immediate_param->op.evaluate(immediate_param);
+                break;
 
             case TOK_ORG: // non-executable instructions - implement later TODO
                 break;
@@ -124,7 +125,7 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_SBB:
         case TOK_SUB:
         case TOK_XRA:
-            node->u.op.opcode |= node->u.op.rparam->data.value;
+            node->u.op.opcode |= node->u.op.lparam->data.value;
             size = 1;
             break;
         case TOK_INR:
