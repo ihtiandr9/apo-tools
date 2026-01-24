@@ -74,6 +74,9 @@ clean:
 
 ## unittest tests one unit
 
+unittest: ${OUTDIR}/${APP}
+	cd ${OUTDIR} &&	./${APP} ../tests/test.asm
+
 ## add_custom_target(unittest
 ##     COMMAND	./bkasm ../tests/test.asm
 ##     COMMENT "Run Test"

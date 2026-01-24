@@ -18,7 +18,7 @@ add_executable(bkasm
     ${SOURCE_C}
 )
 target_compile_options(bkasm PRIVATE
- -std=c99 -Wall
+ -std=c11 -Wall
 )
 
 ## debug target
