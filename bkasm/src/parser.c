@@ -14,6 +14,17 @@ static Node *parse_op(Parser *self, Lexer *lexer);
 static Expr *parse_param(Parser *self, Lexer *lexer);
 static void parse_statement(Parser *self, Lexer *lexer);
 
+static int is_register_pair(ExprValue reg_type)
+{
+    return (reg_type == TOK_REGBC ||
+            reg_type == TOK_REGDE ||
+            reg_type == TOK_REGHL ||
+            reg_type == TOK_REGB ||
+            reg_type == TOK_REGD ||
+            reg_type == TOK_REGH ||
+            reg_type == TOK_REGSP);
+}
+
 static Node *parse_var(Parser *self, Lexer *lexer)
 {
     Node *node;
@@ -212,8 +223,9 @@ static Node *parse_op(Parser *self, Lexer *lexer)
 {
     Instruction *op;
     Lexema op_token = lexer->token;
-    Node *node = node_create_instruction(op_token.ident, op_token.type);
+    Node *node = node_create_instruction(op_token.ident, op_token.type, op_token.value);
     InbufCurrentString *currstr = inbuf_currstr();
+    char err_msg[MAX_ERR_MSG_LEN];
 
     switch (op_token.type)
     {
@@ -229,7 +241,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         lexer->nextTok(lexer);
         for (; lexer->token.kind == CONST;)
         {
-            node = node_create_instruction(op_token.ident, op_token.type);
+            node = node_create_instruction(op_token.ident, op_token.type, op_token.value);
             op = &node->u.op;
             op->lparam = parse_param(self, lexer);
             ast_add_statement(node, self->ast);
@@ -242,8 +254,6 @@ static Node *parse_op(Parser *self, Lexer *lexer)
 
     // two opernds mnemonics
     case TOK_LXI:
-    case TOK_MOV:
-    case TOK_MVI:
         op = &node->u.op;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
@@ -254,12 +264,47 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         op->rparam = parse_param(self, lexer);
         lexer->skipWhile(lexer, ' ');
         break;
+    case TOK_MOV:
+        op = &node->u.op;
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        op->lparam = parse_param(self, lexer);
+        lexer->skipWhile(lexer, ',');
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        op->rparam = parse_param(self, lexer);
+        if (op->lparam->type != EXPR_REG || op->rparam->type != EXPR_REG) {
+            sprintf(err_msg, "\nBoth operands of MOV must be registers");
+            throw_error(E_SYNTAXERROR, err_msg);
+        }
+        lexer->skipWhile(lexer, ' ');
+        break;
+    case TOK_MVI:
+        op = &node->u.op;
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        op->lparam = parse_param(self, lexer);
+        lexer->skipWhile(lexer, ',');
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        op->rparam = parse_param(self, lexer);
+        if (op->lparam->type != EXPR_REG) {
+            sprintf(err_msg, "\nLeft operand of MVI must be a register");
+            throw_error(E_SYNTAXERROR, err_msg);
+        }
+        if (op->rparam->type == EXPR_REG) {
+            sprintf(err_msg, "\nRight operand of MVI must be an immediate value");
+            throw_error(E_SYNTAXERROR, err_msg);
+        }
+        lexer->skipWhile(lexer, ' ');
+        break;
     // one operand mnemonics
     case TOK_ACI:
     case TOK_ADC:
     case TOK_ADD:
     case TOK_ADI:
     case TOK_ANA:
+    case TOK_AND:
     case TOK_ANI:
     case TOK_CALL:
     case TOK_CC:
@@ -291,7 +336,6 @@ static Node *parse_op(Parser *self, Lexer *lexer)
     case TOK_LDAX:
     case TOK_LHLD:
     case TOK_ORA:
-    case TOK_ORG:
     case TOK_ORI:
     case TOK_OUT:
     case TOK_POP:
@@ -311,6 +355,15 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         lexer->nextTok(lexer);
         op->lparam = parse_param(self, lexer);
         break;
+    // Pseudo instructions one operand mnemonics
+    case TOK_ORG:
+        node->type = NODE_PSEUDO;
+        op = &node->u.op;
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        op->lparam = parse_param(self, lexer);
+        break;
+
     // NULL operand mnemonics
     case TOK_CMA:
     case TOK_CMC:
@@ -351,6 +404,48 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         lexer->skipUntil(lexer, 10);
         break;
     }
+
+    // Additional checks for operands
+    if (node && node->type == NODE_INSTRUCTION) {
+        Instruction *op = &node->u.op;
+        char err_msg[MAX_ERR_MSG_LEN];
+        switch (op_token.type) {
+        case TOK_ADD:
+        case TOK_ADC:
+        case TOK_ANA:
+        case TOK_CMP:
+        case TOK_ORA:
+        case TOK_SBB:
+        case TOK_SUB:
+        case TOK_XRA:
+            if (op->lparam->type != EXPR_REG) {
+                sprintf(err_msg, "\nOperand of %s must be a register", op_token.ident);
+                throw_error(E_SYNTAXERROR, err_msg);
+            }
+            break;
+        case TOK_INR:
+        case TOK_DCR:
+            if (op->lparam->type != EXPR_REG) {
+                sprintf(err_msg, "\nOperand of %s must be a register", op_token.ident);
+                throw_error(E_SYNTAXERROR, err_msg);
+            }
+            break;
+        case TOK_DAD:
+        case TOK_LDAX:
+        case TOK_STAX:
+        case TOK_POP:
+        case TOK_PUSH:
+        case TOK_INX:
+        case TOK_DCX:
+            if (op->lparam->type == EXPR_REG && !is_register_pair(op->lparam->data.value)) {
+                sprintf(err_msg, "\nOperand of %s must be a register pair", op_token.ident);
+                throw_error(E_SYNTAXERROR, err_msg);
+            }
+            break;
+        // Add more if needed
+        }
+    }
+
     return node;
 }
 

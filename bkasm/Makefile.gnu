@@ -1,26 +1,35 @@
 
 ifndef TERMUX
 	ifeq ($(OS),Windows_NT)
-		DETECTED_OS := Windows
+		DETECTED_OS :=Windows
 	else
 		DETECTED_OS := $(shell uname -s)
 	endif
 
 	ifeq ($(DETECTED_OS),FreeBSD)
-		PREFIX= /usr/local
+		PREFIX:= /usr/local
+		LIBDIRS:=-L,$(PREFIX)/lib,-lc
 	else
-		PREFIX= /usr
-		DETECTED_OS := $(shell uname -s)
+		ifeq ($(DETECTED_OS),Windows)
+			PREFIX:= tools/MinGW64
+			LIBDIRS:=-L,$(PREFIX)/lib32,-L,$(PREFIX)/x86_64-w64-mingw32/lib32,-lgcc -m32
+		else
+			PREFIX= /usr
+			LIBDIRS:=-L,$(PREFIX)/lib,-lc
+		endif
 	endif
 endif 
 
 APP:=bkasm
 OUTDIR:=build
 CC=$(PREFIX)/bin/gcc
-LIBDIR:=$(PREFIX)/lib
-CFLAGS= -Isrc -I$(PREFIX)/include
 
-## -I/usr/include
+## -static-libgcc -m32
+
+CFLAGS= -Isrc -I$(PREFIX)/include
+ifeq ($(DETECTED_OS),Windows)
+CFLAGS+= -m32
+endif
 
 SRCS=\
 	 $(wildcard src/*.c)
@@ -35,7 +44,7 @@ HDRS=\
 all: $(OUTDIR)/$(APP)
 
 $(OUTDIR)/$(APP): $(OBJS) $(OUTDIR)
-	$(CC) -Wl,-L,$(LIBDIR) -o $@ $(OBJS) -Wl,-lc
+	$(CC) $(OBJS) -o $@ -Wl,$(LIBDIRS)
 
 $(OUTDIR):
 	mkdir -p $(OUTDIR)
