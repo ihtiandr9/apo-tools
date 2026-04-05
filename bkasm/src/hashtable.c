@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "hashtable.h"
 
@@ -40,6 +41,39 @@ int hash_value(const char key[], int *result, HashVar table[], unsigned int size
     }
     else
         return -1;
+}
+
+static int hash_name_cmp(const void *p1, const void *p2)
+{
+    /* The actual arguments to this function are "pointers to
+    pointers to HashVar* , but strcmp(3) arguments are "pointers
+    to char", hence the following cast plus dereference. */
+    const HashVar* var1 = *(const HashVar **) p1;
+    const HashVar* var2 = *(const HashVar **) p2;
+
+    return strcmp(var1->name, var2->name);
+}
+
+void hash_printsorted(HashVar table[], unsigned int size)
+{
+	unsigned int i;
+	unsigned int sorted_size = 0;
+    HashVar **sorted = (HashVar**) malloc(size * sizeof(HashVar*));
+    
+    for (i = 0; i < size; i++)
+    {
+        if (table[i].name[0] != 0)
+        {
+            sorted[sorted_size++] = &table[i];
+        }
+    }
+    
+    qsort(sorted, sorted_size, sizeof(HashVar*), hash_name_cmp);
+    for (i = 0; i < sorted_size; i++)
+    {
+        printf("%s = %d\n", sorted[i] -> name,
+            sorted[i] -> val);
+    }
 }
 
 void hash_print(HashVar table[], unsigned int size)
