@@ -113,7 +113,7 @@ SOURCE=..\src\errors.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\hashtable.c
+SOURCE=..\src\hashtbl.c
 # End Source File
 # Begin Source File
 
@@ -177,7 +177,7 @@ SOURCE=..\src\errors.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\hashtable.h
+SOURCE=..\src\hashtbl.h
 # End Source File
 # Begin Source File
 

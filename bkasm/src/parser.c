@@ -218,7 +218,8 @@ static Expr *parse_db_param(Parser *self, Lexer *lexer)
 
     if (string_started)
     {
-        for (int i = 0; i < mbs_size - 1; i++)
+        int i = 0;
+        for (i = 0; i < mbs_size - 1; i++)
         {
             expr = const_create(mbs[i]);
             node = node_create_instruction("DB", TOK_DB, 0);

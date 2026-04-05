@@ -1,18 +1,73 @@
-; ОПИСАНИЕ ПРОГРАММЫ
-ORG 1100H
-  JMP START
-ERRLINE:  NOP
-PROGSTART: DB START, DISCARD ; НАЧАЛО И КОНЕЦ ПРОГРАММЫ
+;ОПИСАНИЕ ПРОГРАММЫ
+       JMP  START
 
 ;             КОНСТАНТЫ И СТРОКИ
-ENDL:   DB "Priwet", 0DH, 0AH, 0
+MSG:   DB "Priwet", 13, 10, 0
+ENDL:  DB 13, 10, 0
 
 ;             НАЧАЛО ГЛАВНОЙ ФУНКЦИИ
 
 START:
+        CALL SET192
+        LHLD VADDR
+        LXI  D, 4
+        DAD  D
+        MVI  E, 78
+        DAD  D
+        DAD  D
+        DAD  D
+        DAD  D
+        MVI  B, 63
+        MVI  A, 0-78
+
+CC1:
+        MOV  M, B
+        INR  A
+        INX  H
+        JNZ  CC1
+        PUSH H
+        LXI  H, 0-78
+        MOV  B, H
+        MOV  C, L
+        DAD  H
+        DAD  B
+        MOV  B, H
+        MOV  C, L
+        POP  H
+        CALL DRAWCH
+        DAD  B
+        CALL DRAWCH
+        DAD  B
+        CALL DRAWCH
+        DAD  B
+        CALL DRAWCH
+
 EXIT:        ; КОНЕЦ ГЛАВНОЙ ФУНКЦИИ
+        JMP EXIT
+
+DRAWCH:
+        LXI  D, 77
+        INX  H
+        MVI  M, 24H
+        INX  H
+        MVI  M, 29H
+        DAD  D
+        MVI  M, 2FH
+        INX  H
+        MVI  M, 0FH
+        DAD  D
+        MVI  M, 14H
+        INX  H
+        MVI  M, 11H
+        DAD  D
+        MVI  M, 09H
+        INX  H
+        MVI  M, 24H
+        RET
 
 SET192:      ; ПЕРЕКЛЮЧЕНИЕ ВИДЕОРЕЖИМА
+        LHLD VADDR
+        XCHG
         LXI  H, VG75+1
         MVI  M, 0
         DCX  H
@@ -21,14 +76,12 @@ SET192:      ; ПЕРЕКЛЮЧЕНИЕ ВИДЕОРЕЖИМА
         MVI  M, 3
         MVI  M, NREZH
         INR  L
-        MVI  M, 23
+        MVI  M, 023H
         CALL WAITIN
         EI
-        LXI  H, VT75+8
-        MVI  M, 80
+        LXI  H, VT57+8
+        MVI  M, 80H
         MVI  L, 4
-        LHLD VADDR
-        XCHG
         MOV  M, E
         MOV  M, D
         INR  L
@@ -49,6 +102,9 @@ WAIT1:
         JZ   WAIT1
         RET
 DISCARD:      ; НАЧАЛО НЕИНИЦИАЛИЗИРОАВННОЙ ПАМЯТИ
+;VADDR: DW GFX
+VADDR: DB 00H, 30H
+GFX:
 
 ;             КОНСТАНТЫ И ПОДПРОГРАММЫ МОНИТОРА
 PUTC:   EQU 0F809H
@@ -57,8 +113,20 @@ WTCHR:  EQU 0F803H
 NWTCHR: EQU 0F81BH
 MONIT:  EQU 0F875H
 PRHEX:  EQU 0F815H
-TESTS:  EQU START + 8
+NREZH:  EQU 053H
+VSIZE:  EQU 4679
+BLACK:  EQU 8DH
+RED:    EQU 8CH
+GREEN:  EQU 85H
+BLUE:   EQU 89H
+YELLOW: EQU 84H
+PINK:   EQU 88H
+AQUA:   EQU 81H
+WHIT:   EQU 80H
 ;             ПОРТЫ
 TIMER:  EQU 0EC00H
+VG75:   EQU 0EF00H
+VT57:   EQU 0F000H
+
 END
 ;                  КОНЕЦ ПРОГРАММЫ

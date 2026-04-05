@@ -3,7 +3,7 @@
 #include "bkasm.h"
 #include "asmvars.h"
 #include "errors.h"
-#include "hashtable.h"
+#include "hashtbl.h"
 
 HashVar asmvars[MAX_VAR_COUNT];
 
