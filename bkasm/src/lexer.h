@@ -12,6 +12,7 @@ typedef enum _eIdentKind
     CONST,
     VAR,
     INT,
+    CHAR,
 } eIdentKind;
 
 typedef enum _eIdentType
@@ -123,17 +124,18 @@ typedef enum _eIdentType
     // Symbols
     L_EOF,
     L_EOL,
-    TOK_ASTERISK,
-    TOK_COLON,
-    TOK_COMMA,
     TOK_EQ,
     TOK_GT,
-    TOK_IDENT,
     TOK_LT,
+    TOK_DOUBLEQUOT,
+    TOK_SEMICOLON,
+    TOK_COLON,
+    TOK_COMMA,
+    TOK_IDENT,
     TOK_MINUS,
+    TOK_ASTERISK,
     TOK_NUM,
     TOK_PLUS,
-    TOK_SEMICOLON
 } eIdentType;
 
 STRUCT(Lexema)
@@ -150,6 +152,7 @@ STRUCT(Lexer)
     unsigned char ch;
     const char *buf;
     int bufsize;
+    int string_state;
     Lexema token;
     Lexema *symbols;
     Lexema *words;
@@ -158,6 +161,7 @@ STRUCT(Lexer)
     void (*skipUntil)(Lexer *self, unsigned char symbol);
     void (*skipWhile)(Lexer *self, unsigned char symbol);
     void (*skipOne)(Lexer *self);
+    void (*toggleStringState)(Lexer *self);
 };
 
 // exports

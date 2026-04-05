@@ -88,7 +88,7 @@ void hash_print(HashVar table[], unsigned int size)
     }
 }
 
-const char* hash_text_error(int err)
+const char* hash_text_error(int errno)
 {
     static const char* errs[] = {
         "ERROR: internal error\n null pointer to return value\n",
@@ -96,8 +96,8 @@ const char* hash_text_error(int err)
     };
     static const char* unknown = "ERROR: unknown error\n";
 
-    if (err >= -2 && err < 0) {
-        return errs[-err - 1];
+    if (errno >= -2 && errno < 0) {
+        return errs[-errno - 1];
     }
     return unknown;  // Никогда не возвращаем NULL
 }

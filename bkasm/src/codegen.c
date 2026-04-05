@@ -247,7 +247,7 @@ unsigned char* codegen_link(ASTree* ast)
         for(it = ast->firstNode; it; it = it -> next)
         {
             instrSize = codegen_evaluate_ast(&it->node, pc, ast);
-            printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); // FIXME remove
+            // printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); // FIXME remove
             pc += instrSize;
         }
         if(bkasm_stage == EVAL_STAGE)

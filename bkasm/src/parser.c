@@ -190,6 +190,52 @@ static Expr *parse_addition(Parser *self, Lexer *lexer)
     return result;
 }
 
+static Expr *parse_db_param(Parser *self, Lexer *lexer)
+{
+    Expr *expr = NULL;
+    Lexema m_token = lexer->token;
+    Node *node = NULL;
+    Instruction *op = NULL;
+    char mbs[MAX_VAR_COUNT];
+    int mbs_size = 0;
+    int string_started = 0;
+
+    if(m_token.type == TOK_DOUBLEQUOT)
+    {
+        lexer->toggleStringState(lexer);
+        string_started = 1;
+    }
+    while (lexer->string_state)
+    {
+        lexer->skipOne(lexer);
+        if (lexer->ch == '"')
+            lexer->toggleStringState(lexer);
+        else
+        {
+            mbs[mbs_size++] = lexer->ch;
+        }
+    }
+
+    if (string_started)
+    {
+        for (int i = 0; i < mbs_size - 1; i++)
+        {
+            expr = const_create(mbs[i]);
+            node = node_create_instruction("DB", TOK_DB, 0);
+            op = &node->u.op;
+            op->lparam = expr;
+            ast_add_statement(node, self->ast);
+        }
+
+        if (mbs_size > 1)
+            expr = const_create(mbs[mbs_size - 1]);
+        lexer->skipOne(lexer);
+    }
+    else
+        expr = parse_param(self, lexer);
+    return expr;
+}
+
 static Expr *parse_param(Parser *self, Lexer *lexer)
 {
     Expr *expr = NULL;
@@ -234,16 +280,16 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         op = &node->u.op;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
-        op->lparam = parse_param(self, lexer);
+        op->lparam = parse_db_param(self, lexer);
         ast_add_statement(node, self->ast);
         lexer->skipWhile(lexer, ',');
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
-        for (; lexer->token.kind == VAR || lexer->token.kind == CONST;)
+        for (; lexer->token.kind == VAR || lexer->token.kind == CONST || lexer->token.kind == CHAR;)
         {
             node = node_create_instruction(op_token.ident, op_token.type, op_token.value);
             op = &node->u.op;
-            op->lparam = parse_param(self, lexer);
+            op->lparam = parse_db_param(self, lexer);
             ast_add_statement(node, self->ast);
             lexer->skipWhile(lexer, ',');
             lexer->skipWhile(lexer, ' ');

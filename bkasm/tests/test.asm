@@ -5,7 +5,7 @@ ERRLINE:  NOP
 PROGSTART: DB START, DISCARD ; НАЧАЛО И КОНЕЦ ПРОГРАММЫ
 
 ;             КОНСТАНТЫ И СТРОКИ
-ENDL:   DB 0DH, 0AH, 0
+ENDL:   DB "Priwet", 0DH, 0AH, 0
 
 ;             НАЧАЛО ГЛАВНОЙ ФУНКЦИИ
 

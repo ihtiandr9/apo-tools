@@ -125,6 +125,7 @@ static const Lexema symbols[] =
     {SYM, TOK_PLUS, "+", 0, 1},
     {SYM, TOK_MINUS, "-", 0, 1},
     {SYM, TOK_ASTERISK, "*", 0, 1},
+    {SYM, TOK_DOUBLEQUOT, "\"", 0, 1},
     {SYM, L_EOL, (char *)&eol_sym, 0, 1},
     {SYM, L_EOF, (char *)&eof_sym, 0, 1},
     {KIND_NONE, TOK_NONE, 0, 0, 0},
@@ -230,6 +231,16 @@ static int lexer_next_tok(Lexer *self)
             throw_error(E_UNKIDENT, ident);
             exit_nicely(E_UNKIDENT);
         }
+        if(self->string_state)
+        {
+            char *ident = (char*) malloc(sizeof (char));
+            *ident = m_ch;
+            self->token.kind = CHAR;
+            self->token.type = TOK_NONE;
+            self->token.ident = ident;
+            self->token.len = 0;
+            break;
+        }
         fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
         throw_error(E_UNEXPSYM, &m_ch);
         self->token.kind = KIND_NONE;
@@ -276,6 +287,10 @@ static void lexer_skip_until(Lexer *self, unsigned char symbol)
     for (;self->ch != symbol && self->ch != 0xff; self->skipOne(self));
     self->nextTok(self);
 }
+static void lexer_toggle_string_state(Lexer *self)
+{
+    self->string_state = !self->string_state;
+}
 
 int lexer_init(Lexer *lexer, const char *buf, int size)
 {
@@ -284,11 +299,13 @@ int lexer_init(Lexer *lexer, const char *buf, int size)
     lexer->words = (Lexema *)words;
     lexer->symbols = (Lexema *)symbols;
     lexer->ch = TOK_NONE;
+    lexer->string_state = 0;
     lexer->nextTok = lexer_next_tok;
     lexer->printTok = lexer_print_tok;
     lexer->skipWhile = lexer_skip_while;
     lexer->skipUntil = lexer_skip_until;
     lexer->skipOne = lexer_skip_one;
+    lexer->toggleStringState = lexer_toggle_string_state;
     lexer->token.type = TOK_NONE;
     lexer->token.ident = 0;
     inbuf_init(buf, size);
