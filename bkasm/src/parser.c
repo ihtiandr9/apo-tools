@@ -239,7 +239,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         lexer->skipWhile(lexer, ',');
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
-        for (; lexer->token.kind == CONST;)
+        for (; lexer->token.kind == VAR || lexer->token.kind == CONST;)
         {
             node = node_create_instruction(op_token.ident, op_token.type, op_token.value);
             op = &node->u.op;
