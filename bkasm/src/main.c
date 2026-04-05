@@ -16,9 +16,9 @@
 
 int main(int argc, char *argv[])
 {
+    int bufsize;
     Lexer m_lexer;
     Parser m_parser;
-    int bufsize;
     static char buf[MAX_PROG_SIZE];
 
     infile = stdin;
@@ -47,10 +47,14 @@ int main(int argc, char *argv[])
 
     bufsize = fread(buf, 1, MAX_PROG_SIZE, infile);
     printf("program text size=%d\n", bufsize);
+    
     lexer_init(&m_lexer, buf, bufsize);
+
     parser_init(&m_parser);
     parser_parse(&m_parser, &m_lexer);
-    codegen_link(m_parser.ast);
+
+    if (m_parser.error == 0)
+	codegen_link(m_parser.ast);
 
     ast_destroy(m_parser.ast);
     exit_nicely(0);

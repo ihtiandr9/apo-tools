@@ -92,12 +92,14 @@ static void parse_comment(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             break;
         default:
+	    self -> error = E_UNEXPSYM;
             fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
             throw_error(E_UNEXPSYM, m_token.ident);
             lexer->skipUntil(lexer, 10);
         }
         break;
     default:
+	self -> error = E_UNEXPSYM;
         fprintf(stderr, "In string:  %d %s\n", currstr->num, currstr->str);
         throw_error(E_UNEXPSYM, m_token.ident);
         lexer->skipUntil(lexer, 10);
@@ -196,7 +198,7 @@ static Expr *parse_db_param(Parser *self, Lexer *lexer)
     Lexema m_token = lexer->token;
     Node *node = NULL;
     Instruction *op = NULL;
-    char mbs[MAX_VAR_COUNT];
+    char mbs[MAX_VAR_COUNT]; /* multibyte string */
     int mbs_size = 0;
     int string_started = 0;
 
@@ -233,7 +235,33 @@ static Expr *parse_db_param(Parser *self, Lexer *lexer)
         lexer->skipOne(lexer);
     }
     else
-        expr = parse_param(self, lexer);
+        switch (m_token.kind)
+        {
+        case SYM:
+            expr = NULL;
+            break;
+
+        default:
+            expr = parse_param(self, lexer);
+            break;
+        }
+    return expr;
+}
+static Expr *parse_dw_param(Parser *self, Lexer *lexer)
+{
+    Expr *expr = NULL;
+    Lexema m_token = lexer->token;
+
+    switch (m_token.kind)
+    {
+        case SYM:
+            expr = NULL;
+            break;
+
+        default:
+            expr = parse_param(self, lexer);
+            break;
+    }
     return expr;
 }
 
@@ -269,6 +297,7 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
 static Node *parse_op(Parser *self, Lexer *lexer)
 {
     Instruction *op;
+    Expr *parsed_param;
     Lexema op_token = lexer->token;
     Node *node = node_create_instruction(op_token.ident, op_token.type, op_token.value);
     InbufCurrentString *currstr = inbuf_currstr();
@@ -281,22 +310,43 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         op = &node->u.op;
         lexer->skipWhile(lexer, ' ');
         lexer->nextTok(lexer);
-        op->lparam = parse_db_param(self, lexer);
-        ast_add_statement(node, self->ast);
-        lexer->skipWhile(lexer, ',');
-        lexer->skipWhile(lexer, ' ');
-        lexer->nextTok(lexer);
-        for (; lexer->token.kind == VAR || lexer->token.kind == CONST || lexer->token.kind == CHAR;)
+        parsed_param = parse_db_param(self, lexer);
+        for (; parsed_param; parsed_param = parse_db_param(self, lexer))
         {
-            node = node_create_instruction(op_token.ident, op_token.type, op_token.value);
+            if(!node)
+                node = node_create_instruction(op_token.ident, op_token.type, op_token.value);
+
             op = &node->u.op;
-            op->lparam = parse_db_param(self, lexer);
+            op->lparam = parsed_param;
             ast_add_statement(node, self->ast);
+            node = NULL;
+
             lexer->skipWhile(lexer, ',');
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
         }
-        node = NULL;
+        break;
+
+    // multiword arrays
+    case TOK_DW:
+        op = &node->u.op;
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        parsed_param = parse_dw_param(self, lexer);
+        for (; parsed_param; parsed_param = parse_dw_param(self, lexer))
+        {
+            if(!node)
+                node = node_create_instruction(op_token.ident, op_token.type, op_token.value);
+
+            op = &node->u.op;
+            op->lparam = parsed_param;
+            ast_add_statement(node, self->ast);
+            node = NULL;
+
+            lexer->skipWhile(lexer, ',');
+            lexer->skipWhile(lexer, ' ');
+            lexer->nextTok(lexer);
+        }
         break;
 
     // two opernds mnemonics
@@ -446,6 +496,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
     case TOK_SEMICOLON: // no operation pass-throw comment
         break;
     default:
+	self -> error = E_UNKKEYWORD;
         fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
         throw_error(E_UNKKEYWORD, op_token.ident);
         lexer->skipUntil(lexer, 10);
@@ -512,6 +563,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
             ast_add_statement(parse_var(self, lexer), self->ast);
             break;
         default:
+	    self -> error = E_UNEXPTOKEN;
             fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
             throw_error(E_UNEXPTOKEN, m_token.ident);
         }
@@ -531,6 +583,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             break;
         default:
+	    self -> error = E_UNEXPSYM;
             fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
             throw_error(E_UNEXPSYM, m_token.ident);
             exit_nicely(E_UNEXPSYM);
@@ -563,6 +616,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
         lexer->skipOne(lexer);
         break;
     default:
+	self -> error = E_UNEXPTOKEN;
         fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
         throw_error(E_UNEXPTOKEN, m_token.ident);
         assert(0);
@@ -582,6 +636,7 @@ void parser_parse(Parser *self, Lexer *lexer)
 int parser_init(Parser *parser)
 {
     parser->level = 0;
+    parser->error = 0;
     parser->ast = ast_create();
     ast_init(parser->ast);
     return 1;

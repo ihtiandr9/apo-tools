@@ -10,6 +10,7 @@ STRUCT(Parser)
 {
     ASTree *ast;
     int level;
+    int error;
 };
 
 // exports

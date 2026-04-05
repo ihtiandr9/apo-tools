@@ -40,7 +40,8 @@ OBJS=\
 HDRS=\
 	 $(wildcard src/*.h)
 
-.PHONY: all clean
+.PHONY: all clean unittest valgrind
+
 all: $(OUTDIR)/$(APP)
 
 $(OUTDIR)/$(APP): $(OBJS) $(OUTDIR)
@@ -60,6 +61,7 @@ $(OUTDIR)/%.S: src/%.c $(HDRS) | $(OUTDIR)
 clean:
 	@echo cleaning $(OUTDIR) dir
 	@-rm -rf $(OUTDIR)
+
 ## if(NOT DEFINED _Release_)
 ## add_definitions(-ggdb -Wno-switch)
 ## endif()
@@ -77,12 +79,6 @@ clean:
 unittest: ${OUTDIR}/${APP}
 	cd ${OUTDIR} &&	./${APP} ../../tests/test.asm
 
-## add_custom_target(unittest
-##     COMMAND	./bkasm ../tests/test.asm
-##     COMMENT "Run Test"
-##     DEPENDS ./bkasm
-## )
-
 ## script unittests
 
 ## add_custom_target(run_tests
@@ -93,11 +89,7 @@ unittest: ${OUTDIR}/${APP}
 
 ## valgrind test
 
-## add_custom_target(valgrind
-## #    COMMAND	valgrind -s --leak-check=full ./bkasm ../tests/test.asm
-##    COMMAND	valgrind -s ./bkasm ../tests/test.asm
-##    COMMENT "Run Memory tests"
-##    DEPENDS ./bkasm
-## 
+valgrind: ${OUTDIR}/${APP}
+	cd ${OUTDIR} &&	valgrind -s --leak-check=full ./${APP} ../../tests/test.asm
 
 ## install(TARGETS bkasm DESTINATION /usr/bin)

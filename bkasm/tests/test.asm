@@ -2,7 +2,7 @@
        JMP  START
 
 ;             КОНСТАНТЫ И СТРОКИ
-MSG:   DB "Priwet", 13, 10, 0
+MSG:   DB 10, "Priwet", 13, 10, 0
 ENDL:  DB 13, 10, 0
 
 ;             НАЧАЛО ГЛАВНОЙ ФУНКЦИИ
@@ -102,8 +102,9 @@ WAIT1:
         JZ   WAIT1
         RET
 DISCARD:      ; НАЧАЛО НЕИНИЦИАЛИЗИРОАВННОЙ ПАМЯТИ
-;VADDR: DW GFX
-VADDR: DB 00H, 30H
+;VADDR: DW GFX ;BEGIN OF VIDEO MEM
+;VADDR: DB 00H, 30H
+VADDR:  DW 3000H
 GFX:
 
 ;             КОНСТАНТЫ И ПОДПРОГРАММЫ МОНИТОРА

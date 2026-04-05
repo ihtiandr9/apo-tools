@@ -30,7 +30,7 @@ set_target_properties(bkasm PROPERTIES
 ## debug target
 
 add_custom_target(debug
-    COMMAND	gdb ./bkasm
+    COMMAND	gdb ${CMAKE_BINARY_DIR}/bkasm
     COMMENT "GDB Debug"
     DEPENDS ./bkasm
 )
@@ -38,9 +38,9 @@ add_custom_target(debug
 ## unittest tests one unit
 
 add_custom_target(unittest
-    COMMAND	./bkasm ../tests/test.asm
+    COMMAND	$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/test.asm
     COMMENT "Run Test"
-    DEPENDS ./bkasm
+    DEPENDS bkasm
 )
 
 ## script unittests

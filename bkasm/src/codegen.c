@@ -204,6 +204,11 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             node->u.op.lparam->op.evaluate(node->u.op.lparam);
             node->u.op.immediate = node->u.op.lparam;
             break;
+        case TOK_DW:
+            size = 2;
+            node->u.op.lparam->op.evaluate(node->u.op.lparam);
+            node->u.op.immediate = node->u.op.lparam;
+            break;
         case TOK_ORG:
             code_org = node->u.op.lparam->op.evaluate(node->u.op.lparam);
             node->u.op.immediate = node->u.op.lparam;

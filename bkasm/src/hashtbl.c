@@ -74,6 +74,8 @@ void hash_printsorted(HashVar table[], unsigned int size)
         printf("%s = %d\n", sorted[i] -> name,
             sorted[i] -> val);
     }
+    free(sorted);
+
 }
 
 void hash_print(HashVar table[], unsigned int size)
