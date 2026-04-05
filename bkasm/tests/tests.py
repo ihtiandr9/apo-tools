@@ -78,6 +78,9 @@ class TestUM(unittest.TestCase):
             if stderr:
                 err_stream = stderr.split('\n')
                 err_msg = err_stream[1]
+            else:
+                if (process.returncode != 0):
+                    err_msg = 'Nozero exitcode in ' + errors[num]
 
             if (err_msg == expected_error):
                 print("Passed\n-----------\n")

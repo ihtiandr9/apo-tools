@@ -293,3 +293,4 @@ START:  ANA 3               ;Operand of ANA must be a register
 START:  XRA 4               ;Operand of XRA must be a register
 START:  ORA 5               ;Operand of ORA must be a register
 START:  CMP 6               ;Operand of CMP must be a register
+START:  DB 13, START, 0     ;None
