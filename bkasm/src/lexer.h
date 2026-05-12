@@ -121,6 +121,7 @@ typedef enum _eIdentType
     TOK_REGHL,
     TOK_REGPC,
     TOK_REGSP,
+    TOK_PSW,        // register pair PSW (AF) for PUSH/POP
 
     // Symbols
     L_EOF,

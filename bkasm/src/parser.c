@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "bkasm.h"
 #include "parser.h"
 #include "asmast.h"
@@ -8,21 +9,21 @@
 #include "inbuf.h"
 #include "mathexpr.h"
 #include "nodes.h"
+#include "opcodes.h"
 
 static void parse_comment(Parser *self, Lexer *lexer);
 static Node *parse_op(Parser *self, Lexer *lexer);
 static Expr *parse_param(Parser *self, Lexer *lexer);
 static void parse_statement(Parser *self, Lexer *lexer);
 
-static int is_register_pair(Expr *expr) /** FIXME */
+static int is_register_pair(Expr *expr, int arith)   // arith=1 for DAD/INX/DCX; arith=0 for PUSH/POP
 {
-    return (reg_type == TOK_REGBC ||
-            reg_type == TOK_REGDE ||
-            reg_type == TOK_REGHL ||
-            reg_type == TOK_REGB ||
-            reg_type == TOK_REGD ||
-            reg_type == TOK_REGH ||
-            reg_type == TOK_REGSP);
+    return expr->type == EXPR_REG &&
+           (expr->data.value == OP_REGBC ||
+            expr->data.value == OP_REGDE ||
+            expr->data.value == OP_REGHL ||
+            (expr->data.value == OP_REGSP && arith && strcmp(expr->ident, "SP") == 0) ||
+            (expr->data.value == OP_REGSP && !arith && strcmp(expr->ident, "PSW") == 0));
 }
 
 static Node *parse_var(Parser *self, Lexer *lexer)
@@ -536,11 +537,16 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         case TOK_DAD:
         case TOK_LDAX:
         case TOK_STAX:
-        case TOK_POP:
-        case TOK_PUSH:
         case TOK_INX:
         case TOK_DCX:
-            if (op->lparam->type == EXPR_REG && !is_register_pair(op->lparam)) {/* FIXME */
+            if (!is_register_pair(op->lparam, 1)) { // arith=1: accept SP, reject PSW
+                sprintf(err_msg, "\nOperand of %s must be a register pair", op_token.ident);
+                throw_error(E_SYNTAXERROR, err_msg);
+            }
+            break;
+        case TOK_POP:
+        case TOK_PUSH:
+            if (!is_register_pair(op->lparam, 0)) { // arith=0: accept PSW, reject SP
                 sprintf(err_msg, "\nOperand of %s must be a register pair", op_token.ident);
                 throw_error(E_SYNTAXERROR, err_msg);
             }

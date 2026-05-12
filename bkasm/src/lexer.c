@@ -7,6 +7,7 @@
 #include "errors.h"
 #include "inbuf.h"
 #include "symbols.h"
+#include "opcodes.h"
 
 // imports
 extern const char eof_sym;
@@ -108,9 +109,10 @@ static const Lexema words[] =
     {REG, TOK_REGL, "L", 0x5, 1},
     {REG, TOK_REGM, "M", 0x6, 1},
     {REG, TOK_REGBC, "BC", 0x0, 2},
-    {REG, TOK_REGDE, "DE", 0x1, 2},
-    {REG, TOK_REGHL, "HL", 0x2, 2},
-    {REG, TOK_REGSP, "SP", 0x3, 2},
+    {REG, TOK_REGDE, "DE", 0x2, 2},
+    {REG, TOK_REGHL, "HL", 0x4, 2},
+    {REG, TOK_REGSP, "SP", 0x6, 2},
+    {REG, TOK_PSW, "PSW", 0x6, 3},   // PSW register pair (AF), same encoding as SP
     {INT, TOK_END, "END", 0, 3},
     {KIND_NONE, TOK_NONE, 0, 0, 0},
 };
