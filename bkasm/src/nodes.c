@@ -138,11 +138,8 @@ NodeList *nodelist_alloc()
 
 void nodelist_destroy(NodeList *nodelist)
 {
-    NodeList *next = 0;
-    for (; nodelist; nodelist = next)
-    {
-        next = nodelist->next;
-        node_clear(&nodelist->node);
-        free(nodelist);
-    }
+    if (nodelist->next)
+        nodelist_destroy(nodelist->next);
+    node_clear(&nodelist->node);
+    free(nodelist);
 }
