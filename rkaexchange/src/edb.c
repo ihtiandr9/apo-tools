@@ -76,58 +76,88 @@ static int unpack(FILE *fd_in, FILE *fd_out)
     wchar_t uniSym;
     unsigned char outSym;
     unsigned char curSym;
-	char textStarted = 0;
-    int totalSize = 0;
-    assert(fd_in > 0 && fd_out > 0);
+    uint16_t load_addr, end_addr;
+    int is_basic;
+    char filename[256];
+
+    char *p = filename;
+
+    assert(fd_in != NULL && fd_out != NULL);
     inbuf_init(fd_in);
+
+    // Read load_addr (2 bytes, big-endian) - no sync byte at start
     curSym = inbuf_next_char();
-    while (0xff != curSym)
-    {
-        if (!totalSize && (curSym != 0xe6))
-        {
-            printf("unsupported format\n");
-            exit(-1);
-        }
-        if (!textStarted && (curSym == 0xe6))
-        {
+    load_addr = (curSym << 8) | inbuf_next_char();
+
+    // Read end_addr (2 bytes, big-endian)
+    curSym = inbuf_next_char();
+    end_addr = (curSym << 8) | inbuf_next_char();
+
+    // Determine file type: BASIC if markers are 0xE6E6
+    is_basic = (load_addr == 0xE6E6 && end_addr == 0xE6E6);
+
+    if (is_basic) {
+        // Named BASIC format: read and print filename (ASCIIZ)
+        for(curSym = inbuf_next_char();
+            curSym != 0 && p < filename + 255; ) {
+            *p = curSym;
             curSym = inbuf_next_char();
-            totalSize++;
-            continue;
-        };
-        if (!textStarted && (curSym == 0))
-        {
-            while (!curSym)
+            p++;
+        }
+        *p = '\0';
+        fprintf(stderr, "Filename: %s\n", filename);
+        curSym = inbuf_next_char(); // skip terminator
+
+        // Skip 512 bytes padding (zeros)
+        int padding = 0;
+        while (padding < 512) {
+            if (curSym == 0) {
                 curSym = inbuf_next_char();
-            curSym = inbuf_next_char();
-            curSym = inbuf_next_char();
-            curSym = inbuf_next_char();
-            textStarted = 1;
-            continue;
+                padding++;
+            } else {
+                break;
+            }
         }
-        if (curSym == 13)
-        {
+
+        // Skip 3 service bytes (sync 0xE6 + 2 bytes)
+        if (curSym == 0xE6) {
+            inbuf_next_char(); // service byte 1
+            inbuf_next_char(); // service byte 2
+            curSym = inbuf_next_char();
+        } else {
+            // If no sync byte, skip 3 bytes anyway
+            inbuf_next_char();
+            inbuf_next_char();
+            curSym = inbuf_next_char();
+        }
+    } else {
+        // Binary program format - stub
+        fprintf(stderr, "Binary program unpacking not implemented (load=0x%04X, end=0x%04X)\n",
+                load_addr, end_addr);
+        return -1;
+    }
+
+    // Decode body
+    while (0xff != curSym) {
+        if (curSym == 13) {
             curSym = 10;
             fwrite(&curSym, 1, 1, fd_out);
             curSym = inbuf_next_char();
             continue;
         }
-        if (curSym < 32)
-        {
+        if (curSym < 32) {
             curSym = 10;
             fwrite(&curSym, 1, 1, fd_out);
-        }
-        else
-        {
+        } else {
             uniSym = getUnicodeSymbol(curSym);
             outSym = uniSym;
-            if (uniSym > 0x400)
-            {
+            if (uniSym > 0x400) {
                 outSym += 0x80;
                 fwrite(&utfRu, 1, 1, fd_out);
                 fwrite(&outSym, 1, 1, fd_out);
-            }
-            else
+            } else {
                 fwrite(&uniSym, 1, 1, fd_out);
+            }
         }
         curSym = inbuf_next_char();
     }
