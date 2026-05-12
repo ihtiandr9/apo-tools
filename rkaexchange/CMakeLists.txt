@@ -22,10 +22,6 @@ add_executable(rkaexchange
     src/globals.c
 )
 
-add_custom_target(run_tests
-    COMMENT "Run Tests"
-)
-
 add_custom_target(testpack
     COMMAND ./rkaexchange pack ../src/test.asm
     COMMENT "Test pack"
@@ -50,6 +46,10 @@ add_custom_target(testoutfileerror
     COMMAND chmod 666 ../src/errtest.asm
     COMMENT "Test outfile error"
     DEPENDS rkaexchange
+)
+
+add_custom_target(run_tests
+    COMMENT "Run Tests"
 )
 
 add_dependencies(run_tests

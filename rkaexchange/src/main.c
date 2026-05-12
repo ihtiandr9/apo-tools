@@ -17,15 +17,15 @@
 #define CMD_PACK 1
 #define CMD_UNPACK 2
 
-#define DEFAULT_FD_IN stdin
-#define DEFAULT_FD_OUT stdout
-
 int main(int argc, char *argv[])
 {
     Edb edb;
 	int cmd;
-    fd_in = DEFAULT_FD_IN;
-    fd_out = DEFAULT_FD_OUT;
+    /* initialize defaults fd_in fd_out and cmd
+     * in future it will be read from command line
+     */
+    fd_in = stdin;
+    fd_out = stdout;
 	cmd = CMD_UNPACK;
     if (argc <= 1)
     {

@@ -293,10 +293,8 @@ static void lexer_toggle_string_state(Lexer *self)
     self->string_state = !self->string_state;
 }
 
-int lexer_init(Lexer *lexer, const char *buf, int size)
+int lexer_init(Lexer *lexer)
 {
-    lexer->buf = buf;
-    lexer->bufsize = size;
     lexer->words = (Lexema *)words;
     lexer->symbols = (Lexema *)symbols;
     lexer->ch = TOK_NONE;
@@ -309,14 +307,13 @@ int lexer_init(Lexer *lexer, const char *buf, int size)
     lexer->toggleStringState = lexer_toggle_string_state;
     lexer->token.type = TOK_NONE;
     lexer->token.ident = 0;
-    inbuf_init(buf, size);
     return 1;
 }
 
-Lexer *lexer_create(const char *buf, int size)
+Lexer *lexer_create(void)
 {
     Lexer *m_lexer = (Lexer *)malloc(sizeof(Lexer));
-    lexer_init(m_lexer, buf, size);
+    lexer_init(m_lexer);
     return m_lexer;
 }
 

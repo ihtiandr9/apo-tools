@@ -14,7 +14,7 @@ static Node *parse_op(Parser *self, Lexer *lexer);
 static Expr *parse_param(Parser *self, Lexer *lexer);
 static void parse_statement(Parser *self, Lexer *lexer);
 
-static int is_register_pair(ExprValue reg_type)
+static int is_register_pair(Expr *expr) /** FIXME */
 {
     return (reg_type == TOK_REGBC ||
             reg_type == TOK_REGDE ||
@@ -214,7 +214,12 @@ static Expr *parse_db_param(Parser *self, Lexer *lexer)
             lexer->toggleStringState(lexer);
         else
         {
-            mbs[mbs_size++] = lexer->ch;
+            if (mbs_size < MAX_VAR_COUNT - 1) {
+                mbs[mbs_size++] = lexer->ch;
+            } else if (mbs_size == MAX_VAR_COUNT - 1) {
+                fprintf(stderr, "\nString truncated (max %d chars)\n", MAX_VAR_COUNT - 1);
+                mbs_size++;
+            }
         }
     }
 
@@ -272,7 +277,7 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
     switch (m_token.kind)
     {
     case REG:
-        expr = register_create(m_token.type, m_token.ident);
+        expr = register_create(m_token.value, m_token.ident);
         break;
     case VAR:
     case CONST:
@@ -535,7 +540,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         case TOK_PUSH:
         case TOK_INX:
         case TOK_DCX:
-            if (op->lparam->type == EXPR_REG && !is_register_pair(op->lparam->data.value)) {
+            if (op->lparam->type == EXPR_REG && !is_register_pair(op->lparam)) {/* FIXME */
                 sprintf(err_msg, "\nOperand of %s must be a register pair", op_token.ident);
                 throw_error(E_SYNTAXERROR, err_msg);
             }

@@ -23,6 +23,6 @@ typedef enum{ PARSE_STAGE = 0,
 extern FILE *infile;
 extern FILE *outfile;
 extern BkasmStage bkasm_stage;
-void exit_nicely(int);
+__attribute__((noreturn)) void exit_nicely(int);
 
 #endif

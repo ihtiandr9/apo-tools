@@ -42,7 +42,7 @@ static ExprValue register_evaluate(Expr *self)
     return self->data.value;
 }
 
-Expr *register_create(ExprValue ident_type, const char *ident)
+Expr *register_create(ExprValue value, const char *ident)
 {
     Expr *expr = (Expr *)malloc(sizeof(Expr));
     int len = strlen(ident);
@@ -55,7 +55,7 @@ Expr *register_create(ExprValue ident_type, const char *ident)
         expr->ident = (char *)malloc(len + 1);
         strncpy(expr->ident, ident, len);
         expr->ident[len] = '\0';
-        expr->data.value = ident_type;
+        expr->data.value = value;
     }
     return (Expr *)expr;
 }

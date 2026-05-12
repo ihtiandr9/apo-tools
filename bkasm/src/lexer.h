@@ -151,8 +151,6 @@ STRUCT(Lexema)
 STRUCT(Lexer)
 {
     unsigned char ch;
-    const char *buf;
-    int bufsize;
     int string_state;
     Lexema token;
     Lexema *symbols;
@@ -166,7 +164,7 @@ STRUCT(Lexer)
 };
 
 // exports
-Lexer *lexer_create(const char *buf, int size);
-int lexer_init(Lexer *lexer, const char *buf, int size);
+Lexer *lexer_create(void);
+int lexer_init(Lexer *lexer);
 void lexer_free(Lexer *self);
 #endif

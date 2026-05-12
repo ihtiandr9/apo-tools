@@ -13,6 +13,7 @@
 #include "codegen.h"
 #include "lexer.h"
 #include "parser.h"
+#include "inbuf.h"
 
 int main(int argc, char *argv[])
 {
@@ -47,8 +48,9 @@ int main(int argc, char *argv[])
 
     bufsize = fread(buf, 1, MAX_PROG_SIZE, infile);
     printf("program text size=%d\n", bufsize);
-    
-    lexer_init(&m_lexer, buf, bufsize);
+
+    inbuf_init(buf, bufsize);
+    lexer_init(&m_lexer);
 
     parser_init(&m_parser);
     parser_parse(&m_parser, &m_lexer);
@@ -58,5 +60,4 @@ int main(int argc, char *argv[])
 
     ast_destroy(m_parser.ast);
     exit_nicely(0);
-    return 0;
 }

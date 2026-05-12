@@ -86,7 +86,6 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_HLT:
         case TOK_JM:
         case TOK_NOP:
-        case TOK_ORI:
         case TOK_PCHL:
         case TOK_RAL:
         case TOK_RAR:
@@ -102,13 +101,10 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_RPO:
         case TOK_RRC:
         case TOK_RZ:
-        case TOK_SBI:
         case TOK_SIM:
         case TOK_SPHL:
         case TOK_STC:
-        case TOK_SUI:
         case TOK_XCHG:
-        case TOK_XRI:
         case TOK_XTHL:
             size = 1;
             break;
@@ -140,7 +136,7 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_PUSH:
         case TOK_INX:
         case TOK_DCX:
-            node->u.op.opcode |= (node->u.op.lparam->data.value << 4);
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
             size = 1;
             break;
 
@@ -150,6 +146,11 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_ANI:
         case TOK_CPI:
         case TOK_MVI:
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
+        case TOK_ORI:
+        case TOK_SBI:
+        case TOK_SUI:
+        case TOK_XRI:
         case TOK_OUT:
         case TOK_RST:
             node->u.op.lparam->op.evaluate(node->u.op.lparam);

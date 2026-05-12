@@ -44,7 +44,7 @@ STRUCT(Expr)
 };
 
 Expr *const_create(ExprValue const_value);
-Expr *register_create(ExprValue ident_type, const char *ident);
+Expr *register_create(ExprValue value, const char *ident);
 Expr *math_create_addition(ExprValue operation);
 Expr *math_create_multiplication(ExprValue operation);
 void math_free(Expr *expr);
