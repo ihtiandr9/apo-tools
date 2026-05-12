@@ -43,21 +43,27 @@ add_custom_target(unittest
     DEPENDS bkasm
 )
 
+## create python venv for tests if missing (not tracked in git — see root .gitignore)
+
+add_custom_target(setup_venv
+    COMMAND test -f ${PROJECT_DIR}/tests/python/bin/python3 || python3 -m venv --without-pip ${PROJECT_DIR}/tests/python
+    COMMENT "Setup Python venv for tests"
+)
+
 ## script unittests
 
 add_custom_target(run_tests
-    COMMAND	../tests/python/bin/python3 ../tests/tests.py
+    COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/tests.py
     COMMENT "Run Tests"
-    DEPENDS ./bkasm
+    DEPENDS bkasm setup_venv
 )
 
 ## valgrind test
 
 add_custom_target(valgrind
-##    COMMAND	valgrind -s --leak-check=full ./bkasm ../tests/test.asm
-    COMMAND	valgrind -s ./bkasm ../tests/test.asm
+    COMMAND	valgrind -s --leak-check=full $<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/test.asm
     COMMENT "Run Memory tests"
-    DEPENDS ./bkasm
+    DEPENDS bkasm
 )
 
 install(TARGETS bkasm DESTINATION /usr/local/bin)

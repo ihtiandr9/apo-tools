@@ -6,6 +6,9 @@ import unittest
 from os.path import abspath, dirname, join
 import os
 
+BKASM_BINARY = os.environ["BKASM_BINARY"]
+BKASM_DIR = dirname(BKASM_BINARY)
+
 class TestUM(unittest.TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
         self.osname = os.name
@@ -40,21 +43,16 @@ class TestUM(unittest.TestCase):
     
     def test_executeProgram(self):
         err_count = 0
-        log_path = abspath(join(dirname(__file__), "../build/log.txt"))
+        log_path = abspath(join(BKASM_DIR, "test_log.txt"))
         log_file = open(log_path, 'w')
-        err_path = abspath(join(dirname(__file__), "../tests/errors.txt"))
+        err_path = abspath(join(dirname(__file__), "errors.txt"))
         err_file = open(err_path, 'r')
         errors = err_file.readlines()
         err_file.close()
 
         print("\n ---------- \n Test keywords started\n")
 
-        if(self.osname == "nt"):
-            suffix = ".exe"
-        else:
-            suffix = ""
-
-        exe_path = abspath(join(dirname(__file__), "../build/bkasm" + suffix))
+        exe_path = BKASM_BINARY
         for num in range(len(errors)):
             expected_error = errors[num].replace('\n','')
             semicolon_pos = expected_error.find(';')
