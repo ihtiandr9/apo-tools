@@ -14,13 +14,13 @@
 #include <errno.h>
 #include <edb.h>
 
-wchar_t getUnicodeSymbol(uint8_t chr)
+wchar_t getUnicodeSymbol(unsigned char chr)
 {
     static const wchar_t *const c_apogeySymbols = // koi7
         L" ▘▝▀▗▚▐▜ ★⬯↑⬮ ↣↓"
         L"▖▌▞▛▄▙▟█∼≈╋┃━↢✿▕"
         L" !\"#¤%&'()*+,-./"
-        "0123456789:;<=>?"
+        L"0123456789:;<=>?"
         L"@ABCDEFGHIJKLMNO"
         L"PQRSTUVWXYZ[\\]^_"
         L"ЮАБЦДЕФГХИЙКЛМНО"
@@ -28,7 +28,7 @@ wchar_t getUnicodeSymbol(uint8_t chr)
     return c_apogeySymbols[chr];
 }
 
-char charCodeAt(uint8_t chr)
+char charCodeAt(unsigned char chr)
 {
     static const unsigned char *const c_asciiSymbols =
         " ▘▝▀▗▚▐▜ ★⬯↑⬮ ↣↓"
@@ -72,12 +72,13 @@ static int encode(FILE *fd_in, FILE *fd_out)
 
 static int unpack(FILE *fd_in, FILE *fd_out)
 {
-    static char const utfRu = 0xd0;
+    static char const utfRu = (const char)0xd0;
     wchar_t uniSym;
     unsigned char outSym;
     unsigned char curSym;
-    uint16_t load_addr, end_addr;
-    int is_basic;
+    unsigned int load_addr, end_addr;
+    int is_basic = 0;
+    int padding = 0;
     char filename[256];
 
     char *p = filename;
@@ -109,7 +110,6 @@ static int unpack(FILE *fd_in, FILE *fd_out)
         curSym = inbuf_next_char(); // skip terminator
 
         // Skip 512 bytes padding (zeros)
-        int padding = 0;
         while (padding < 512) {
             if (curSym == 0) {
                 curSym = inbuf_next_char();
@@ -150,7 +150,7 @@ static int unpack(FILE *fd_in, FILE *fd_out)
             fwrite(&curSym, 1, 1, fd_out);
         } else {
             uniSym = getUnicodeSymbol(curSym);
-            outSym = uniSym;
+            outSym = (unsigned char)uniSym;
             if (uniSym > 0x400) {
                 outSym += 0x80;
                 fwrite(&utfRu, 1, 1, fd_out);
