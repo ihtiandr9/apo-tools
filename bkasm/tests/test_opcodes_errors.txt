@@ -1,0 +1,13 @@
+; Тест ошибок компиляции/линковки для опкодов
+; формат: мнемоника ; ожидаемая ошибка (None = без ошибок)
+NOP                      ;None
+DB 10+20                 ;None
+DW 1000H+2000H           ;None
+DB X                     ;Undefined variable X
+DW Y                     ;Undefined variable Y
+LXI B, Z                 ;Undefined variable Z
+MVI B, W                 ;Undefined variable W
+JMP Q                    ;Undefined variable Q
+ADI P                    ;Undefined variable P
+LDA X                    ;Undefined variable X
+STA Y                    ;Undefined variable Y

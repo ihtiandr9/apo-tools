@@ -54,7 +54,25 @@ add_custom_target(setup_venv
 
 add_custom_target(run_tests
     COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/tests.py
+    COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/test_opcodes.py
+    COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/test_opcodes_errors.py
     COMMENT "Run Tests"
+    DEPENDS bkasm setup_venv
+)
+
+## opcode generation tests
+
+add_custom_target(test_opcodes
+    COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/test_opcodes.py
+    COMMENT "Run Opcode Tests"
+    DEPENDS bkasm setup_venv
+)
+
+## opcode error tests
+
+add_custom_target(test_opcodes_errors
+    COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/test_opcodes_errors.py
+    COMMENT "Run Opcode Error Tests"
     DEPENDS bkasm setup_venv
 )
 

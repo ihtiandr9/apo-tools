@@ -161,16 +161,16 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             size = 1;
             break;
 
-        // 2 bytes (opcode + 1 immediate), operand: reg or imm
-        //   reg encoded in opcode: ACI, ADI, ANI, CPI, MVI
-        //   imm in next byte: ORI, SBI, SUI, XRI, OUT, IN
+        // 2 bytes (opcode + 1 immediate)
+        //   reg encoded in opcode (bits 3-5): MVI
+        //   imm in next byte: ACI, ADI, ANI, CPI, ORI, SBI, SUI, XRI, OUT, IN
+        case TOK_MVI:
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
+            // fall through
         case TOK_ACI:
         case TOK_ADI:
         case TOK_ANI:
         case TOK_CPI:
-        case TOK_MVI:
-            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
-            // fall through
         case TOK_ORI:
         case TOK_SBI:
         case TOK_SUI:
@@ -198,7 +198,6 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         //   calls: CALL, CC, CM, CNC, CNZ, CP, CPE, CPO, CZ
         //   jumps: JC, JM, JMP, JNC, JNZ, JP, JPE, JPO, JZ
         //   loads/stores: LDA, LHLD, SHLD, STA
-        //   other: LXI
         case TOK_CALL:
         case TOK_CC:
         case TOK_CM:
@@ -219,9 +218,22 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_JZ:
         case TOK_LDA:
         case TOK_LHLD:
-        case TOK_LXI:
         case TOK_SHLD:
         case TOK_STA:
+            node->u.op.lparam->op.evaluate(node->u.op.lparam);
+            if (node->u.op.lparam->type != EXPR_REG)
+                node->u.op.immediate = node->u.op.lparam;
+            if(node->u.op.rparam)
+            {
+                node->u.op.rparam->op.evaluate(node->u.op.rparam);
+                if(node->u.op.rparam->type != EXPR_REG)
+                    node->u.op.immediate = node->u.op.rparam;
+            }
+            size = 3;
+            break;
+        // 3 bytes, reg pair encoded in opcode (bits 4-5): LXI
+        case TOK_LXI:
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
             node->u.op.lparam->op.evaluate(node->u.op.lparam);
             if (node->u.op.lparam->type != EXPR_REG)
                 node->u.op.immediate = node->u.op.lparam;

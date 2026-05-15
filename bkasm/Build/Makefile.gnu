@@ -40,7 +40,7 @@ OBJS=\
 HDRS=\
 	 $(wildcard src/*.h)
 
-.PHONY: all clean unittest valgrind
+.PHONY: all clean setup_venv run_tests test_opcodes test_opcodes_errors unittest valgrind
 
 all: $(OUTDIR)/$(APP)
 
@@ -79,13 +79,22 @@ clean:
 unittest: ${OUTDIR}/${APP}
 	cd ${OUTDIR} &&	./${APP} ../../tests/test.asm
 
-## script unittests
+PYTHON:= tests/python/bin/python3
+PROJECT_DIR:= $(abspath $(OUTDIR)/../..)
 
-## add_custom_target(run_tests
-##     COMMAND	../tests/python/bin/python3 ../tests/tests.py
-##     COMMENT "Run Tests"
-##     DEPENDS ./bkasm
-## )
+setup_venv:
+	test -f $(PYTHON) || python3 -m venv --without-pip tests/python
+
+run_tests: $(OUTDIR)/$(APP) setup_venv
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/tests.py
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes.py
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes_errors.py
+
+test_opcodes: $(OUTDIR)/$(APP) setup_venv
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes.py
+
+test_opcodes_errors: $(OUTDIR)/$(APP) setup_venv
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes_errors.py
 
 ## valgrind test
 
