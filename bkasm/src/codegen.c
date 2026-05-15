@@ -25,7 +25,25 @@ void codegen_generate(Node *node, int pc, int size)
         switch(node->u.op.instr_type)
         {
             case TOK_DB:
+                if (immediate_param == NULL)
+                {
+                    sprintf(err_msg, "\nMissing immediate parameter for DB");
+                    throw_error(E_LINKERERROR, err_msg);
+                    exit_nicely(E_LINKERERROR);
+                }
                 prog[pc - code_org] = immediate_param->op.evaluate(immediate_param);
+                break;
+
+            case TOK_DW:
+                if (immediate_param == NULL)
+                {
+                    sprintf(err_msg, "\nMissing immediate parameter for DW");
+                    throw_error(E_LINKERERROR, err_msg);
+                    exit_nicely(E_LINKERERROR);
+                }
+                immediate_value = immediate_param->op.evaluate(immediate_param);
+                prog[pc - code_org] = immediate_value;
+                prog[pc - code_org + 1] = immediate_value / 256;
                 break;
 
             case TOK_ORG: // non-executable instructions - implement later TODO
@@ -77,14 +95,13 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         switch (node->u.op.instr_type)
         {
 
-        // 0 bytes 0 immediate params instructions
+        // 1 byte, no operands
         case TOK_CMA:
         case TOK_CMC:
         case TOK_DAA:
         case TOK_DI:
         case TOK_EI:
         case TOK_HLT:
-        case TOK_JM:
         case TOK_NOP:
         case TOK_PCHL:
         case TOK_RAL:
@@ -108,10 +125,12 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_XTHL:
             size = 1;
             break;
+        // 1 byte, operands: dst_reg, src_reg
         case TOK_MOV:
             node->u.op.opcode |= (node->u.op.lparam->data.value << 3) | node->u.op.rparam->data.value;
             size = 1;
             break;
+        // 1 byte, operand: reg (A, B, C, D, E, H, L, M)
         case TOK_ADD:
         case TOK_ADC:
         case TOK_ANA:
@@ -124,11 +143,13 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             node->u.op.opcode |= node->u.op.lparam->data.value;
             size = 1;
             break;
+        // 1 byte, operand: reg (A, B, C, D, E, H, L, M)
         case TOK_INR:
         case TOK_DCR:
             node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
             size = 1;
             break;
+        // 1 byte, operand: reg_pair (BC, DE, HL, SP/PSW)
         case TOK_DAD:
         case TOK_LDAX:
         case TOK_STAX:
@@ -140,19 +161,22 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             size = 1;
             break;
 
-        // 1 byte 1 immediate param instructions rparam may be NULL
+        // 2 bytes (opcode + 1 immediate), operand: reg or imm
+        //   reg encoded in opcode: ACI, ADI, ANI, CPI, MVI
+        //   imm in next byte: ORI, SBI, SUI, XRI, OUT, IN
         case TOK_ACI:
         case TOK_ADI:
         case TOK_ANI:
         case TOK_CPI:
         case TOK_MVI:
             node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
+            // fall through
         case TOK_ORI:
         case TOK_SBI:
         case TOK_SUI:
         case TOK_XRI:
         case TOK_OUT:
-        case TOK_RST:
+        case TOK_IN:
             node->u.op.lparam->op.evaluate(node->u.op.lparam);
             if (node->u.op.lparam->type != EXPR_REG)
                 node->u.op.immediate = node->u.op.lparam;
@@ -164,8 +188,17 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             }
             size = 2;
             break;
+        // 1 byte, operand: restart vector 0..7 (encoded in opcode)
+        case TOK_RST:
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
+            size = 1;
+            break;
 
-        // 2 bytes one immediate param instructions rparam may be NULL
+        // 3 bytes (opcode + 2 immediate), operand: 16-bit addr or data
+        //   calls: CALL, CC, CM, CNC, CNZ, CP, CPE, CPO, CZ
+        //   jumps: JC, JM, JMP, JNC, JNZ, JP, JPE, JPO, JZ
+        //   loads/stores: LDA, LHLD, SHLD, STA
+        //   other: LXI
         case TOK_CALL:
         case TOK_CC:
         case TOK_CM:
@@ -175,8 +208,8 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_CPE:
         case TOK_CPO:
         case TOK_CZ:
-        case TOK_IN:
         case TOK_JC:
+        case TOK_JM:
         case TOK_JMP:
         case TOK_JNC:
         case TOK_JNZ:
@@ -200,16 +233,19 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             }
             size = 3;
             break;
+        // 1 byte, no opcode — raw data byte
         case TOK_DB:
             size = 1;
             node->u.op.lparam->op.evaluate(node->u.op.lparam);
             node->u.op.immediate = node->u.op.lparam;
             break;
+        // 2 bytes, no opcode — raw 16-bit word (little-endian)
         case TOK_DW:
             size = 2;
             node->u.op.lparam->op.evaluate(node->u.op.lparam);
             node->u.op.immediate = node->u.op.lparam;
             break;
+        // Pseudo: set code origin address
         case TOK_ORG:
             code_org = node->u.op.lparam->op.evaluate(node->u.op.lparam);
             node->u.op.immediate = node->u.op.lparam;
