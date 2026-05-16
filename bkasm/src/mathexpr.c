@@ -5,13 +5,12 @@
 #include "mathexpr.h"
 #include "asmast.h"
 #include "asmvars.h"
-#include "assert.h"
-#include "bkasm.h"
+#include <assert.h>
 #include "errors.h"
 #include "lexer.h"
 
-////////////////////////////////////////////
-// ConsExpr
+/*//////////////////////////////////////////
+// ConsExpr */
 
 static ExprValue const_evaluate(Expr *self)
 {
@@ -34,8 +33,8 @@ void const_destroy(Expr *expr)
     free(expr);
 }
 
-////////////////////////////////////////////
-// Register expression
+/*//////////////////////////////////////////
+// Register expression */
 
 static ExprValue register_evaluate(Expr *self)
 {
@@ -66,8 +65,8 @@ void register_destroy(Expr *expr)
     free(expr);
 }
 
-////////////////////////////////////////////
-// Variable expression
+/*//////////////////////////////////////////
+// Variable expression */
 
 static ExprValue var_evaluate(Expr *self)
 {
@@ -113,8 +112,8 @@ void var_free(Expr *expr)
     }
 }
 
-////////////////////////////////////////////
-// Math expression
+/*//////////////////////////////////////////
+// Math expression */
 
 void math_set_lparam(Expr *self, Expr *val)
 {
@@ -177,8 +176,8 @@ void math_free(Expr *expr)
     }
 }
 
-////////////////////////////////////////////
-// Multiply expression
+/*//////////////////////////////////////////
+// Multiply expression */
 
 static ExprValue math_evaluate_multiplication(Expr *self)
 {
@@ -220,8 +219,8 @@ void math_free_multiplication(Expr *expr)
     math_free(expr);
 }
 
-////////////////////////////////////////////
-// Addition expression
+/*//////////////////////////////////////////
+// Addition expression */
 
 static ExprValue math_evaluate_addition(Expr *self)
 {

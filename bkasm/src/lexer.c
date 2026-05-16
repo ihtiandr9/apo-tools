@@ -9,7 +9,7 @@
 #include "symbols.h"
 #include "opcodes.h"
 
-// imports
+/* imports */
 extern const char eof_sym;
 extern const char eol_sym;
 
@@ -112,7 +112,7 @@ static const Lexema words[] =
     {REG, TOK_REGDE, "DE", 0x2, 2},
     {REG, TOK_REGHL, "HL", 0x4, 2},
     {REG, TOK_REGSP, "SP", 0x6, 2},
-    {REG, TOK_PSW, "PSW", 0x6, 3},   // PSW register pair (AF), same encoding as SP
+    {REG, TOK_PSW, "PSW", 0x6, 3},   /* PSW register pair (AF), same encoding as SP */
     {INT, TOK_END, "END", 0, 3},
     {KIND_NONE, TOK_NONE, 0, 0, 0},
 };
@@ -168,13 +168,13 @@ static int lexer_next_tok(Lexer *self)
             }
             m_sym++;
         }
-        if (m_sym->type != TOK_NONE) // is symbol
+        if (m_sym->type != TOK_NONE) /* is symbol */
         {
             self->token = *m_sym;
             continue;
         }
 
-        if (is_decimal(m_ch)) // start with decimal digit returns number
+        if (is_decimal(m_ch)) /* start with decimal digit returns number */
         {
             char *ident = 0;
             int len = 0;
@@ -195,13 +195,13 @@ static int lexer_next_tok(Lexer *self)
             free(ident);
             continue;
         }
-        if (is_alfa(m_ch)) // start with alfa returns keyword or ident
+        if (is_alfa(m_ch)) /* start with alfa returns keyword or ident */
         {
             char *ident = 0;
             int len = 0;
             for ( ;is_alfa(m_ch) || is_digit(m_ch);)
             {
-                // collect identifier
+                /* collect identifier */
                 ident = (char *)realloc(ident, len + 2);
                 ident[len++] = m_ch;
                 ident[len] = 0;
@@ -210,20 +210,20 @@ static int lexer_next_tok(Lexer *self)
             m_sym = self->words;
             for ( ;m_sym->len != 0;)
             {
-                // compare with keywords
+                /* compare with keywords */
                 if (!strcmp(ident, m_sym->ident))
                 {
                     break;
                 }
                 m_sym++;
             }
-            if (m_sym->type != TOK_NONE) // is keyword
+            if (m_sym->type != TOK_NONE) /* is keyword */
             {
                 self->token = *m_sym;
                 free(ident);
                 continue;
             }
-            if (len < 255) // default is variable
+            if (len < 255) /* default is variable */
             {
                 self->token.kind = VAR;
                 self->token.type = TOK_IDENT;

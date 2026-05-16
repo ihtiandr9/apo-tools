@@ -1,14 +1,14 @@
 #ifndef H_NODES_H
 #define H_NODES_H
-#include <lexer.h>
+#include "lexer.h"
 
-// { forward decl
+/* { forward decl */
 
-// typedef union Node Node;
+/* typedef union Node Node; */
 typedef int ExprValue;
 STRUCT(Expr);
 
-// }==================================
+/* }================================== */
 
 typedef enum _NodeType
 {
@@ -24,8 +24,8 @@ STRUCT(Instruction)
     ExprValue opcode;
     Expr* lparam;
     Expr* rparam;
-    Expr* immediate;    // lparam or rparam if is math or const or var. set to NULL if is reg
-                        // have to be evalued at EVAL_STAGE
+    Expr* immediate;    /* lparam or rparam if is math or const or var. set to NULL if is reg */
+                        /* have to be evalued at EVAL_STAGE */
 };
 
 STRUCT(Label)

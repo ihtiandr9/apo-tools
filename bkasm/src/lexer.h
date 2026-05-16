@@ -19,7 +19,7 @@ typedef enum _eIdentType
 {
     TOK_NONE = 0,
 
-    // Mnemonics
+    /* Mnemonics */
     TOK_ACI,
     TOK_ADC,
     TOK_ADD,
@@ -107,7 +107,7 @@ typedef enum _eIdentType
     TOK_XRI,
     TOK_XTHL,
 
-    // Registers
+    /* Registers */
     TOK_REGA,
     TOK_REGB,
     TOK_REGC,
@@ -121,9 +121,9 @@ typedef enum _eIdentType
     TOK_REGHL,
     TOK_REGPC,
     TOK_REGSP,
-    TOK_PSW,        // register pair PSW (AF) for PUSH/POP
+    TOK_PSW,        /* register pair PSW (AF) for PUSH/POP */
 
-    // Symbols
+    /* Symbols */
     L_EOF,
     L_EOL,
     TOK_EQ,
@@ -164,7 +164,7 @@ STRUCT(Lexer)
     void (*toggleStringState)(Lexer *self);
 };
 
-// exports
+/* exports */
 Lexer *lexer_create(void);
 int lexer_init(Lexer *lexer);
 void lexer_free(Lexer *self);

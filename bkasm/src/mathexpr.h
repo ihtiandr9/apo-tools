@@ -1,11 +1,11 @@
 #ifndef H_MATHEXPR_H
 #define H_MATHEXPR_H
 
-// { forward decl
+/* { forward decl */
 
 STRUCT(Expr);
 
-// }==================================
+/* }================================== */
 typedef int ExprValue;
 
 typedef enum _ExprType

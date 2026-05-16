@@ -1,10 +1,10 @@
 #ifndef H_PARSER_H
 #define H_PARSER_H
 
-//{ forward declarations
+/*{ forward declarations */
 STRUCT(Lexer);
 STRUCT(ASTree);
-//}
+/*}*/
 
 STRUCT(Parser)
 {
@@ -13,7 +13,7 @@ STRUCT(Parser)
     int error;
 };
 
-// exports
+/* exports */
 Parser* parser_create(void);
 int parser_init(Parser* parser);
 void parser_free(Parser* parser);

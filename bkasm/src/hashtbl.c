@@ -101,6 +101,6 @@ const char* hash_text_error(int errno)
     if (errno >= -2 && errno < 0) {
         return errs[-errno - 1];
     }
-    return unknown;  // Никогда не возвращаем NULL
+    return unknown;  /* Никогда не возвращаем NULL */
 }
 

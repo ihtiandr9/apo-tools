@@ -7,8 +7,8 @@
 #include "errors.h"
 #include "lexer.h"
 #include "mathexpr.h"
-////////////////////////////////////////////
-// Instruction Node
+/*//////////////////////////////////////////
+// Instruction Node */
 
 Node *node_create_instruction(const char *ident, eIdentType instr_type, ExprValue opcode)
 {
@@ -44,8 +44,8 @@ void node_clear_instruction(Instruction *op)
     }
 }
 
-///////////////////////////////////
-// Label Node
+/*/////////////////////////////////
+// Label Node */
 
 Node *node_create_label(const char *ident)
 {
