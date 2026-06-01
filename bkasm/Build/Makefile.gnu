@@ -31,6 +31,10 @@ ifeq ($(DETECTED_OS),Windows)
 CFLAGS+= -m32
 endif
 
+ifndef RELEASE
+    CFLAGS += -ggdb -Wno-switch
+endif
+
 SRCS=\
 	 $(wildcard src/*.c)
 
@@ -62,9 +66,6 @@ clean:
 	@echo cleaning $(OUTDIR) dir
 	@-rm -rf $(OUTDIR)
 
-## if(NOT DEFINED _Release_)
-## add_definitions(-ggdb -Wno-switch)
-## endif()
 
 ## debug target
 
