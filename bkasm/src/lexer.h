@@ -46,6 +46,7 @@ typedef enum _eIdentType
     TOK_DCR,
     TOK_DCX,
     TOK_DI,
+    TOK_DS,
     TOK_DW,
     TOK_EI,
     TOK_END,
@@ -138,6 +139,8 @@ typedef enum _eIdentType
     TOK_ASTERISK,
     TOK_NUM,
     TOK_PLUS,
+    TOK_LPAREN,
+    TOK_RPAREN,
 } eIdentType;
 
 STRUCT(Lexema)

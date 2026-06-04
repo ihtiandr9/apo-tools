@@ -59,6 +59,13 @@ TESTS = [
     ("ORG 0\nDB 0FFH", "ff", "DB 0FFH"),
     ("ORG 0\nDW 0FFFFH", "ffff", "DW 0FFFFH"),
 
+    # DS tests
+    ("ORG 0\nDS 5\nNOP", "000000000000", "DS 5 + NOP"),
+    ("ORG 0\nNOP\nDS 10\nNOP", "000000000000000000000000", "NOP + DS 10 + NOP"),
+    ("ORG 0\nDS 0\nNOP", "00", "DS 0 + NOP"),
+    ("ORG 0\nDS 10H\nNOP", "0000000000000000000000000000000000", "DS 10H + NOP"),
+    ("ORG 0\nNOP\nDS 5+5\nNOP", "000000000000000000000000", "NOP + DS 5+5 + NOP"),
+
     # Duplicate label error
     ("LABEL: NOP\nLABEL: NOP", None, "duplicate label error"),
 ]

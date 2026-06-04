@@ -41,9 +41,9 @@ void codegen_generate(Node *node, int pc, int size)
                     exit_nicely(E_LINKERERROR);
                 }
                 db_val = immediate_param->op.evaluate(immediate_param);
-                if (db_val < 0 || db_val > 255)
+                if (db_val < -128 || db_val > 255)
                 {
-                    sprintf(err_msg, "\nDB value %d out of range 0-255\n", db_val);
+                    sprintf(err_msg, "\nDB value %d out of range -128-255\n", db_val);
                     throw_error(E_LINKERERROR, err_msg);
                     exit_nicely(E_LINKERERROR);
                 }
@@ -77,9 +77,9 @@ void codegen_generate(Node *node, int pc, int size)
                     else
                         immediate_value = immediate_param->op.evaluate(immediate_param);
 
-                if (size == 2 && (immediate_value < 0 || immediate_value > 255))
+                if (size == 2 && (immediate_value < -128 || immediate_value > 255))
                 {
-                    sprintf(err_msg, "\nImmediate value %d out of range 0-255 for %s\n", immediate_value, node->ident);
+                    sprintf(err_msg, "\nImmediate value %d out of range -128-255 for %s\n", immediate_value, node->ident);
                     throw_error(E_LINKERERROR, err_msg);
                     exit_nicely(E_LINKERERROR);
                 }
@@ -292,6 +292,11 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             code_org = node->u.op.lparam->op.evaluate(node->u.op.lparam);
             node->u.op.immediate = node->u.op.lparam;
             size = 0;
+            break;
+        /* Pseudo: reserve memory */
+        case TOK_DS:
+            size = node->u.op.lparam->op.evaluate(node->u.op.lparam);
+            node->u.op.immediate = node->u.op.lparam;
             break;
         default:
             sprintf(err_msg, "\nUnexpected instruction: unknown opcode %s", node->ident);

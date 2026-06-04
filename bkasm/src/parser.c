@@ -14,6 +14,7 @@
 static void parse_comment(Parser *self, Lexer *lexer);
 static Node *parse_op(Parser *self, Lexer *lexer);
 static Expr *parse_param(Parser *self, Lexer *lexer);
+static Expr *parse_addition(Parser *self, Lexer *lexer);
 static void parse_statement(Parser *self, Lexer *lexer);
 
 static int is_register_pair(Expr *expr, int arith)   /* arith=1 for DAD/INX/DCX; arith=0 for PUSH/POP */
@@ -115,12 +116,35 @@ static Expr *parse_term(Parser *self, Lexer *lexer)
     char *m_ident = m_token.ident;
     switch (m_token.type)
     {
+    case TOK_MINUS:
+        lexer->skipOne(lexer);
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        result = parse_term(self, lexer);
+        {
+            Expr *zero = const_create(0);
+            Expr *expr = math_create_addition(TOK_MINUS);
+            expr->op.setlparam(expr, zero);
+            expr->op.setrparam(expr, result);
+            result = expr;
+        }
+        break;
     case TOK_NUM:
         result = const_create(m_token.value);
         break;
     case TOK_IDENT:
         result = var_create(m_token.ident);
         free(m_ident);
+        break;
+    case TOK_LPAREN:
+        lexer->skipOne(lexer);
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        result = parse_addition(self, lexer);
+        if (lexer->token.type == TOK_RPAREN)
+            lexer->skipOne(lexer);
+        else
+            throw_error(E_SYNTAXERROR, ") expected");
         break;
     default:
         throw_error(E_UNEXPTOKEN, m_token.ident);
@@ -244,7 +268,10 @@ static Expr *parse_db_param(Parser *self, Lexer *lexer)
         switch (m_token.kind)
         {
         case SYM:
-            expr = NULL;
+            if (m_token.type == TOK_MINUS)
+                expr = parse_param(self, lexer);
+            else
+                expr = NULL;
             break;
 
         default:
@@ -261,7 +288,10 @@ static Expr *parse_dw_param(Parser *self, Lexer *lexer)
     switch (m_token.kind)
     {
         case SYM:
-            expr = NULL;
+            if (m_token.type == TOK_MINUS)
+                expr = parse_param(self, lexer);
+            else
+                expr = NULL;
             break;
 
         default:
@@ -290,6 +320,15 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
             break;
         default:
             throw_error(E_UNKIDENT, m_token.ident);
+        }
+        break;
+    case SYM:
+        if (m_token.type == TOK_LPAREN || m_token.type == TOK_MINUS)
+            expr = parse_addition(self, lexer);
+        else
+        {
+            throw_error(E_UNEXPTOKEN, m_token.ident);
+            exit_nicely(E_UNEXPTOKEN);
         }
         break;
     default:
@@ -460,6 +499,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         break;
     /* Pseudo instructions one operand mnemonics */
     case TOK_ORG:
+    case TOK_DS:
         node->type = NODE_PSEUDO;
         op = &node->u.op;
         lexer->skipWhile(lexer, ' ');

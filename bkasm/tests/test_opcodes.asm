@@ -300,6 +300,16 @@
     ADI 10+10-5     ; C6 0F
     ADI 20-10-5     ; C6 05
 
+; === Скобки в выражениях ===
+    ADI (10H)       ; C6 10
+    ADI (1+2)*3     ; C6 09
+    ADI 2*(3+4)     ; C6 0E
+    ADI ((5))       ; C6 05
+    ADI (10H+20H)   ; C6 30
+    ADI 5*(2+3)     ; C6 19
+    ADI (0FFH)      ; C6 FF
+    ADI ((1+2)*(3+4)) ; C6 15
+
 ; === Граничные значения (range boundary) ===
     MVI A, 0       ; 3E 00
     MVI A, 0FFH    ; 3E FF
@@ -311,3 +321,14 @@
     DB 0FFH        ; FF
     DW 0           ; 00 00
     DW 0FFFFH      ; FF FF
+
+; === Отрицательные immediate ===
+    ADI -5          ; C6 FB
+    ADI -128        ; C6 80
+    ADI -1          ; C6 FF
+    ADI -5+10       ; C6 05
+    ADI -5*3        ; C6 F1
+    MVI A, -5       ; 3E FB
+    SUI -1          ; D6 FF
+    DB -1           ; FF
+    DB -128         ; 80
