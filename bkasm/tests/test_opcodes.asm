@@ -299,3 +299,15 @@
     ADI 2*3+10      ; C6 10
     ADI 10+10-5     ; C6 0F
     ADI 20-10-5     ; C6 05
+
+; === Граничные значения (range boundary) ===
+    MVI A, 0       ; 3E 00
+    MVI A, 0FFH    ; 3E FF
+    ADI 0          ; C6 00
+    ADI 0FFH       ; C6 FF
+    LXI B, 0       ; 01 00 00
+    LXI B, 0FFFFH  ; 01 FF FF
+    DB 0           ; 00
+    DB 0FFH        ; FF
+    DW 0           ; 00 00
+    DW 0FFFFH      ; FF FF

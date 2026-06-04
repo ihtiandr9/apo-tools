@@ -18,7 +18,7 @@ BkasmStage bkasm_stage;
 
 void exit_nicely(int errorlevel)
 {
-    fclose(infile);
-    fclose(outfile);
+    if (infile) fclose(infile);
+    if (outfile) fclose(outfile);
     exit(errorlevel);
 }

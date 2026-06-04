@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "bkasm.h"
 #include "asmast.h"
 #include "codegen.h"
@@ -21,6 +22,15 @@ int main(int argc, char *argv[])
     Lexer m_lexer;
     Parser m_parser;
     static char buf[MAX_PROG_SIZE];
+
+    if (argc >= 2 && (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-h")))
+    {
+        printf("bkasm — i8080 assembler\n"
+               "Usage: bkasm [infile] [outfile]\n"
+               "  infile   source file (default: stdin)\n"
+               "  outfile  output file (default: prog.bin in current dir)\n");
+        exit_nicely(0);
+    }
 
     infile = stdin;
     outfile = stdout;

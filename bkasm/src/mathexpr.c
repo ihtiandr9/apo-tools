@@ -183,6 +183,11 @@ static ExprValue math_evaluate_multiplication(Expr *self)
 {
     ExprValue result = 0;
     MathExpr props = self->data.mathExpr;
+    if (props.lparam == NULL || props.rparam == NULL)
+    {
+        throw_error(E_SYNTAXERROR, " invalid multiplication operation");
+        return 0;
+    }
     ExprValue lparam = props.lparam->op.evaluate(props.lparam);
     ExprValue rparam = props.rparam->op.evaluate(props.rparam);
     switch (props.opcode)
@@ -226,6 +231,11 @@ static ExprValue math_evaluate_addition(Expr *self)
 {
     MathExpr props = self->data.mathExpr;
     ExprValue result = 0;
+    if (props.lparam == NULL || props.rparam == NULL)
+    {
+        throw_error(E_SYNTAXERROR, " invalid addition operation");
+        return 0;
+    }
     ExprValue lparam =props.lparam->op.evaluate(props.lparam);
     ExprValue rparam = props.rparam->op.evaluate(props.rparam);
     assert(self);

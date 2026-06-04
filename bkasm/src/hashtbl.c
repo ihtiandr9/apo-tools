@@ -19,7 +19,8 @@ void hash_push(const char key[], int val, HashVar table[], unsigned int size)
 
     for(ch = table[index].name[0]; ch != 0 && ch != -1 && index < size && strcmp(key, table[index].name); ++index)
         ch = table[index].name[0];
-    strcpy(table[index].name, key);
+    strncpy(table[index].name, key, 49);
+    table[index].name[49] = '\0';
     table[index].val = val;
 }
 

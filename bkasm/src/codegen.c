@@ -20,19 +20,36 @@ void codegen_generate(Node *node, int pc, int size)
 
     if(size == 0) return;
 
+    if (pc - code_org + size > MAX_PROG_SIZE)
+    {
+        sprintf(err_msg, "\nProgram size exceeds %d bytes\n", MAX_PROG_SIZE);
+        throw_error(E_LINKERERROR, err_msg);
+        exit_nicely(E_LINKERERROR);
+    }
+
     if (node->type == NODE_INSTRUCTION)
     {
         switch(node->u.op.instr_type)
         {
             case TOK_DB:
+            {
+                ExprValue db_val;
                 if (immediate_param == NULL)
                 {
                     sprintf(err_msg, "\nMissing immediate parameter for DB");
                     throw_error(E_LINKERERROR, err_msg);
                     exit_nicely(E_LINKERERROR);
                 }
-                prog[pc - code_org] = immediate_param->op.evaluate(immediate_param);
+                db_val = immediate_param->op.evaluate(immediate_param);
+                if (db_val < 0 || db_val > 255)
+                {
+                    sprintf(err_msg, "\nDB value %d out of range 0-255\n", db_val);
+                    throw_error(E_LINKERERROR, err_msg);
+                    exit_nicely(E_LINKERERROR);
+                }
+                prog[pc - code_org] = db_val;
                 break;
+            }
 
             case TOK_DW:
                 if (immediate_param == NULL)
@@ -59,6 +76,13 @@ void codegen_generate(Node *node, int pc, int size)
                     }
                     else
                         immediate_value = immediate_param->op.evaluate(immediate_param);
+
+                if (size == 2 && (immediate_value < 0 || immediate_value > 255))
+                {
+                    sprintf(err_msg, "\nImmediate value %d out of range 0-255 for %s\n", immediate_value, node->ident);
+                    throw_error(E_LINKERERROR, err_msg);
+                    exit_nicely(E_LINKERERROR);
+                }
                 }
 
                 for (i = 0; i < size; i++)
@@ -190,6 +214,12 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             break;
         /* 1 byte, operand: restart vector 0..7 (encoded in opcode) */
         case TOK_RST:
+            if (node->u.op.lparam->data.value < 0 || node->u.op.lparam->data.value > 7)
+            {
+                sprintf(err_msg, "\nRST value %d out of range 0-7\n", node->u.op.lparam->data.value);
+                throw_error(E_LINKERERROR, err_msg);
+                exit_nicely(E_LINKERERROR);
+            }
             node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
             size = 1;
             break;
@@ -261,7 +291,7 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_ORG:
             code_org = node->u.op.lparam->op.evaluate(node->u.op.lparam);
             node->u.op.immediate = node->u.op.lparam;
-            size = code_org; 
+            size = 0;
             break;
         default:
             sprintf(err_msg, "\nUnexpected instruction: unknown opcode %s", node->ident);
@@ -301,16 +331,23 @@ unsigned char* codegen_link(ASTree* ast)
         for(it = ast->firstNode; it; it = it -> next)
         {
             instrSize = codegen_evaluate_ast(&it->node, pc, ast);
-            /* printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); // FIXME remove */
-            pc += instrSize;
+            // printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); // FIXME remove
+            if (it->node.type == NODE_PSEUDO && it->node.u.op.instr_type == TOK_ORG)
+                pc = code_org;
+            else
+                pc += instrSize;
         }
         if(bkasm_stage == EVAL_STAGE)
             pc = 0;
     }
     asmvars_print();
     printf("codesize = %d\n", pc - code_org);
-    file = fopen("prog.bin", "wb");
-    fwrite(prog, 1, pc - code_org, file);
-    fclose(file);
+    if (outfile != stdout) {
+        fwrite(prog, 1, pc - code_org, outfile);
+    } else {
+        file = fopen("prog.bin", "wb");
+        fwrite(prog, 1, pc - code_org, file);
+        fclose(file);
+    }
     return prog;
 }

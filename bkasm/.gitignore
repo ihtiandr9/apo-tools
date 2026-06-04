@@ -1,0 +1,5 @@
+Build/*
+prog.bin
+test_log.txt
+*.o
+*.lst
