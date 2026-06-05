@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-// statics
+/* statics */
 const unsigned char eof_sym = 0xFF;
 const unsigned char eol_sym = 0x0A;
 static const char decimals[] = "0123456789";

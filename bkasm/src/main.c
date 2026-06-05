@@ -8,11 +8,13 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "bkasm.h"
 #include "asmast.h"
 #include "codegen.h"
 #include "lexer.h"
 #include "parser.h"
+#include "inbuf.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +22,15 @@ int main(int argc, char *argv[])
     Lexer m_lexer;
     Parser m_parser;
     static char buf[MAX_PROG_SIZE];
+
+    if (argc >= 2 && (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-h")))
+    {
+        printf("bkasm — i8080 assembler\n"
+               "Usage: bkasm [infile] [outfile]\n"
+               "  infile   source file (default: stdin)\n"
+               "  outfile  output file (default: prog.bin in current dir)\n");
+        exit_nicely(0);
+    }
 
     infile = stdin;
     outfile = stdout;
@@ -47,8 +58,9 @@ int main(int argc, char *argv[])
 
     bufsize = fread(buf, 1, MAX_PROG_SIZE, infile);
     printf("program text size=%d\n", bufsize);
-    
-    lexer_init(&m_lexer, buf, bufsize);
+
+    inbuf_init(buf, bufsize);
+    lexer_init(&m_lexer);
 
     parser_init(&m_parser);
     parser_parse(&m_parser, &m_lexer);
@@ -58,5 +70,4 @@ int main(int argc, char *argv[])
 
     ast_destroy(m_parser.ast);
     exit_nicely(0);
-    return 0;
 }

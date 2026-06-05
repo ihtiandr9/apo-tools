@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "bkasm.h"
 #include "parser.h"
 #include "asmast.h"
@@ -8,21 +9,22 @@
 #include "inbuf.h"
 #include "mathexpr.h"
 #include "nodes.h"
+#include "opcodes.h"
 
 static void parse_comment(Parser *self, Lexer *lexer);
 static Node *parse_op(Parser *self, Lexer *lexer);
 static Expr *parse_param(Parser *self, Lexer *lexer);
+static Expr *parse_addition(Parser *self, Lexer *lexer);
 static void parse_statement(Parser *self, Lexer *lexer);
 
-static int is_register_pair(ExprValue reg_type)
+static int is_register_pair(Expr *expr, int arith)   /* arith=1 for DAD/INX/DCX; arith=0 for PUSH/POP */
 {
-    return (reg_type == TOK_REGBC ||
-            reg_type == TOK_REGDE ||
-            reg_type == TOK_REGHL ||
-            reg_type == TOK_REGB ||
-            reg_type == TOK_REGD ||
-            reg_type == TOK_REGH ||
-            reg_type == TOK_REGSP);
+    return expr->type == EXPR_REG &&
+           (expr->data.value == OP_REGBC ||
+            expr->data.value == OP_REGDE ||
+            expr->data.value == OP_REGHL ||
+            (expr->data.value == OP_REGSP && arith && strcmp(expr->ident, "SP") == 0) ||
+            (expr->data.value == OP_REGSP && !arith && strcmp(expr->ident, "PSW") == 0));
 }
 
 static Node *parse_var(Parser *self, Lexer *lexer)
@@ -50,15 +52,15 @@ static Node *parse_var(Parser *self, Lexer *lexer)
             node->u.label.target_type = TOK_IDENT;
             lexer->skipUntil(lexer, 10);
             parse_comment(self, lexer);
-            // pass node throw standart codeflow
+            /* pass node throw standart codeflow */
         }
         else
         {
             node->u.label.target = register_create(TOK_REGPC, "PC");
             node->u.label.target_type = TOK_REGPC;
-            ast_add_statement(node, self->ast); // add standart label
-            parse_statement(self, lexer);       // parse remain part of string
-            node = NULL;                        // nothing to return, all parts were parsed
+            ast_add_statement(node, self->ast); /* add standart label */
+            parse_statement(self, lexer);       /* parse remain part of string */
+            node = NULL;                        /* nothing to return, all parts were parsed */
         }
         free(l_ident);
     }
@@ -114,12 +116,35 @@ static Expr *parse_term(Parser *self, Lexer *lexer)
     char *m_ident = m_token.ident;
     switch (m_token.type)
     {
+    case TOK_MINUS:
+        lexer->skipOne(lexer);
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        result = parse_term(self, lexer);
+        {
+            Expr *zero = const_create(0);
+            Expr *expr = math_create_addition(TOK_MINUS);
+            expr->op.setlparam(expr, zero);
+            expr->op.setrparam(expr, result);
+            result = expr;
+        }
+        break;
     case TOK_NUM:
         result = const_create(m_token.value);
         break;
     case TOK_IDENT:
         result = var_create(m_token.ident);
         free(m_ident);
+        break;
+    case TOK_LPAREN:
+        lexer->skipOne(lexer);
+        lexer->skipWhile(lexer, ' ');
+        lexer->nextTok(lexer);
+        result = parse_addition(self, lexer);
+        if (lexer->token.type == TOK_RPAREN)
+            lexer->skipOne(lexer);
+        else
+            throw_error(E_SYNTAXERROR, ") expected");
         break;
     default:
         throw_error(E_UNEXPTOKEN, m_token.ident);
@@ -214,7 +239,12 @@ static Expr *parse_db_param(Parser *self, Lexer *lexer)
             lexer->toggleStringState(lexer);
         else
         {
-            mbs[mbs_size++] = lexer->ch;
+            if (mbs_size < MAX_VAR_COUNT - 1) {
+                mbs[mbs_size++] = lexer->ch;
+            } else if (mbs_size == MAX_VAR_COUNT - 1) {
+                fprintf(stderr, "\nString truncated (max %d chars)\n", MAX_VAR_COUNT - 1);
+                mbs_size++;
+            }
         }
     }
 
@@ -238,7 +268,10 @@ static Expr *parse_db_param(Parser *self, Lexer *lexer)
         switch (m_token.kind)
         {
         case SYM:
-            expr = NULL;
+            if (m_token.type == TOK_MINUS)
+                expr = parse_param(self, lexer);
+            else
+                expr = NULL;
             break;
 
         default:
@@ -255,7 +288,10 @@ static Expr *parse_dw_param(Parser *self, Lexer *lexer)
     switch (m_token.kind)
     {
         case SYM:
-            expr = NULL;
+            if (m_token.type == TOK_MINUS)
+                expr = parse_param(self, lexer);
+            else
+                expr = NULL;
             break;
 
         default:
@@ -272,7 +308,7 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
     switch (m_token.kind)
     {
     case REG:
-        expr = register_create(m_token.type, m_token.ident);
+        expr = register_create(m_token.value, m_token.ident);
         break;
     case VAR:
     case CONST:
@@ -284,6 +320,15 @@ static Expr *parse_param(Parser *self, Lexer *lexer)
             break;
         default:
             throw_error(E_UNKIDENT, m_token.ident);
+        }
+        break;
+    case SYM:
+        if (m_token.type == TOK_LPAREN || m_token.type == TOK_MINUS)
+            expr = parse_addition(self, lexer);
+        else
+        {
+            throw_error(E_UNEXPTOKEN, m_token.ident);
+            exit_nicely(E_UNEXPTOKEN);
         }
         break;
     default:
@@ -305,7 +350,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
 
     switch (op_token.type)
     {
-    // multibyte arrays
+    /* multibyte arrays */
     case TOK_DB:
         op = &node->u.op;
         lexer->skipWhile(lexer, ' ');
@@ -327,7 +372,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         }
         break;
 
-    // multiword arrays
+    /* multiword arrays */
     case TOK_DW:
         op = &node->u.op;
         lexer->skipWhile(lexer, ' ');
@@ -349,7 +394,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         }
         break;
 
-    // two opernds mnemonics
+    /* two opernds mnemonics */
     case TOK_LXI:
         op = &node->u.op;
         lexer->skipWhile(lexer, ' ');
@@ -395,7 +440,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         }
         lexer->skipWhile(lexer, ' ');
         break;
-    // one operand mnemonics
+    /* one operand mnemonics */
     case TOK_ACI:
     case TOK_ADC:
     case TOK_ADD:
@@ -452,8 +497,9 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         lexer->nextTok(lexer);
         op->lparam = parse_param(self, lexer);
         break;
-    // Pseudo instructions one operand mnemonics
+    /* Pseudo instructions one operand mnemonics */
     case TOK_ORG:
+    case TOK_DS:
         node->type = NODE_PSEUDO;
         op = &node->u.op;
         lexer->skipWhile(lexer, ' ');
@@ -461,7 +507,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         op->lparam = parse_param(self, lexer);
         break;
 
-    // NULL operand mnemonics
+    /* NULL operand mnemonics */
     case TOK_CMA:
     case TOK_CMC:
     case TOK_DAA:
@@ -493,7 +539,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         op = &node->u.op;
         lexer->skipWhile(lexer, ' ');
         break;
-    case TOK_SEMICOLON: // no operation pass-throw comment
+    case TOK_SEMICOLON: /* no operation pass-throw comment */
         break;
     default:
 	self -> error = E_UNKKEYWORD;
@@ -503,7 +549,7 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         break;
     }
 
-    // Additional checks for operands
+    /* Additional checks for operands */
     if (node && node->type == NODE_INSTRUCTION) {
         Instruction *op = &node->u.op;
         char err_msg[MAX_ERR_MSG_LEN];
@@ -531,16 +577,21 @@ static Node *parse_op(Parser *self, Lexer *lexer)
         case TOK_DAD:
         case TOK_LDAX:
         case TOK_STAX:
-        case TOK_POP:
-        case TOK_PUSH:
         case TOK_INX:
         case TOK_DCX:
-            if (op->lparam->type == EXPR_REG && !is_register_pair(op->lparam->data.value)) {
+            if (!is_register_pair(op->lparam, 1)) { /* arith=1: accept SP, reject PSW */
                 sprintf(err_msg, "\nOperand of %s must be a register pair", op_token.ident);
                 throw_error(E_SYNTAXERROR, err_msg);
             }
             break;
-        // Add more if needed
+        case TOK_POP:
+        case TOK_PUSH:
+            if (!is_register_pair(op->lparam, 0)) { /* arith=0: accept PSW, reject SP */
+                sprintf(err_msg, "\nOperand of %s must be a register pair", op_token.ident);
+                throw_error(E_SYNTAXERROR, err_msg);
+            }
+            break;
+        /* Add more if needed */
         }
     }
 
@@ -551,7 +602,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
 {
     InbufCurrentString *currstr;
     Lexema m_token = lexer->token;
-    // lexer->printTok(lexer->token); // debug
+    /* lexer->printTok(lexer->token); // debug */
     currstr = inbuf_currstr();
 
     switch (m_token.kind)
@@ -575,7 +626,7 @@ static void parse_statement(Parser *self, Lexer *lexer)
             parse_comment(self, lexer);
             break;
         case L_EOL:
-            // printf("< EMPTY STRING >\n");
+            /* printf("< EMPTY STRING >\n"); */
             lexer->skipOne(lexer);
             break;
         case L_EOF:
@@ -602,16 +653,16 @@ static void parse_statement(Parser *self, Lexer *lexer)
         {
             internal->u.label.target = register_create(TOK_REGPC, "PC");
             internal->u.label.target_type = TOK_REGPC;
-            ast_add_statement(internal, self->ast); // add standart label
+            ast_add_statement(internal, self->ast); /* add standart label */
             lexer->skipOne(lexer);
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
-            parse_statement(self, lexer); // parse remain part of string
-            internal = NULL;              // nothing to return, all parts were parsed
+            parse_statement(self, lexer); /* parse remain part of string */
+            internal = NULL;              /* nothing to return, all parts were parsed */
         }
     }
     break;
-    case KIND_NONE: // if unexpectd symbol detected
+    case KIND_NONE: /* if unexpectd symbol detected */
         lexer->skipUntil(lexer, 10);
         lexer->skipOne(lexer);
         break;

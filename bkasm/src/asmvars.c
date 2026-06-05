@@ -9,11 +9,23 @@ HashVar asmvars[MAX_VAR_COUNT];
 
 void asmvars_add(const char key[], int val)
 {
+    char err_msg[MAX_ERR_MSG_LEN];
 
     if (key == 0 || strlen(key) == 0)
     {
         fprintf(stderr, "INTERNAL_ERROR: asmvars_add: key is null");
         return;
+    }
+    if (bkasm_stage == PARSE_STAGE)
+    {
+        int existing_val;
+        if (hash_value(key, &existing_val, asmvars, MAX_VAR_COUNT) == 0)
+        {
+            sprintf(err_msg, "\nDuplicate label: %s\n", key);
+            throw_error(E_LINKERERROR, err_msg);
+            exit_nicely(E_LINKERERROR);
+            return;
+        }
     }
     hash_push(key, val, asmvars, MAX_VAR_COUNT);
 }

@@ -1,89 +1,383 @@
-BkasmStage	src/bkasm.h	/^} BkasmStage;$/
-Error	src/errors.h	/^typedef void (*fn_error_dispatcher)(Error *);$/
-ExprValue	src/mathexpr.h	/^typedef int ExprValue;$/
-HashVar	src/hashtable.h	/^} HashVar;$/
-Mmain	src/main.c	/^int main(int argc, char *argv[])$/
-STRUCT	src/asmast.h	/^STRUCT(ASTree)  \/* Abstract syntax tree *\/$/
-asmvars_add	src/asmvars.c	/^void asmvars_add(const char key[], int val)$/
-asmvars_print	src/asmvars.c	/^void asmvars_print()$/
-asmvars_value	src/asmvars.c	/^int asmvars_value(const char key[], int *result)$/
-ast_add_statement	src/asmast.c	/^void ast_add_statement(Node *statement, ASTree *as/
-ast_create	src/asmast.c	/^ASTree *ast_create()$/
-ast_destroy	src/asmast.c	/^void ast_destroy(ASTree *astree)$/
-ast_free	src/asmast.c	/^void ast_free(ASTree *astree)$/
-ast_init	src/asmast.c	/^void ast_init(ASTree* astree)$/
-codegen_evaluate_ast	src/codegen.c	/^int codegen_evaluate_ast(Node *node, int pc, ASTre/
-codegen_generate	src/codegen.c	/^void codegen_generate(Node *node, int pc, int size/
-codegen_link	src/codegen.c	/^unsigned char* codegen_link(ASTree* ast)$/
-const_create	src/mathexpr.c	/^Expr *const_create(ExprValue const_value)$/
-const_destroy	src/mathexpr.c	/^void const_destroy(Expr *expr)$/
-const_evaluate	src/mathexpr.c	/^static ExprValue const_evaluate(Expr *self)$/
-default_error_dispatcher	src/errors.c	/^static void default_error_dispatcher(Error *e)$/
-eErrorType	src/errors.h	/^} eErrorType;$/
-eExprType	src/mathexpr.h	/^} eExprType;$/
-eIdentKind	src/lexer.h	/^} eIdentKind;$/
-eIdentType	src/lexer.h	/^} eIdentType;$/
-eNodeType	src/nodes.h	/^} eNodeType;$/
-exit_nicely	src/bkasm.c	/^void exit_nicely(int errorlevel)$/
-hash_print	src/hashtable.c	/^void hash_print(HashVar table[], unsigned int size/
-hash_push	src/hashtable.c	/^void hash_push(const char key[], int val, HashVar /
-hash_text_error	src/hashtable.c	/^const char* hash_text_error(int err)$/
-hash_value	src/hashtable.c	/^int hash_value(const char key[], int *result, Hash/
-hashf	src/hashtable.c	/^unsigned int hashf(const char key[])$/
-inbuf_currstr	src/inbuf.c	/^InbufCurrentString *inbuf_currstr()$/
-inbuf_init	src/inbuf.c	/^void inbuf_init(const char* _inbuf, int _bufsize)$/
-inbuf_markcurrstr	src/inbuf.c	/^static void inbuf_markcurrstr()$/
-inbuf_next_char	src/inbuf.c	/^unsigned char inbuf_next_char()$/
-is_alfa	src/symbols.c	/^int is_alfa(char ch)$/
-is_decimal	src/symbols.c	/^int is_decimal(char ch)$/
-is_digit	src/symbols.c	/^int is_digit(char ch)$/
-is_register_pair	src/parser.c	/^static int is_register_pair(ExprValue reg_type)$/
-lexer_create	src/lexer.c	/^Lexer *lexer_create(const char *buf, int size)$/
-lexer_free	src/lexer.c	/^void lexer_free(Lexer *self)$/
-lexer_init	src/lexer.c	/^int lexer_init(Lexer *lexer, const char *buf, int /
-lexer_next_tok	src/lexer.c	/^static int lexer_next_tok(Lexer *self)$/
-lexer_print_tok	src/lexer.c	/^static void lexer_print_tok(Lexema token)$/
-lexer_skip_one	src/lexer.c	/^static void lexer_skip_one(Lexer *self)$/
-lexer_skip_until	src/lexer.c	/^static void lexer_skip_until(Lexer *self, unsigned/
-lexer_skip_while	src/lexer.c	/^static void lexer_skip_while(Lexer *self, unsigned/
-math_create	src/mathexpr.c	/^static Expr *math_create(ExprValue opcode)$/
-math_create_addition	src/mathexpr.c	/^Expr *math_create_addition(ExprValue operation)$/
-math_create_multiplication	src/mathexpr.c	/^Expr *math_create_multiplication(ExprValue opcode)/
-math_evaluate_addition	src/mathexpr.c	/^static ExprValue math_evaluate_addition(Expr *self/
-math_evaluate_multiplication	src/mathexpr.c	/^static ExprValue math_evaluate_multiplication(Expr/
-math_free	src/mathexpr.c	/^void math_free(Expr *expr)$/
-math_free_addition	src/mathexpr.c	/^void math_free_addition(Expr *expr)$/
-math_free_multiplication	src/mathexpr.c	/^void math_free_multiplication(Expr *expr)$/
-math_print_expression	src/mathexpr.c	/^void math_print_expression(Expr *expr)$/
-math_print_operation	src/mathexpr.c	/^void math_print_operation(ExprValue opcode)$/
-math_set_lparam	src/mathexpr.c	/^void math_set_lparam(Expr *self, Expr *val)$/
-math_set_rparam	src/mathexpr.c	/^void math_set_rparam(Expr *self, Expr *val)$/
-node_clear	src/nodes.c	/^void node_clear(Node *node)$/
-node_clear_instruction	src/nodes.c	/^void node_clear_instruction(Instruction *op)$/
-node_clear_label	src/nodes.c	/^void node_clear_label(Label *label)$/
-node_create_instruction	src/nodes.c	/^Node *node_create_instruction(const char *ident, e/
-node_create_label	src/nodes.c	/^Node *node_create_label(const char *ident)$/
-node_print	src/nodes.c	/^void node_print(Node *node)$/
-nodelist_alloc	src/nodes.c	/^NodeList *nodelist_alloc()$/
-nodelist_destroy	src/nodes.c	/^void nodelist_destroy(NodeList *nodelist)$/
-parse_addition	src/parser.c	/^static Expr *parse_addition(Parser *self, Lexer *l/
-parse_comment	src/parser.c	/^static void parse_comment(Parser *self, Lexer *lex/
-parse_multiplication	src/parser.c	/^static Expr *parse_multiplication(Parser *self, Le/
-parse_op	src/parser.c	/^static Node *parse_op(Parser *self, Lexer *lexer)$/
-parse_param	src/parser.c	/^static Expr *parse_param(Parser *self, Lexer *lexe/
-parse_statement	src/parser.c	/^static void parse_statement(Parser *self, Lexer *l/
-parse_term	src/parser.c	/^static Expr *parse_term(Parser *self, Lexer *lexer/
-parse_var	src/parser.c	/^static Node *parse_var(Parser *self, Lexer *lexer)/
-parser_create	src/parser.c	/^Parser *parser_create(void)$/
-parser_free	src/parser.c	/^void parser_free(Parser *_parser)$/
-parser_init	src/parser.c	/^int parser_init(Parser *parser)$/
-parser_parse	src/parser.c	/^void parser_parse(Parser *self, Lexer *lexer)$/
-radix	src/bkints.c	/^int radix(char suffix)$/
-register_create	src/mathexpr.c	/^Expr *register_create(ExprValue ident_type, const /
-register_destroy	src/mathexpr.c	/^void register_destroy(Expr *expr)$/
-register_evaluate	src/mathexpr.c	/^static ExprValue register_evaluate(Expr *self)$/
-throw_error	src/errors.c	/^void throw_error(eErrorType type, void *data)$/
-throw_error_disp	src/errors.c	/^void throw_error_disp(eErrorType type, void *data,/
-var_create	src/mathexpr.c	/^Expr *var_create(const char *ident)$/
-var_evaluate	src/mathexpr.c	/^static ExprValue var_evaluate(Expr *self)$/
-var_free	src/mathexpr.c	/^void var_free(Expr *expr)$/
+!_TAG_EXTRA_DESCRIPTION	anonymous	/Include tags for non-named objects like lambda/
+!_TAG_EXTRA_DESCRIPTION	fileScope	/Include tags of file scope/
+!_TAG_EXTRA_DESCRIPTION	pseudo	/Include pseudo tags/
+!_TAG_EXTRA_DESCRIPTION	subparser	/Include tags generated by subparsers/
+!_TAG_FIELD_DESCRIPTION	epoch	/the last modified time of the input file (only for F\/file kind tag)/
+!_TAG_FIELD_DESCRIPTION	file	/File-restricted scoping/
+!_TAG_FIELD_DESCRIPTION	input	/input file/
+!_TAG_FIELD_DESCRIPTION	name	/tag name/
+!_TAG_FIELD_DESCRIPTION	pattern	/pattern/
+!_TAG_FIELD_DESCRIPTION	typeref	/Type and name of a variable or typedef/
+!_TAG_FIELD_DESCRIPTION!C++	name	/aliased names/
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_KIND_DESCRIPTION!C	d,macro	/macro definitions/
+!_TAG_KIND_DESCRIPTION!C	e,enumerator	/enumerators (values inside an enumeration)/
+!_TAG_KIND_DESCRIPTION!C	f,function	/function definitions/
+!_TAG_KIND_DESCRIPTION!C	g,enum	/enumeration names/
+!_TAG_KIND_DESCRIPTION!C	h,header	/included header files/
+!_TAG_KIND_DESCRIPTION!C	m,member	/struct, and union members/
+!_TAG_KIND_DESCRIPTION!C	s,struct	/structure names/
+!_TAG_KIND_DESCRIPTION!C	t,typedef	/typedefs/
+!_TAG_KIND_DESCRIPTION!C	u,union	/union names/
+!_TAG_KIND_DESCRIPTION!C	v,variable	/variable definitions/
+!_TAG_KIND_DESCRIPTION!C++	M,module	/modules/
+!_TAG_KIND_DESCRIPTION!C++	P,partition	/partitions/
+!_TAG_KIND_DESCRIPTION!C++	c,class	/classes/
+!_TAG_KIND_DESCRIPTION!C++	d,macro	/macro definitions/
+!_TAG_KIND_DESCRIPTION!C++	e,enumerator	/enumerators (values inside an enumeration)/
+!_TAG_KIND_DESCRIPTION!C++	f,function	/function definitions/
+!_TAG_KIND_DESCRIPTION!C++	g,enum	/enumeration names/
+!_TAG_KIND_DESCRIPTION!C++	h,header	/included header files/
+!_TAG_KIND_DESCRIPTION!C++	m,member	/class, struct, and union members/
+!_TAG_KIND_DESCRIPTION!C++	n,namespace	/namespaces/
+!_TAG_KIND_DESCRIPTION!C++	s,struct	/structure names/
+!_TAG_KIND_DESCRIPTION!C++	t,typedef	/typedefs/
+!_TAG_KIND_DESCRIPTION!C++	u,union	/union names/
+!_TAG_KIND_DESCRIPTION!C++	v,variable	/variable definitions/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_OUTPUT_VERSION	1.1	/current.age/
+!_TAG_PARSER_VERSION!C	1.1	/current.age/
+!_TAG_PARSER_VERSION!C++	2.2	/current.age/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/data/data/com.termux/files/home/proj/apo-tools/bkasm/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	6.2.1	//
+!_TAG_ROLE_DESCRIPTION!C!function	foreigndecl	/declared in foreign languages/
+!_TAG_ROLE_DESCRIPTION!C!header	local	/local header/
+!_TAG_ROLE_DESCRIPTION!C!header	system	/system header/
+!_TAG_ROLE_DESCRIPTION!C!macro	undef	/undefined/
+!_TAG_ROLE_DESCRIPTION!C!struct	foreigndecl	/declared in foreign languages/
+!_TAG_ROLE_DESCRIPTION!C++!header	exported	/exported with "exported imported ..."/
+!_TAG_ROLE_DESCRIPTION!C++!header	imported	/imported with "imported ..."/
+!_TAG_ROLE_DESCRIPTION!C++!header	local	/local header/
+!_TAG_ROLE_DESCRIPTION!C++!header	system	/system header/
+!_TAG_ROLE_DESCRIPTION!C++!macro	undef	/undefined/
+!_TAG_ROLE_DESCRIPTION!C++!module	imported	/imported with "imported ..."/
+!_TAG_ROLE_DESCRIPTION!C++!module	partOwner	/used for specifying a partition/
+!_TAG_ROLE_DESCRIPTION!C++!partition	imported	/imported with "imported ..."/
+BkasmStage	src/bkasm.h	/^} BkasmStage;$/;"	t	typeref:enum:__anon857909200103
+CHAR	src/lexer.h	/^    CHAR,$/;"	e	enum:_eIdentKind
+CH_NULL	src/lexer.h	/^#define CH_NULL /;"	d
+CONST	src/lexer.h	/^    CONST,$/;"	e	enum:_eIdentKind
+EVAL_STAGE	src/bkasm.h	/^	EVAL_STAGE,$/;"	e	enum:__anon857909200103
+EXPR_CONST	src/mathexpr.h	/^    EXPR_CONST,$/;"	e	enum:_ExprType
+EXPR_EMPTY	src/mathexpr.h	/^    EXPR_EMPTY,$/;"	e	enum:_ExprType
+EXPR_MATH	src/mathexpr.h	/^    EXPR_MATH$/;"	e	enum:_ExprType
+EXPR_REG	src/mathexpr.h	/^    EXPR_REG,$/;"	e	enum:_ExprType
+EXPR_VAR	src/mathexpr.h	/^    EXPR_VAR,$/;"	e	enum:_ExprType
+E_INTERNALERROR	src/errors.h	/^    E_INTERNALERROR,$/;"	e	enum:_eErrorType
+E_LINKERERROR	src/errors.h	/^    E_LINKERERROR,$/;"	e	enum:_eErrorType
+E_SUCCESS	src/errors.h	/^    E_SUCCESS,$/;"	e	enum:_eErrorType
+E_SYNTAXERROR	src/errors.h	/^    E_SYNTAXERROR,$/;"	e	enum:_eErrorType
+E_UNEXPSYM	src/errors.h	/^    E_UNEXPSYM,$/;"	e	enum:_eErrorType
+E_UNEXPTOKEN	src/errors.h	/^    E_UNEXPTOKEN,$/;"	e	enum:_eErrorType
+E_UNKIDENT	src/errors.h	/^    E_UNKIDENT,$/;"	e	enum:_eErrorType
+E_UNKKEYWORD	src/errors.h	/^    E_UNKKEYWORD,$/;"	e	enum:_eErrorType
+ExprValue	src/mathexpr.h	/^typedef int ExprValue;$/;"	t	typeref:typename:int
+ExprValue	src/nodes.h	/^typedef int ExprValue;$/;"	t	typeref:typename:int
+GENERATE_STAGE	src/bkasm.h	/^	GENERATE_STAGE,$/;"	e	enum:__anon857909200103
+H_ASMVARS_H	src/asmvars.h	/^#define H_ASMVARS_H$/;"	d
+H_ASTREE_H	src/asmast.h	/^#define H_ASTREE_H$/;"	d
+H_BKASM_H	src/bkasm.h	/^#define H_BKASM_H$/;"	d
+H_BKINTS_H	src/bkints.h	/^#define H_BKINTS_H$/;"	d
+H_CODEGEN_H	src/codegen.h	/^#define H_CODEGEN_H$/;"	d
+H_ERRORS_H	src/errors.h	/^#define H_ERRORS_H$/;"	d
+H_HASHTABLE_H	src/hashtbl.h	/^#define H_HASHTABLE_H$/;"	d
+H_INBUF_H	src/inbuf.h	/^#define H_INBUF_H$/;"	d
+H_LEXER_H	src/lexer.h	/^#define H_LEXER_H$/;"	d
+H_MATHEXPR_H	src/mathexpr.h	/^#define H_MATHEXPR_H$/;"	d
+H_NODES_H	src/nodes.h	/^#define H_NODES_H$/;"	d
+H_OPCODES_H	src/opcodes.h	/^#define H_OPCODES_H$/;"	d
+H_PARSER_H	src/parser.h	/^#define H_PARSER_H$/;"	d
+H_SYMBOLS_H	src/symbols.h	/^#define H_SYMBOLS_H$/;"	d
+HashVar	src/hashtbl.h	/^} HashVar;$/;"	t	typeref:struct:__anon98c2f3980108
+INBUF_STRING_SIZE	src/inbuf.h	/^#define INBUF_STRING_SIZE /;"	d
+INDENT	src/bkasm.h	/^#define INDENT /;"	d
+INT	src/lexer.h	/^    INT,$/;"	e	enum:_eIdentKind
+KIND_NONE	src/lexer.h	/^    KIND_NONE = 0,$/;"	e	enum:_eIdentKind
+L_EOF	src/lexer.h	/^    L_EOF,$/;"	e	enum:_eIdentType
+L_EOL	src/lexer.h	/^    L_EOL,$/;"	e	enum:_eIdentType
+MAX_ERR_MSG_LEN	src/bkasm.h	/^#define MAX_ERR_MSG_LEN /;"	d
+MAX_LABEL_SIZE	src/bkasm.h	/^#define MAX_LABEL_SIZE /;"	d
+MAX_PROG_SIZE	src/bkasm.h	/^#define MAX_PROG_SIZE /;"	d
+MAX_VAR_COUNT	src/bkasm.h	/^#define MAX_VAR_COUNT /;"	d
+NODE_EMPTY	src/nodes.h	/^    NODE_EMPTY = 0,$/;"	e	enum:_NodeType
+NODE_INSTRUCTION	src/nodes.h	/^    NODE_INSTRUCTION,$/;"	e	enum:_NodeType
+NODE_PSEUDO	src/nodes.h	/^    NODE_PSEUDO,$/;"	e	enum:_NodeType
+NODE_VAR	src/nodes.h	/^    NODE_VAR,$/;"	e	enum:_NodeType
+OP	src/lexer.h	/^    OP,$/;"	e	enum:_eIdentKind
+OP_REGA	src/opcodes.h	/^    OP_REGA = 0x7,$/;"	e	enum:opRegs
+OP_REGB	src/opcodes.h	/^    OP_REGB = 0x0,$/;"	e	enum:opRegs
+OP_REGBC	src/opcodes.h	/^    OP_REGBC = 0x0,$/;"	e	enum:opRegPairs
+OP_REGC	src/opcodes.h	/^    OP_REGC = 0x1,$/;"	e	enum:opRegs
+OP_REGD	src/opcodes.h	/^    OP_REGD = 0x2,$/;"	e	enum:opRegs
+OP_REGDE	src/opcodes.h	/^    OP_REGDE = 0x2,$/;"	e	enum:opRegPairs
+OP_REGE	src/opcodes.h	/^    OP_REGE = 0x3,$/;"	e	enum:opRegs
+OP_REGH	src/opcodes.h	/^    OP_REGH = 0x4,$/;"	e	enum:opRegs
+OP_REGHL	src/opcodes.h	/^    OP_REGHL = 0x4,$/;"	e	enum:opRegPairs
+OP_REGL	src/opcodes.h	/^    OP_REGL = 0x5,$/;"	e	enum:opRegs
+OP_REGM	src/opcodes.h	/^    OP_REGM = 0x6,$/;"	e	enum:opRegs
+OP_REGSP	src/opcodes.h	/^    OP_REGSP = 0x6,$/;"	e	enum:opRegPairs
+PARSE_STAGE	src/bkasm.h	/^typedef enum{ PARSE_STAGE = 0,$/;"	e	enum:__anon857909200103
+REG	src/lexer.h	/^    REG,$/;"	e	enum:_eIdentKind
+STRUCT	src/asmast.h	/^STRUCT(ASTree)  \/* Abstract syntax tree *\/$/;"	f
+STRUCT	src/bkasm.h	/^#define STRUCT(/;"	d
+STRUCT	src/bkints.h	/^STRUCT(IntBase)$/;"	f
+STRUCT	src/errors.h	/^STRUCT(Error)$/;"	f
+STRUCT	src/inbuf.h	/^STRUCT(InbufCurrentString)$/;"	f
+STRUCT	src/lexer.h	/^STRUCT(Lexema)$/;"	f
+STRUCT	src/lexer.h	/^STRUCT(Lexer)$/;"	f
+STRUCT	src/mathexpr.h	/^STRUCT(Expr)$/;"	f
+STRUCT	src/mathexpr.h	/^STRUCT(ExprOp)$/;"	f
+STRUCT	src/mathexpr.h	/^STRUCT(MathExpr)$/;"	f
+STRUCT	src/nodes.h	/^STRUCT(Instruction)$/;"	f
+STRUCT	src/nodes.h	/^STRUCT(Label)$/;"	f
+STRUCT	src/nodes.h	/^STRUCT(Node)$/;"	f
+STRUCT	src/nodes.h	/^STRUCT(NodeList)$/;"	f
+STRUCT	src/parser.h	/^STRUCT(Parser)$/;"	f
+SYM	src/lexer.h	/^    SYM,$/;"	e	enum:_eIdentKind
+TOK_ACI	src/lexer.h	/^    TOK_ACI,$/;"	e	enum:_eIdentType
+TOK_ADC	src/lexer.h	/^    TOK_ADC,$/;"	e	enum:_eIdentType
+TOK_ADD	src/lexer.h	/^    TOK_ADD,$/;"	e	enum:_eIdentType
+TOK_ADI	src/lexer.h	/^    TOK_ADI,$/;"	e	enum:_eIdentType
+TOK_ANA	src/lexer.h	/^    TOK_ANA,$/;"	e	enum:_eIdentType
+TOK_AND	src/lexer.h	/^    TOK_AND,$/;"	e	enum:_eIdentType
+TOK_ANI	src/lexer.h	/^    TOK_ANI,$/;"	e	enum:_eIdentType
+TOK_ASTERISK	src/lexer.h	/^    TOK_ASTERISK,$/;"	e	enum:_eIdentType
+TOK_CALL	src/lexer.h	/^    TOK_CALL,$/;"	e	enum:_eIdentType
+TOK_CC	src/lexer.h	/^    TOK_CC,$/;"	e	enum:_eIdentType
+TOK_CM	src/lexer.h	/^    TOK_CM,$/;"	e	enum:_eIdentType
+TOK_CMA	src/lexer.h	/^    TOK_CMA,$/;"	e	enum:_eIdentType
+TOK_CMC	src/lexer.h	/^    TOK_CMC,$/;"	e	enum:_eIdentType
+TOK_CMP	src/lexer.h	/^    TOK_CMP,$/;"	e	enum:_eIdentType
+TOK_CNC	src/lexer.h	/^    TOK_CNC,$/;"	e	enum:_eIdentType
+TOK_CNZ	src/lexer.h	/^    TOK_CNZ,$/;"	e	enum:_eIdentType
+TOK_COLON	src/lexer.h	/^    TOK_COLON,$/;"	e	enum:_eIdentType
+TOK_COMMA	src/lexer.h	/^    TOK_COMMA,$/;"	e	enum:_eIdentType
+TOK_CP	src/lexer.h	/^    TOK_CP,$/;"	e	enum:_eIdentType
+TOK_CPE	src/lexer.h	/^    TOK_CPE,$/;"	e	enum:_eIdentType
+TOK_CPI	src/lexer.h	/^    TOK_CPI,$/;"	e	enum:_eIdentType
+TOK_CPO	src/lexer.h	/^    TOK_CPO,$/;"	e	enum:_eIdentType
+TOK_CZ	src/lexer.h	/^    TOK_CZ,$/;"	e	enum:_eIdentType
+TOK_DAA	src/lexer.h	/^    TOK_DAA,$/;"	e	enum:_eIdentType
+TOK_DAD	src/lexer.h	/^    TOK_DAD,$/;"	e	enum:_eIdentType
+TOK_DB	src/lexer.h	/^    TOK_DB,$/;"	e	enum:_eIdentType
+TOK_DCR	src/lexer.h	/^    TOK_DCR,$/;"	e	enum:_eIdentType
+TOK_DCX	src/lexer.h	/^    TOK_DCX,$/;"	e	enum:_eIdentType
+TOK_DI	src/lexer.h	/^    TOK_DI,$/;"	e	enum:_eIdentType
+TOK_DOUBLEQUOT	src/lexer.h	/^    TOK_DOUBLEQUOT,$/;"	e	enum:_eIdentType
+TOK_DW	src/lexer.h	/^    TOK_DW,$/;"	e	enum:_eIdentType
+TOK_EI	src/lexer.h	/^    TOK_EI,$/;"	e	enum:_eIdentType
+TOK_END	src/lexer.h	/^    TOK_END,$/;"	e	enum:_eIdentType
+TOK_EQ	src/lexer.h	/^    TOK_EQ,$/;"	e	enum:_eIdentType
+TOK_EQU	src/lexer.h	/^    TOK_EQU,$/;"	e	enum:_eIdentType
+TOK_GT	src/lexer.h	/^    TOK_GT,$/;"	e	enum:_eIdentType
+TOK_HLT	src/lexer.h	/^    TOK_HLT,$/;"	e	enum:_eIdentType
+TOK_IDENT	src/lexer.h	/^    TOK_IDENT,$/;"	e	enum:_eIdentType
+TOK_IN	src/lexer.h	/^    TOK_IN,$/;"	e	enum:_eIdentType
+TOK_INR	src/lexer.h	/^    TOK_INR,$/;"	e	enum:_eIdentType
+TOK_INX	src/lexer.h	/^    TOK_INX,$/;"	e	enum:_eIdentType
+TOK_JC	src/lexer.h	/^    TOK_JC,$/;"	e	enum:_eIdentType
+TOK_JM	src/lexer.h	/^    TOK_JM,$/;"	e	enum:_eIdentType
+TOK_JMP	src/lexer.h	/^    TOK_JMP,$/;"	e	enum:_eIdentType
+TOK_JNC	src/lexer.h	/^    TOK_JNC,$/;"	e	enum:_eIdentType
+TOK_JNZ	src/lexer.h	/^    TOK_JNZ,$/;"	e	enum:_eIdentType
+TOK_JP	src/lexer.h	/^    TOK_JP,$/;"	e	enum:_eIdentType
+TOK_JPE	src/lexer.h	/^    TOK_JPE,$/;"	e	enum:_eIdentType
+TOK_JPO	src/lexer.h	/^    TOK_JPO,$/;"	e	enum:_eIdentType
+TOK_JZ	src/lexer.h	/^    TOK_JZ,$/;"	e	enum:_eIdentType
+TOK_LDA	src/lexer.h	/^    TOK_LDA,$/;"	e	enum:_eIdentType
+TOK_LDAX	src/lexer.h	/^    TOK_LDAX,$/;"	e	enum:_eIdentType
+TOK_LHLD	src/lexer.h	/^    TOK_LHLD,$/;"	e	enum:_eIdentType
+TOK_LT	src/lexer.h	/^    TOK_LT,$/;"	e	enum:_eIdentType
+TOK_LXI	src/lexer.h	/^    TOK_LXI,$/;"	e	enum:_eIdentType
+TOK_MINUS	src/lexer.h	/^    TOK_MINUS,$/;"	e	enum:_eIdentType
+TOK_MOV	src/lexer.h	/^    TOK_MOV,$/;"	e	enum:_eIdentType
+TOK_MVI	src/lexer.h	/^    TOK_MVI,$/;"	e	enum:_eIdentType
+TOK_NONE	src/lexer.h	/^    TOK_NONE = 0,$/;"	e	enum:_eIdentType
+TOK_NOP	src/lexer.h	/^    TOK_NOP,$/;"	e	enum:_eIdentType
+TOK_NUM	src/lexer.h	/^    TOK_NUM,$/;"	e	enum:_eIdentType
+TOK_ORA	src/lexer.h	/^    TOK_ORA,$/;"	e	enum:_eIdentType
+TOK_ORG	src/lexer.h	/^    TOK_ORG,$/;"	e	enum:_eIdentType
+TOK_ORI	src/lexer.h	/^    TOK_ORI,$/;"	e	enum:_eIdentType
+TOK_OUT	src/lexer.h	/^    TOK_OUT,$/;"	e	enum:_eIdentType
+TOK_PCHL	src/lexer.h	/^    TOK_PCHL,$/;"	e	enum:_eIdentType
+TOK_PLUS	src/lexer.h	/^    TOK_PLUS,$/;"	e	enum:_eIdentType
+TOK_POP	src/lexer.h	/^    TOK_POP,$/;"	e	enum:_eIdentType
+TOK_PSW	src/lexer.h	/^    TOK_PSW,        \/* register pair PSW (AF) for PUSH\/POP *\/$/;"	e	enum:_eIdentType
+TOK_PUSH	src/lexer.h	/^    TOK_PUSH,$/;"	e	enum:_eIdentType
+TOK_RAL	src/lexer.h	/^    TOK_RAL,$/;"	e	enum:_eIdentType
+TOK_RAR	src/lexer.h	/^    TOK_RAR,$/;"	e	enum:_eIdentType
+TOK_RC	src/lexer.h	/^    TOK_RC,$/;"	e	enum:_eIdentType
+TOK_REGA	src/lexer.h	/^    TOK_REGA,$/;"	e	enum:_eIdentType
+TOK_REGB	src/lexer.h	/^    TOK_REGB,$/;"	e	enum:_eIdentType
+TOK_REGBC	src/lexer.h	/^    TOK_REGBC,$/;"	e	enum:_eIdentType
+TOK_REGC	src/lexer.h	/^    TOK_REGC,$/;"	e	enum:_eIdentType
+TOK_REGD	src/lexer.h	/^    TOK_REGD,$/;"	e	enum:_eIdentType
+TOK_REGDE	src/lexer.h	/^    TOK_REGDE,$/;"	e	enum:_eIdentType
+TOK_REGE	src/lexer.h	/^    TOK_REGE,$/;"	e	enum:_eIdentType
+TOK_REGH	src/lexer.h	/^    TOK_REGH,$/;"	e	enum:_eIdentType
+TOK_REGHL	src/lexer.h	/^    TOK_REGHL,$/;"	e	enum:_eIdentType
+TOK_REGL	src/lexer.h	/^    TOK_REGL,$/;"	e	enum:_eIdentType
+TOK_REGM	src/lexer.h	/^    TOK_REGM,$/;"	e	enum:_eIdentType
+TOK_REGPC	src/lexer.h	/^    TOK_REGPC,$/;"	e	enum:_eIdentType
+TOK_REGSP	src/lexer.h	/^    TOK_REGSP,$/;"	e	enum:_eIdentType
+TOK_RET	src/lexer.h	/^    TOK_RET,$/;"	e	enum:_eIdentType
+TOK_RIM	src/lexer.h	/^    TOK_RIM,$/;"	e	enum:_eIdentType
+TOK_RLC	src/lexer.h	/^    TOK_RLC,$/;"	e	enum:_eIdentType
+TOK_RM	src/lexer.h	/^    TOK_RM,$/;"	e	enum:_eIdentType
+TOK_RNC	src/lexer.h	/^    TOK_RNC,$/;"	e	enum:_eIdentType
+TOK_RNZ	src/lexer.h	/^    TOK_RNZ,$/;"	e	enum:_eIdentType
+TOK_RP	src/lexer.h	/^    TOK_RP,$/;"	e	enum:_eIdentType
+TOK_RPE	src/lexer.h	/^    TOK_RPE,$/;"	e	enum:_eIdentType
+TOK_RPO	src/lexer.h	/^    TOK_RPO,$/;"	e	enum:_eIdentType
+TOK_RRC	src/lexer.h	/^    TOK_RRC,$/;"	e	enum:_eIdentType
+TOK_RST	src/lexer.h	/^    TOK_RST,$/;"	e	enum:_eIdentType
+TOK_RZ	src/lexer.h	/^    TOK_RZ,$/;"	e	enum:_eIdentType
+TOK_SBB	src/lexer.h	/^    TOK_SBB,$/;"	e	enum:_eIdentType
+TOK_SBI	src/lexer.h	/^    TOK_SBI,$/;"	e	enum:_eIdentType
+TOK_SEMICOLON	src/lexer.h	/^    TOK_SEMICOLON,$/;"	e	enum:_eIdentType
+TOK_SHLD	src/lexer.h	/^    TOK_SHLD,$/;"	e	enum:_eIdentType
+TOK_SIM	src/lexer.h	/^    TOK_SIM,$/;"	e	enum:_eIdentType
+TOK_SPHL	src/lexer.h	/^    TOK_SPHL,$/;"	e	enum:_eIdentType
+TOK_STA	src/lexer.h	/^    TOK_STA,$/;"	e	enum:_eIdentType
+TOK_STAX	src/lexer.h	/^    TOK_STAX,$/;"	e	enum:_eIdentType
+TOK_STC	src/lexer.h	/^    TOK_STC,$/;"	e	enum:_eIdentType
+TOK_SUB	src/lexer.h	/^    TOK_SUB,$/;"	e	enum:_eIdentType
+TOK_SUI	src/lexer.h	/^    TOK_SUI,$/;"	e	enum:_eIdentType
+TOK_XCHG	src/lexer.h	/^    TOK_XCHG,$/;"	e	enum:_eIdentType
+TOK_XRA	src/lexer.h	/^    TOK_XRA,$/;"	e	enum:_eIdentType
+TOK_XRI	src/lexer.h	/^    TOK_XRI,$/;"	e	enum:_eIdentType
+TOK_XTHL	src/lexer.h	/^    TOK_XTHL,$/;"	e	enum:_eIdentType
+VAR	src/lexer.h	/^    VAR,$/;"	e	enum:_eIdentKind
+_ExprType	src/mathexpr.h	/^typedef enum _ExprType$/;"	g
+_NodeType	src/nodes.h	/^typedef enum _NodeType$/;"	g
+__anon2ab73a6b010a	src/nodes.h	/^    {$/;"	u	function:STRUCT
+__anon857909200103	src/bkasm.h	/^typedef enum{ PARSE_STAGE = 0,$/;"	g
+__anon902c167b010a	src/mathexpr.h	/^    {$/;"	u	function:STRUCT
+__anon98c2f3980108	src/hashtbl.h	/^{$/;"	s
+_eErrorType	src/errors.h	/^typedef enum _eErrorType$/;"	g
+_eIdentKind	src/lexer.h	/^typedef enum _eIdentKind$/;"	g
+_eIdentType	src/lexer.h	/^typedef enum _eIdentType$/;"	g
+alfas	src/symbols.c	/^static const char alfas[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";$/;"	v	typeref:typename:const char[]	file:
+asmvars	src/asmvars.c	/^HashVar asmvars[MAX_VAR_COUNT];$/;"	v	typeref:typename:HashVar[]
+asmvars_add	src/asmvars.c	/^void asmvars_add(const char key[], int val)$/;"	f	typeref:typename:void
+asmvars_print	src/asmvars.c	/^void asmvars_print()$/;"	f	typeref:typename:void
+asmvars_value	src/asmvars.c	/^int asmvars_value(const char key[], int *result)$/;"	f	typeref:typename:int
+ast_add_statement	src/asmast.c	/^void ast_add_statement(Node *statement, ASTree *astree)$/;"	f	typeref:typename:void
+ast_create	src/asmast.c	/^ASTree *ast_create()$/;"	f	typeref:typename:ASTree *
+ast_destroy	src/asmast.c	/^void ast_destroy(ASTree *astree)$/;"	f	typeref:typename:void
+ast_free	src/asmast.c	/^void ast_free(ASTree *astree)$/;"	f	typeref:typename:void
+ast_init	src/asmast.c	/^void ast_init(ASTree* astree)$/;"	f	typeref:typename:void
+bkasm_stage	src/bkasm.c	/^BkasmStage bkasm_stage;$/;"	v	typeref:typename:BkasmStage
+bufsize	src/inbuf.c	/^static int bufsize;$/;"	v	typeref:typename:int	file:
+code_org	src/codegen.c	/^int code_org = 0;$/;"	v	typeref:typename:int
+codegen_evaluate_ast	src/codegen.c	/^int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)$/;"	f	typeref:typename:int
+codegen_generate	src/codegen.c	/^void codegen_generate(Node *node, int pc, int size)$/;"	f	typeref:typename:void
+codegen_link	src/codegen.c	/^unsigned char* codegen_link(ASTree* ast)$/;"	f	typeref:typename:unsigned char *
+const_create	src/mathexpr.c	/^Expr *const_create(ExprValue const_value)$/;"	f	typeref:typename:Expr *
+const_destroy	src/mathexpr.c	/^void const_destroy(Expr *expr)$/;"	f	typeref:typename:void
+const_evaluate	src/mathexpr.c	/^static ExprValue const_evaluate(Expr *self)$/;"	f	typeref:typename:ExprValue	file:
+currStr	src/inbuf.c	/^static InbufCurrentString currStr;$/;"	v	typeref:typename:InbufCurrentString	file:
+cursym	src/inbuf.c	/^static int cursym;$/;"	v	typeref:typename:int	file:
+decimals	src/symbols.c	/^static const char decimals[] = "0123456789";$/;"	v	typeref:typename:const char[]	file:
+default_error_dispatcher	src/errors.c	/^static void default_error_dispatcher(Error *e)$/;"	f	typeref:typename:void	file:
+digits	src/symbols.c	/^static const char digits[] = "0123456789ABCDEF";$/;"	v	typeref:typename:const char[]	file:
+eErrorType	src/errors.h	/^} eErrorType;$/;"	t	typeref:enum:_eErrorType
+eExprType	src/mathexpr.h	/^} eExprType;$/;"	t	typeref:enum:_ExprType
+eIdentKind	src/lexer.h	/^} eIdentKind;$/;"	t	typeref:enum:_eIdentKind
+eIdentType	src/lexer.h	/^} eIdentType;$/;"	t	typeref:enum:_eIdentType
+eNodeType	src/nodes.h	/^} eNodeType;$/;"	t	typeref:enum:_NodeType
+eof_sym	src/symbols.c	/^const unsigned char eof_sym = 0xFF;$/;"	v	typeref:typename:const unsigned char
+eol_sym	src/symbols.c	/^const unsigned char eol_sym = 0x0A;$/;"	v	typeref:typename:const unsigned char
+exit_nicely	src/bkasm.c	/^void exit_nicely(int errorlevel)$/;"	f	typeref:typename:void
+fn_error_dispatcher	src/errors.h	/^typedef void (*fn_error_dispatcher)(Error *);$/;"	t	typeref:typename:void (*)(Error *)
+hash_name_cmp	src/hashtbl.c	/^static int hash_name_cmp(const void *p1, const void *p2)$/;"	f	typeref:typename:int	file:
+hash_print	src/hashtbl.c	/^void hash_print(HashVar table[], unsigned int size)$/;"	f	typeref:typename:void
+hash_printsorted	src/hashtbl.c	/^void hash_printsorted(HashVar table[], unsigned int size)$/;"	f	typeref:typename:void
+hash_push	src/hashtbl.c	/^void hash_push(const char key[], int val, HashVar table[], unsigned int size)$/;"	f	typeref:typename:void
+hash_text_error	src/hashtbl.c	/^const char* hash_text_error(int errno)$/;"	f	typeref:typename:const char *
+hash_value	src/hashtbl.c	/^int hash_value(const char key[], int *result, HashVar table[], unsigned int size)$/;"	f	typeref:typename:int
+hashf	src/hashtbl.c	/^unsigned int hashf(const char key[])$/;"	f	typeref:typename:unsigned int
+inbuf	src/inbuf.c	/^static const char* inbuf;$/;"	v	typeref:typename:const char *	file:
+inbuf_currstr	src/inbuf.c	/^InbufCurrentString *inbuf_currstr()$/;"	f	typeref:typename:InbufCurrentString *
+inbuf_init	src/inbuf.c	/^void inbuf_init(const char* _inbuf, int _bufsize)$/;"	f	typeref:typename:void
+inbuf_markcurrstr	src/inbuf.c	/^static void inbuf_markcurrstr()$/;"	f	typeref:typename:void	file:
+inbuf_next_char	src/inbuf.c	/^unsigned char inbuf_next_char()$/;"	f	typeref:typename:unsigned char
+infile	src/bkasm.c	/^FILE* infile;$/;"	v	typeref:typename:FILE *
+intBases	src/bkints.c	/^static const IntBase intBases[] =$/;"	v	typeref:typename:const IntBase[]	file:
+is_alfa	src/symbols.c	/^int is_alfa(char ch)$/;"	f	typeref:typename:int
+is_decimal	src/symbols.c	/^int is_decimal(char ch)$/;"	f	typeref:typename:int
+is_digit	src/symbols.c	/^int is_digit(char ch)$/;"	f	typeref:typename:int
+is_register_pair	src/parser.c	/^static int is_register_pair(Expr *expr, int arith)   \/* arith=1 for DAD\/INX\/DCX; arith=0 for /;"	f	typeref:typename:int	file:
+label	src/nodes.h	/^        Label label;$/;"	m	union:STRUCT::__anon2ab73a6b010a	typeref:typename:Label
+lexer_create	src/lexer.c	/^Lexer *lexer_create(void)$/;"	f	typeref:typename:Lexer *
+lexer_free	src/lexer.c	/^void lexer_free(Lexer *self)$/;"	f	typeref:typename:void
+lexer_init	src/lexer.c	/^int lexer_init(Lexer *lexer)$/;"	f	typeref:typename:int
+lexer_next_tok	src/lexer.c	/^static int lexer_next_tok(Lexer *self)$/;"	f	typeref:typename:int	file:
+lexer_print_tok	src/lexer.c	/^static void lexer_print_tok(Lexema token)$/;"	f	typeref:typename:void	file:
+lexer_skip_one	src/lexer.c	/^static void lexer_skip_one(Lexer *self)$/;"	f	typeref:typename:void	file:
+lexer_skip_until	src/lexer.c	/^static void lexer_skip_until(Lexer *self, unsigned char symbol)$/;"	f	typeref:typename:void	file:
+lexer_skip_while	src/lexer.c	/^static void lexer_skip_while(Lexer *self, unsigned char symbol)$/;"	f	typeref:typename:void	file:
+lexer_toggle_string_state	src/lexer.c	/^static void lexer_toggle_string_state(Lexer *self)$/;"	f	typeref:typename:void	file:
+main	src/main.c	/^int main(int argc, char *argv[])$/;"	f	typeref:typename:int
+mathExpr	src/mathexpr.h	/^        MathExpr mathExpr;$/;"	m	union:STRUCT::__anon902c167b010a	typeref:typename:MathExpr
+math_create	src/mathexpr.c	/^static Expr *math_create(ExprValue opcode)$/;"	f	typeref:typename:Expr *	file:
+math_create_addition	src/mathexpr.c	/^Expr *math_create_addition(ExprValue operation)$/;"	f	typeref:typename:Expr *
+math_create_multiplication	src/mathexpr.c	/^Expr *math_create_multiplication(ExprValue opcode)$/;"	f	typeref:typename:Expr *
+math_evaluate_addition	src/mathexpr.c	/^static ExprValue math_evaluate_addition(Expr *self)$/;"	f	typeref:typename:ExprValue	file:
+math_evaluate_multiplication	src/mathexpr.c	/^static ExprValue math_evaluate_multiplication(Expr *self)$/;"	f	typeref:typename:ExprValue	file:
+math_free	src/mathexpr.c	/^void math_free(Expr *expr)$/;"	f	typeref:typename:void
+math_free_addition	src/mathexpr.c	/^void math_free_addition(Expr *expr)$/;"	f	typeref:typename:void
+math_free_multiplication	src/mathexpr.c	/^void math_free_multiplication(Expr *expr)$/;"	f	typeref:typename:void
+math_print_expression	src/mathexpr.c	/^void math_print_expression(Expr *expr)$/;"	f	typeref:typename:void
+math_print_operation	src/mathexpr.c	/^void math_print_operation(ExprValue opcode)$/;"	f	typeref:typename:void
+math_set_lparam	src/mathexpr.c	/^void math_set_lparam(Expr *self, Expr *val)$/;"	f	typeref:typename:void
+math_set_rparam	src/mathexpr.c	/^void math_set_rparam(Expr *self, Expr *val)$/;"	f	typeref:typename:void
+mathops	src/mathexpr.c	/^ExprOp mathops =$/;"	v	typeref:typename:ExprOp
+name	src/hashtbl.h	/^    char name[50];$/;"	m	struct:__anon98c2f3980108	typeref:typename:char[50]
+node_clear	src/nodes.c	/^void node_clear(Node *node)$/;"	f	typeref:typename:void
+node_clear_instruction	src/nodes.c	/^void node_clear_instruction(Instruction *op)$/;"	f	typeref:typename:void
+node_clear_label	src/nodes.c	/^void node_clear_label(Label *label)$/;"	f	typeref:typename:void
+node_create_instruction	src/nodes.c	/^Node *node_create_instruction(const char *ident, eIdentType instr_type, ExprValue opcode)$/;"	f	typeref:typename:Node *
+node_create_label	src/nodes.c	/^Node *node_create_label(const char *ident)$/;"	f	typeref:typename:Node *
+node_print	src/nodes.c	/^void node_print(Node *node)$/;"	f	typeref:typename:void
+nodelist_alloc	src/nodes.c	/^NodeList *nodelist_alloc()$/;"	f	typeref:typename:NodeList *
+nodelist_destroy	src/nodes.c	/^void nodelist_destroy(NodeList *nodelist)$/;"	f	typeref:typename:void
+op	src/nodes.h	/^        Instruction op;$/;"	m	union:STRUCT::__anon2ab73a6b010a	typeref:typename:Instruction
+opRegPairs	src/opcodes.h	/^enum opRegPairs$/;"	g
+opRegs	src/opcodes.h	/^enum opRegs$/;"	g
+outfile	src/bkasm.c	/^FILE* outfile;$/;"	v	typeref:typename:FILE *
+parse_addition	src/parser.c	/^static Expr *parse_addition(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:Expr *	file:
+parse_comment	src/parser.c	/^static void parse_comment(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:void	file:
+parse_db_param	src/parser.c	/^static Expr *parse_db_param(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:Expr *	file:
+parse_dw_param	src/parser.c	/^static Expr *parse_dw_param(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:Expr *	file:
+parse_multiplication	src/parser.c	/^static Expr *parse_multiplication(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:Expr *	file:
+parse_op	src/parser.c	/^static Node *parse_op(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:Node *	file:
+parse_param	src/parser.c	/^static Expr *parse_param(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:Expr *	file:
+parse_statement	src/parser.c	/^static void parse_statement(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:void	file:
+parse_term	src/parser.c	/^static Expr *parse_term(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:Expr *	file:
+parse_var	src/parser.c	/^static Node *parse_var(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:Node *	file:
+parser_create	src/parser.c	/^Parser *parser_create(void)$/;"	f	typeref:typename:Parser *
+parser_free	src/parser.c	/^void parser_free(Parser *_parser)$/;"	f	typeref:typename:void
+parser_init	src/parser.c	/^int parser_init(Parser *parser)$/;"	f	typeref:typename:int
+parser_parse	src/parser.c	/^void parser_parse(Parser *self, Lexer *lexer)$/;"	f	typeref:typename:void
+prog	src/codegen.c	/^unsigned char prog[MAX_PROG_SIZE];$/;"	v	typeref:typename:unsigned char[]
+radix	src/bkints.c	/^int radix(char suffix)$/;"	f	typeref:typename:int
+register_create	src/mathexpr.c	/^Expr *register_create(ExprValue value, const char *ident)$/;"	f	typeref:typename:Expr *
+register_destroy	src/mathexpr.c	/^void register_destroy(Expr *expr)$/;"	f	typeref:typename:void
+register_evaluate	src/mathexpr.c	/^static ExprValue register_evaluate(Expr *self)$/;"	f	typeref:typename:ExprValue	file:
+symbols	src/lexer.c	/^static const Lexema symbols[] =$/;"	v	typeref:typename:const Lexema[]	file:
+throw_error	src/errors.c	/^void throw_error(eErrorType type, void *data)$/;"	f	typeref:typename:void
+throw_error_disp	src/errors.c	/^void throw_error_disp(eErrorType type, void *data, fn_error_dispatcher dispatcher)$/;"	f	typeref:typename:void
+val	src/hashtbl.h	/^    int val;$/;"	m	struct:__anon98c2f3980108	typeref:typename:int
+value	src/mathexpr.h	/^        ExprValue value;$/;"	m	union:STRUCT::__anon902c167b010a	typeref:typename:ExprValue
+var_create	src/mathexpr.c	/^Expr *var_create(const char *ident)$/;"	f	typeref:typename:Expr *
+var_evaluate	src/mathexpr.c	/^static ExprValue var_evaluate(Expr *self)$/;"	f	typeref:typename:ExprValue	file:
+var_free	src/mathexpr.c	/^void var_free(Expr *expr)$/;"	f	typeref:typename:void
+words	src/lexer.c	/^static const Lexema words[] =$/;"	v	typeref:typename:const Lexema[]	file:

@@ -7,8 +7,9 @@
 #include "errors.h"
 #include "inbuf.h"
 #include "symbols.h"
+#include "opcodes.h"
 
-// imports
+/* imports */
 extern const char eof_sym;
 extern const char eol_sym;
 
@@ -20,6 +21,7 @@ static const Lexema words[] =
     {OP, TOK_CZ, "CZ", 0xCC, 2},
     {OP, TOK_DB, "DB", 0, 2},
     {OP, TOK_DI, "DI", 0xF3, 2},
+    {OP, TOK_DS, "DS", 0, 2},
     {OP, TOK_DW, "DW", 0, 2},
     {OP, TOK_EI, "EI", 0xFB, 2},
     {OP, TOK_IN, "IN", 0xDB, 2},
@@ -35,70 +37,70 @@ static const Lexema words[] =
     {OP, TOK_ADC, "ADC", 0x88, 3},
     {OP, TOK_ADD, "ADD", 0x80, 3},
     {OP, TOK_ADI, "ADI", 0xC6, 3},
-    {OP, TOK_ANA, "ANA", 0, 3},
-    {OP, TOK_AND, "AND", 0, 3},
-    {OP, TOK_ANI, "ANI", 0, 3},
-    {OP, TOK_CMA, "CMA", 0, 3},
-    {OP, TOK_CMC, "CMC", 0, 3},
-    {OP, TOK_CMP, "CMP", 0, 3},
-    {OP, TOK_CNC, "CNC", 0, 3},
-    {OP, TOK_CNZ, "CNZ", 0, 3},
-    {OP, TOK_CPE, "CPE", 0, 3},
-    {OP, TOK_CPI, "CPI", 0, 3},
-    {OP, TOK_CPO, "CPO", 0, 3},
-    {OP, TOK_DAA, "DAA", 0, 3},
-    {OP, TOK_DAD, "DAD", 0, 3},
-    {OP, TOK_DCR, "DCR", 0, 3},
-    {OP, TOK_DCX, "DCX", 0, 3},
+    {OP, TOK_ANA, "ANA", 0xA0, 3},
+    {OP, TOK_AND, "AND", 0xA0, 3},
+    {OP, TOK_ANI, "ANI", 0xE6, 3},
+    {OP, TOK_CMA, "CMA", 0x2F, 3},
+    {OP, TOK_CMC, "CMC", 0x3F, 3},
+    {OP, TOK_CMP, "CMP", 0xB8, 3},
+    {OP, TOK_CNC, "CNC", 0xD4, 3},
+    {OP, TOK_CNZ, "CNZ", 0xC4, 3},
+    {OP, TOK_CPE, "CPE", 0xEC, 3},
+    {OP, TOK_CPI, "CPI", 0xFE, 3},
+    {OP, TOK_CPO, "CPO", 0xE4, 3},
+    {OP, TOK_DAA, "DAA", 0x27, 3},
+    {OP, TOK_DAD, "DAD", 0x09, 3},
+    {OP, TOK_DCR, "DCR", 0x05, 3},
+    {OP, TOK_DCX, "DCX", 0x0B, 3},
     {OP, TOK_EQU, "EQU", 0, 3},
-    {OP, TOK_HLT, "HLT", 0, 3},
-    {OP, TOK_INR, "INR", 0, 3},
-    {OP, TOK_INX, "INX", 0, 3},
+    {OP, TOK_HLT, "HLT", 0x76, 3},
+    {OP, TOK_INR, "INR", 0x04, 3},
+    {OP, TOK_INX, "INX", 0x03, 3},
     {OP, TOK_JMP, "JMP", 0xC3, 3},
-    {OP, TOK_JNC, "JNC", 0, 3},
-    {OP, TOK_JNZ, "JNZ", 0, 3},
-    {OP, TOK_JPE, "JPE", 0, 3},
-    {OP, TOK_JPO, "JPO", 0, 3},
+    {OP, TOK_JNC, "JNC", 0xD2, 3},
+    {OP, TOK_JNZ, "JNZ", 0xC2, 3},
+    {OP, TOK_JPE, "JPE", 0xEA, 3},
+    {OP, TOK_JPO, "JPO", 0xE2, 3},
     {OP, TOK_LDA, "LDA", 0x3A, 3},
-    {OP, TOK_LXI, "LXI", 0x1, 3},
+    {OP, TOK_LXI, "LXI", 0x01, 3},
     {OP, TOK_MOV, "MOV", 0x40, 3},
-    {OP, TOK_MVI, "MVI", 0x6, 3},
-    {OP, TOK_NOP, "NOP", 0, 3},
-    {OP, TOK_ORA, "ORA", 0, 3},
+    {OP, TOK_MVI, "MVI", 0x06, 3},
+    {OP, TOK_NOP, "NOP", 0x00, 3},
+    {OP, TOK_ORA, "ORA", 0xB0, 3},
     {OP, TOK_ORG, "ORG", 0, 3},
-    {OP, TOK_ORI, "ORI", 0, 3},
-    {OP, TOK_OUT, "OUT", 0, 3},
-    {OP, TOK_POP, "POP", 0, 3},
-    {OP, TOK_RAL, "RAL", 0, 3},
-    {OP, TOK_RAR, "RAR", 0, 3},
+    {OP, TOK_ORI, "ORI", 0xF6, 3},
+    {OP, TOK_OUT, "OUT", 0xD3, 3},
+    {OP, TOK_POP, "POP", 0xC1, 3},
+    {OP, TOK_RAL, "RAL", 0x17, 3},
+    {OP, TOK_RAR, "RAR", 0x1F, 3},
     {OP, TOK_RET, "RET", 0xC9, 3},
-    {OP, TOK_RIM, "RIM", 0, 3},
-    {OP, TOK_RLC, "RLC", 0, 3},
-    {OP, TOK_RNC, "RNC", 0, 3},
+    {OP, TOK_RIM, "RIM", 0x20, 3},
+    {OP, TOK_RLC, "RLC", 0x07, 3},
+    {OP, TOK_RNC, "RNC", 0xD0, 3},
     {OP, TOK_RNZ, "RNZ", 0xC0, 3},
-    {OP, TOK_RPE, "RPE", 0, 3},
-    {OP, TOK_RPO, "RPO", 0, 3},
-    {OP, TOK_RRC, "RRC", 0, 3},
-    {OP, TOK_RST, "RST", 0, 3},
-    {OP, TOK_SBB, "SBB", 0, 3},
-    {OP, TOK_SBI, "SBI", 0, 3},
-    {OP, TOK_SIM, "SIM", 0, 3},
+    {OP, TOK_RPE, "RPE", 0xE8, 3},
+    {OP, TOK_RPO, "RPO", 0xE0, 3},
+    {OP, TOK_RRC, "RRC", 0x0F, 3},
+    {OP, TOK_RST, "RST", 0xC7, 3},
+    {OP, TOK_SBB, "SBB", 0x98, 3},
+    {OP, TOK_SBI, "SBI", 0xDE, 3},
+    {OP, TOK_SIM, "SIM", 0x30, 3},
     {OP, TOK_STA, "STA", 0x32, 3},
-    {OP, TOK_STC, "STC", 0, 3},
-    {OP, TOK_SUB, "SUB", 0, 3},
-    {OP, TOK_SUI, "SUI", 0, 3},
-    {OP, TOK_XRA, "XRA", 0, 3},
-    {OP, TOK_XRI, "XRI", 0, 3},
+    {OP, TOK_STC, "STC", 0x37, 3},
+    {OP, TOK_SUB, "SUB", 0x90, 3},
+    {OP, TOK_SUI, "SUI", 0xD6, 3},
+    {OP, TOK_XRA, "XRA", 0xA8, 3},
+    {OP, TOK_XRI, "XRI", 0xEE, 3},
     {OP, TOK_CALL, "CALL", 0xCD, 4},
     {OP, TOK_LDAX, "LDAX", 0x0A, 4},
     {OP, TOK_LHLD, "LHLD", 0x2A, 4},
     {OP, TOK_PCHL, "PCHL", 0xE9, 4},
-    {OP, TOK_PUSH, "PUSH", 0, 4},
+    {OP, TOK_PUSH, "PUSH", 0xC5, 4},
     {OP, TOK_SHLD, "SHLD", 0x22, 4},
     {OP, TOK_SPHL, "SPHL", 0xF9, 4},
     {OP, TOK_STAX, "STAX", 0x02, 4},
     {OP, TOK_XCHG, "XCHG", 0xEB, 4},
-    {OP, TOK_XTHL, "XTHL", 0, 4},
+    {OP, TOK_XTHL, "XTHL", 0xE3, 4},
     {REG, TOK_REGA, "A", 0x7, 1},
     {REG, TOK_REGB, "B", 0x0, 1},
     {REG, TOK_REGC, "C", 0x1, 1},
@@ -108,9 +110,10 @@ static const Lexema words[] =
     {REG, TOK_REGL, "L", 0x5, 1},
     {REG, TOK_REGM, "M", 0x6, 1},
     {REG, TOK_REGBC, "BC", 0x0, 2},
-    {REG, TOK_REGDE, "DE", 0x1, 2},
-    {REG, TOK_REGHL, "HL", 0x2, 2},
-    {REG, TOK_REGSP, "SP", 0x3, 2},
+    {REG, TOK_REGDE, "DE", 0x2, 2},
+    {REG, TOK_REGHL, "HL", 0x4, 2},
+    {REG, TOK_REGSP, "SP", 0x6, 2},
+    {REG, TOK_PSW, "PSW", 0x6, 3},   /* PSW register pair (AF), same encoding as SP */
     {INT, TOK_END, "END", 0, 3},
     {KIND_NONE, TOK_NONE, 0, 0, 0},
 };
@@ -126,6 +129,8 @@ static const Lexema symbols[] =
     {SYM, TOK_PLUS, "+", 0, 1},
     {SYM, TOK_MINUS, "-", 0, 1},
     {SYM, TOK_ASTERISK, "*", 0, 1},
+    {SYM, TOK_LPAREN, "(", 0, 1},
+    {SYM, TOK_RPAREN, ")", 0, 1},
     {SYM, TOK_DOUBLEQUOT, "\"", 0, 1},
     {SYM, L_EOL, (char *)&eol_sym, 0, 1},
     {SYM, L_EOF, (char *)&eof_sym, 0, 1},
@@ -166,13 +171,13 @@ static int lexer_next_tok(Lexer *self)
             }
             m_sym++;
         }
-        if (m_sym->type != TOK_NONE) // is symbol
+        if (m_sym->type != TOK_NONE) /* is symbol */
         {
             self->token = *m_sym;
             continue;
         }
 
-        if (is_decimal(m_ch)) // start with decimal digit returns number
+        if (is_decimal(m_ch)) /* start with decimal digit returns number */
         {
             char *ident = 0;
             int len = 0;
@@ -193,13 +198,13 @@ static int lexer_next_tok(Lexer *self)
             free(ident);
             continue;
         }
-        if (is_alfa(m_ch)) // start with alfa returns keyword or ident
+        if (is_alfa(m_ch)) /* start with alfa returns keyword or ident */
         {
             char *ident = 0;
             int len = 0;
             for ( ;is_alfa(m_ch) || is_digit(m_ch);)
             {
-                // collect identifier
+                /* collect identifier */
                 ident = (char *)realloc(ident, len + 2);
                 ident[len++] = m_ch;
                 ident[len] = 0;
@@ -208,20 +213,20 @@ static int lexer_next_tok(Lexer *self)
             m_sym = self->words;
             for ( ;m_sym->len != 0;)
             {
-                // compare with keywords
+                /* compare with keywords */
                 if (!strcmp(ident, m_sym->ident))
                 {
                     break;
                 }
                 m_sym++;
             }
-            if (m_sym->type != TOK_NONE) // is keyword
+            if (m_sym->type != TOK_NONE) /* is keyword */
             {
                 self->token = *m_sym;
                 free(ident);
                 continue;
             }
-            if (len < 255) // default is variable
+            if (len < 255) /* default is variable */
             {
                 self->token.kind = VAR;
                 self->token.type = TOK_IDENT;
@@ -293,10 +298,8 @@ static void lexer_toggle_string_state(Lexer *self)
     self->string_state = !self->string_state;
 }
 
-int lexer_init(Lexer *lexer, const char *buf, int size)
+int lexer_init(Lexer *lexer)
 {
-    lexer->buf = buf;
-    lexer->bufsize = size;
     lexer->words = (Lexema *)words;
     lexer->symbols = (Lexema *)symbols;
     lexer->ch = TOK_NONE;
@@ -309,14 +312,13 @@ int lexer_init(Lexer *lexer, const char *buf, int size)
     lexer->toggleStringState = lexer_toggle_string_state;
     lexer->token.type = TOK_NONE;
     lexer->token.ident = 0;
-    inbuf_init(buf, size);
     return 1;
 }
 
-Lexer *lexer_create(const char *buf, int size)
+Lexer *lexer_create(void)
 {
     Lexer *m_lexer = (Lexer *)malloc(sizeof(Lexer));
-    lexer_init(m_lexer, buf, size);
+    lexer_init(m_lexer);
     return m_lexer;
 }
 

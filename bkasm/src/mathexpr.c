@@ -5,13 +5,12 @@
 #include "mathexpr.h"
 #include "asmast.h"
 #include "asmvars.h"
-#include "assert.h"
-#include "bkasm.h"
+#include <assert.h>
 #include "errors.h"
 #include "lexer.h"
 
-////////////////////////////////////////////
-// ConsExpr
+/*//////////////////////////////////////////
+// ConsExpr */
 
 static ExprValue const_evaluate(Expr *self)
 {
@@ -34,15 +33,15 @@ void const_destroy(Expr *expr)
     free(expr);
 }
 
-////////////////////////////////////////////
-// Register expression
+/*//////////////////////////////////////////
+// Register expression */
 
 static ExprValue register_evaluate(Expr *self)
 {
     return self->data.value;
 }
 
-Expr *register_create(ExprValue ident_type, const char *ident)
+Expr *register_create(ExprValue value, const char *ident)
 {
     Expr *expr = (Expr *)malloc(sizeof(Expr));
     int len = strlen(ident);
@@ -55,7 +54,7 @@ Expr *register_create(ExprValue ident_type, const char *ident)
         expr->ident = (char *)malloc(len + 1);
         strncpy(expr->ident, ident, len);
         expr->ident[len] = '\0';
-        expr->data.value = ident_type;
+        expr->data.value = value;
     }
     return (Expr *)expr;
 }
@@ -66,8 +65,8 @@ void register_destroy(Expr *expr)
     free(expr);
 }
 
-////////////////////////////////////////////
-// Variable expression
+/*//////////////////////////////////////////
+// Variable expression */
 
 static ExprValue var_evaluate(Expr *self)
 {
@@ -113,8 +112,8 @@ void var_free(Expr *expr)
     }
 }
 
-////////////////////////////////////////////
-// Math expression
+/*//////////////////////////////////////////
+// Math expression */
 
 void math_set_lparam(Expr *self, Expr *val)
 {
@@ -177,13 +176,18 @@ void math_free(Expr *expr)
     }
 }
 
-////////////////////////////////////////////
-// Multiply expression
+/*//////////////////////////////////////////
+// Multiply expression */
 
 static ExprValue math_evaluate_multiplication(Expr *self)
 {
     ExprValue result = 0;
     MathExpr props = self->data.mathExpr;
+    if (props.lparam == NULL || props.rparam == NULL)
+    {
+        throw_error(E_SYNTAXERROR, " invalid multiplication operation");
+        return 0;
+    }
     ExprValue lparam = props.lparam->op.evaluate(props.lparam);
     ExprValue rparam = props.rparam->op.evaluate(props.rparam);
     switch (props.opcode)
@@ -220,13 +224,18 @@ void math_free_multiplication(Expr *expr)
     math_free(expr);
 }
 
-////////////////////////////////////////////
-// Addition expression
+/*//////////////////////////////////////////
+// Addition expression */
 
 static ExprValue math_evaluate_addition(Expr *self)
 {
     MathExpr props = self->data.mathExpr;
     ExprValue result = 0;
+    if (props.lparam == NULL || props.rparam == NULL)
+    {
+        throw_error(E_SYNTAXERROR, " invalid addition operation");
+        return 0;
+    }
     ExprValue lparam =props.lparam->op.evaluate(props.lparam);
     ExprValue rparam = props.rparam->op.evaluate(props.rparam);
     assert(self);

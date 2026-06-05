@@ -7,7 +7,7 @@
 #define STRUCT(XXX)         \
 	typedef struct XXX XXX; \
 	struct XXX
-#define MAX_PROG_SIZE 4096
+#define MAX_PROG_SIZE 65536
 #define MAX_VAR_COUNT 256
 #define MAX_ERR_MSG_LEN 50
 
@@ -23,6 +23,9 @@ typedef enum{ PARSE_STAGE = 0,
 extern FILE *infile;
 extern FILE *outfile;
 extern BkasmStage bkasm_stage;
+#ifdef __GNUC__
+__attribute__((noreturn))
+#endif
 void exit_nicely(int);
 
 #endif

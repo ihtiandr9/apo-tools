@@ -20,15 +20,50 @@ void codegen_generate(Node *node, int pc, int size)
 
     if(size == 0) return;
 
+    if (pc - code_org + size > MAX_PROG_SIZE)
+    {
+        sprintf(err_msg, "\nProgram size exceeds %d bytes\n", MAX_PROG_SIZE);
+        throw_error(E_LINKERERROR, err_msg);
+        exit_nicely(E_LINKERERROR);
+    }
+
     if (node->type == NODE_INSTRUCTION)
     {
         switch(node->u.op.instr_type)
         {
             case TOK_DB:
-                prog[pc - code_org] = immediate_param->op.evaluate(immediate_param);
+            {
+                ExprValue db_val;
+                if (immediate_param == NULL)
+                {
+                    sprintf(err_msg, "\nMissing immediate parameter for DB");
+                    throw_error(E_LINKERERROR, err_msg);
+                    exit_nicely(E_LINKERERROR);
+                }
+                db_val = immediate_param->op.evaluate(immediate_param);
+                if (db_val < -128 || db_val > 255)
+                {
+                    sprintf(err_msg, "\nDB value %d out of range -128-255\n", db_val);
+                    throw_error(E_LINKERERROR, err_msg);
+                    exit_nicely(E_LINKERERROR);
+                }
+                prog[pc - code_org] = db_val;
+                break;
+            }
+
+            case TOK_DW:
+                if (immediate_param == NULL)
+                {
+                    sprintf(err_msg, "\nMissing immediate parameter for DW");
+                    throw_error(E_LINKERERROR, err_msg);
+                    exit_nicely(E_LINKERERROR);
+                }
+                immediate_value = immediate_param->op.evaluate(immediate_param);
+                prog[pc - code_org] = immediate_value;
+                prog[pc - code_org + 1] = immediate_value / 256;
                 break;
 
-            case TOK_ORG: // non-executable instructions - implement later TODO
+            case TOK_ORG: /* non-executable instructions - implement later TODO */
                 break;
             default:
                 if (size > 1)
@@ -41,6 +76,13 @@ void codegen_generate(Node *node, int pc, int size)
                     }
                     else
                         immediate_value = immediate_param->op.evaluate(immediate_param);
+
+                if (size == 2 && (immediate_value < -128 || immediate_value > 255))
+                {
+                    sprintf(err_msg, "\nImmediate value %d out of range -128-255 for %s\n", immediate_value, node->ident);
+                    throw_error(E_LINKERERROR, err_msg);
+                    exit_nicely(E_LINKERERROR);
+                }
                 }
 
                 for (i = 0; i < size; i++)
@@ -77,16 +119,14 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         switch (node->u.op.instr_type)
         {
 
-        // 0 bytes 0 immediate params instructions
+        /* 1 byte, no operands */
         case TOK_CMA:
         case TOK_CMC:
         case TOK_DAA:
         case TOK_DI:
         case TOK_EI:
         case TOK_HLT:
-        case TOK_JM:
         case TOK_NOP:
-        case TOK_ORI:
         case TOK_PCHL:
         case TOK_RAL:
         case TOK_RAR:
@@ -102,20 +142,19 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_RPO:
         case TOK_RRC:
         case TOK_RZ:
-        case TOK_SBI:
         case TOK_SIM:
         case TOK_SPHL:
         case TOK_STC:
-        case TOK_SUI:
         case TOK_XCHG:
-        case TOK_XRI:
         case TOK_XTHL:
             size = 1;
             break;
+        /* 1 byte, operands: dst_reg, src_reg */
         case TOK_MOV:
             node->u.op.opcode |= (node->u.op.lparam->data.value << 3) | node->u.op.rparam->data.value;
             size = 1;
             break;
+        /* 1 byte, operand: reg (A, B, C, D, E, H, L, M) */
         case TOK_ADD:
         case TOK_ADC:
         case TOK_ANA:
@@ -128,11 +167,13 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             node->u.op.opcode |= node->u.op.lparam->data.value;
             size = 1;
             break;
+        /* 1 byte, operand: reg (A, B, C, D, E, H, L, M) */
         case TOK_INR:
         case TOK_DCR:
             node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
             size = 1;
             break;
+        /* 1 byte, operand: reg_pair (BC, DE, HL, SP/PSW) */
         case TOK_DAD:
         case TOK_LDAX:
         case TOK_STAX:
@@ -140,18 +181,26 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_PUSH:
         case TOK_INX:
         case TOK_DCX:
-            node->u.op.opcode |= (node->u.op.lparam->data.value << 4);
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
             size = 1;
             break;
 
-        // 1 byte 1 immediate param instructions rparam may be NULL
+        /* 2 bytes (opcode + 1 immediate) */
+        /*   reg encoded in opcode (bits 3-5): MVI */
+        /*   imm in next byte: ACI, ADI, ANI, CPI, ORI, SBI, SUI, XRI, OUT, IN */
+        case TOK_MVI:
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
+            /* fall through */
         case TOK_ACI:
         case TOK_ADI:
         case TOK_ANI:
         case TOK_CPI:
-        case TOK_MVI:
+        case TOK_ORI:
+        case TOK_SBI:
+        case TOK_SUI:
+        case TOK_XRI:
         case TOK_OUT:
-        case TOK_RST:
+        case TOK_IN:
             node->u.op.lparam->op.evaluate(node->u.op.lparam);
             if (node->u.op.lparam->type != EXPR_REG)
                 node->u.op.immediate = node->u.op.lparam;
@@ -163,8 +212,22 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             }
             size = 2;
             break;
+        /* 1 byte, operand: restart vector 0..7 (encoded in opcode) */
+        case TOK_RST:
+            if (node->u.op.lparam->data.value < 0 || node->u.op.lparam->data.value > 7)
+            {
+                sprintf(err_msg, "\nRST value %d out of range 0-7\n", node->u.op.lparam->data.value);
+                throw_error(E_LINKERERROR, err_msg);
+                exit_nicely(E_LINKERERROR);
+            }
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
+            size = 1;
+            break;
 
-        // 2 bytes one immediate param instructions rparam may be NULL
+        /* 3 bytes (opcode + 2 immediate), operand: 16-bit addr or data */
+        /*   calls: CALL, CC, CM, CNC, CNZ, CP, CPE, CPO, CZ */
+        /*   jumps: JC, JM, JMP, JNC, JNZ, JP, JPE, JPO, JZ */
+        /*   loads/stores: LDA, LHLD, SHLD, STA */
         case TOK_CALL:
         case TOK_CC:
         case TOK_CM:
@@ -174,8 +237,8 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_CPE:
         case TOK_CPO:
         case TOK_CZ:
-        case TOK_IN:
         case TOK_JC:
+        case TOK_JM:
         case TOK_JMP:
         case TOK_JNC:
         case TOK_JNZ:
@@ -185,7 +248,6 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
         case TOK_JZ:
         case TOK_LDA:
         case TOK_LHLD:
-        case TOK_LXI:
         case TOK_SHLD:
         case TOK_STA:
             node->u.op.lparam->op.evaluate(node->u.op.lparam);
@@ -199,20 +261,42 @@ int codegen_evaluate_ast(Node *node, int pc, ASTree *ast)
             }
             size = 3;
             break;
+        /* 3 bytes, reg pair encoded in opcode (bits 4-5): LXI */
+        case TOK_LXI:
+            node->u.op.opcode |= (node->u.op.lparam->data.value << 3);
+            node->u.op.lparam->op.evaluate(node->u.op.lparam);
+            if (node->u.op.lparam->type != EXPR_REG)
+                node->u.op.immediate = node->u.op.lparam;
+            if(node->u.op.rparam)
+            {
+                node->u.op.rparam->op.evaluate(node->u.op.rparam);
+                if(node->u.op.rparam->type != EXPR_REG)
+                    node->u.op.immediate = node->u.op.rparam;
+            }
+            size = 3;
+            break;
+        /* 1 byte, no opcode — raw data byte */
         case TOK_DB:
             size = 1;
             node->u.op.lparam->op.evaluate(node->u.op.lparam);
             node->u.op.immediate = node->u.op.lparam;
             break;
+        /* 2 bytes, no opcode — raw 16-bit word (little-endian) */
         case TOK_DW:
             size = 2;
             node->u.op.lparam->op.evaluate(node->u.op.lparam);
             node->u.op.immediate = node->u.op.lparam;
             break;
+        /* Pseudo: set code origin address */
         case TOK_ORG:
             code_org = node->u.op.lparam->op.evaluate(node->u.op.lparam);
             node->u.op.immediate = node->u.op.lparam;
-            size = code_org; 
+            size = 0;
+            break;
+        /* Pseudo: reserve memory */
+        case TOK_DS:
+            size = node->u.op.lparam->op.evaluate(node->u.op.lparam);
+            node->u.op.immediate = node->u.op.lparam;
             break;
         default:
             sprintf(err_msg, "\nUnexpected instruction: unknown opcode %s", node->ident);
@@ -253,15 +337,22 @@ unsigned char* codegen_link(ASTree* ast)
         {
             instrSize = codegen_evaluate_ast(&it->node, pc, ast);
             // printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); // FIXME remove
-            pc += instrSize;
+            if (it->node.type == NODE_PSEUDO && it->node.u.op.instr_type == TOK_ORG)
+                pc = code_org;
+            else
+                pc += instrSize;
         }
         if(bkasm_stage == EVAL_STAGE)
             pc = 0;
     }
     asmvars_print();
     printf("codesize = %d\n", pc - code_org);
-    file = fopen("prog.bin", "wb");
-    fwrite(prog, 1, pc - code_org, file);
-    fclose(file);
+    if (outfile != stdout) {
+        fwrite(prog, 1, pc - code_org, outfile);
+    } else {
+        file = fopen("prog.bin", "wb");
+        fwrite(prog, 1, pc - code_org, file);
+        fclose(file);
+    }
     return prog;
 }

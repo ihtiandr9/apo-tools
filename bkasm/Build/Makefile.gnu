@@ -31,6 +31,10 @@ ifeq ($(DETECTED_OS),Windows)
 CFLAGS+= -m32
 endif
 
+ifndef RELEASE
+    CFLAGS += -ggdb -Wno-switch
+endif
+
 SRCS=\
 	 $(wildcard src/*.c)
 
@@ -40,7 +44,7 @@ OBJS=\
 HDRS=\
 	 $(wildcard src/*.h)
 
-.PHONY: all clean unittest valgrind
+.PHONY: all clean setup_venv run_tests test_opcodes test_opcodes_errors test_org_equ_range unittest valgrind
 
 all: $(OUTDIR)/$(APP)
 
@@ -62,9 +66,6 @@ clean:
 	@echo cleaning $(OUTDIR) dir
 	@-rm -rf $(OUTDIR)
 
-## if(NOT DEFINED _Release_)
-## add_definitions(-ggdb -Wno-switch)
-## endif()
 
 ## debug target
 
@@ -79,13 +80,26 @@ clean:
 unittest: ${OUTDIR}/${APP}
 	cd ${OUTDIR} &&	./${APP} ../../tests/test.asm
 
-## script unittests
+PYTHON:= tests/python/bin/python3
+PROJECT_DIR:= $(abspath $(OUTDIR)/../..)
 
-## add_custom_target(run_tests
-##     COMMAND	../tests/python/bin/python3 ../tests/tests.py
-##     COMMENT "Run Tests"
-##     DEPENDS ./bkasm
-## )
+setup_venv:
+	test -f $(PYTHON) || python3 -m venv --without-pip tests/python
+
+run_tests: $(OUTDIR)/$(APP) setup_venv
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/tests.py
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes.py
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes_errors.py
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_org_equ_range.py
+
+test_opcodes: $(OUTDIR)/$(APP) setup_venv
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes.py
+
+test_opcodes_errors: $(OUTDIR)/$(APP) setup_venv
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes_errors.py
+
+test_org_equ_range: $(OUTDIR)/$(APP) setup_venv
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_org_equ_range.py
 
 ## valgrind test
 

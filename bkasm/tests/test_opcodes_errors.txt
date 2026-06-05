@@ -1,0 +1,20 @@
+; Тест ошибок компиляции/линковки для опкодов
+; формат: мнемоника ; ожидаемая ошибка (None = без ошибок)
+NOP                      ;None
+DB 10+20                 ;None
+DW 1000H+2000H           ;None
+DB X                     ;Undefined variable X
+DW Y                     ;Undefined variable Y
+LXI B, Z                 ;Undefined variable Z
+MVI B, W                 ;Undefined variable W
+JMP Q                    ;Undefined variable Q
+ADI P                    ;Undefined variable P
+LDA X                    ;Undefined variable X
+STA Y                    ;Undefined variable Y
+MVI A, 200H              ;Immediate value 512 out of range -128-255 for MVI
+RST 8                    ;RST value 8 out of range 0-7
+DB 1000H                 ;DB value 4096 out of range -128-255
+ADI -129                 ;Immediate value -129 out of range -128-255 for ADI
+MVI A, -129              ;Immediate value -129 out of range -128-255 for MVI
+DB -129                  ;DB value -129 out of range -128-255
+ADI (1+2                 ;Error: Syntax error in expression: ) expected

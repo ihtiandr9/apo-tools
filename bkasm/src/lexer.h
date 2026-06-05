@@ -19,7 +19,7 @@ typedef enum _eIdentType
 {
     TOK_NONE = 0,
 
-    // Mnemonics
+    /* Mnemonics */
     TOK_ACI,
     TOK_ADC,
     TOK_ADD,
@@ -46,6 +46,7 @@ typedef enum _eIdentType
     TOK_DCR,
     TOK_DCX,
     TOK_DI,
+    TOK_DS,
     TOK_DW,
     TOK_EI,
     TOK_END,
@@ -107,7 +108,7 @@ typedef enum _eIdentType
     TOK_XRI,
     TOK_XTHL,
 
-    // Registers
+    /* Registers */
     TOK_REGA,
     TOK_REGB,
     TOK_REGC,
@@ -121,8 +122,9 @@ typedef enum _eIdentType
     TOK_REGHL,
     TOK_REGPC,
     TOK_REGSP,
+    TOK_PSW,        /* register pair PSW (AF) for PUSH/POP */
 
-    // Symbols
+    /* Symbols */
     L_EOF,
     L_EOL,
     TOK_EQ,
@@ -137,6 +139,8 @@ typedef enum _eIdentType
     TOK_ASTERISK,
     TOK_NUM,
     TOK_PLUS,
+    TOK_LPAREN,
+    TOK_RPAREN,
 } eIdentType;
 
 STRUCT(Lexema)
@@ -151,8 +155,6 @@ STRUCT(Lexema)
 STRUCT(Lexer)
 {
     unsigned char ch;
-    const char *buf;
-    int bufsize;
     int string_state;
     Lexema token;
     Lexema *symbols;
@@ -165,8 +167,8 @@ STRUCT(Lexer)
     void (*toggleStringState)(Lexer *self);
 };
 
-// exports
-Lexer *lexer_create(const char *buf, int size);
-int lexer_init(Lexer *lexer, const char *buf, int size);
+/* exports */
+Lexer *lexer_create(void);
+int lexer_init(Lexer *lexer);
 void lexer_free(Lexer *self);
 #endif
