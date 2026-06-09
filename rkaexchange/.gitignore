@@ -1,0 +1,4 @@
+build/
+csharp/build/
+csharp/rkaexchange.exe
+*.exe
