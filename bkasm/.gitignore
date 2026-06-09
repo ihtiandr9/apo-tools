@@ -3,3 +3,5 @@ prog.bin
 test_log.txt
 *.o
 *.lst
+csharp/*.exe
+csharp/*.exe.mdb
