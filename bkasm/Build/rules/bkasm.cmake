@@ -57,6 +57,7 @@ add_custom_target(run_tests
     COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/test_opcodes.py
     COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/test_opcodes_errors.py
     COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/test_db_strings.py
+    COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/test_org_equ_range.py
     COMMENT "Run Tests"
     DEPENDS bkasm setup_venv
 )
@@ -82,6 +83,14 @@ add_custom_target(test_opcodes_errors
 add_custom_target(test_db_strings
     COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/test_db_strings.py
     COMMENT "Run DB String Tests"
+    DEPENDS bkasm setup_venv
+)
+
+## ORG/EQU/DS range tests
+
+add_custom_target(test_org_equ_range
+    COMMAND ${CMAKE_COMMAND} -E env BKASM_BINARY=$<TARGET_FILE:bkasm> ${PROJECT_DIR}/tests/python/bin/python3 ${PROJECT_DIR}/tests/test_org_equ_range.py
+    COMMENT "Run ORG/EQU/DS Tests"
     DEPENDS bkasm setup_venv
 )
 

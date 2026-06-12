@@ -5,43 +5,51 @@
 
 unsigned int hashf(const char key[])
 {
-    char *it;
-    unsigned char hash = 0;
-    for (it = (char*) key; *it; it++)
-        hash = hash * 3 + *it;
+    unsigned int hash = 0;
+    for (const char *it = key; *it; it++)
+        hash = hash * 31 + (unsigned char)*it;
     return hash;
 }
 
 void hash_push(const char key[], int val, HashVar table[], unsigned int size)
 {
-	signed char ch;
+    unsigned int i;
     unsigned int index = hashf(key) % size;
 
-    for(ch = table[index].name[0]; ch != 0 && ch != -1 && index < size && strcmp(key, table[index].name); ++index)
-        ch = table[index].name[0];
-    strncpy(table[index].name, key, 49);
-    table[index].name[49] = '\0';
-    table[index].val = val;
+    for (i = 0; i < size; i++)
+    {
+        signed char ch = table[index].name[0];
+        if (ch == 0 || ch == -1 || strcmp(key, table[index].name) == 0)
+        {
+            strncpy(table[index].name, key, 49);
+            table[index].name[49] = '\0';
+            table[index].val = val;
+            return;
+        }
+        index = (index + 1) % size;
+    }
 }
 
 int hash_value(const char key[], int *result, HashVar table[], unsigned int size)
 {
-    signed char ch;
+    unsigned int i;
     unsigned int index = hashf(key) % size;
 
-    for (ch = table[index].name[0]; index < size && (ch == -1 || strcmp(key, table[index].name)); ++index)
+    for (i = 0; i < size; i++)
     {
+        signed char ch = table[index].name[0];
         if (ch == 0)
             return -2;
-        ch = table[index].name[0];
+        if (ch != -1 && strcmp(key, table[index].name) == 0)
+        {
+            if (result)
+                *result = table[index].val;
+            return 0;
+        }
+        index = (index + 1) % size;
     }
-    if (result)
-    {
-        *result = table[index].val;
-        return 0;
-    }
-    else
-        return -1;
+
+    return -1;
 }
 
 static int hash_name_cmp(const void *p1, const void *p2)

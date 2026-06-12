@@ -16,7 +16,7 @@ void codegen_generate(Node *node, int pc, int size)
     char err_msg[MAX_ERR_MSG_LEN];
     int i;
     Expr *immediate_param = node->u.op.immediate;
-    ExprValue immediate_value;
+    ExprValue immediate_value = 0;
 
     if(size == 0) return;
 

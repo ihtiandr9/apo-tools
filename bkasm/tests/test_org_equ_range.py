@@ -68,6 +68,11 @@ TESTS = [
 
     # Duplicate label error
     ("LABEL: NOP\nLABEL: NOP", None, "duplicate label error"),
+
+    # Hash collision at index 255 (requires wrap-around probe)
+    ("ORG 0\nB9: EQU 10\nC6: EQU 20\nNOP", "00", "hash collision 255 wraps to 0"),
+    ("ORG 0\nC6: EQU 10\nB9: EQU 20\nNOP", "00", "hash collision 255 reverse"),
+    ("ORG 0\nB9: EQU 1\nC6: EQU 2\nD3: EQU 3\nMVI A, B9+C6+D3", "3e06", "3-way hash collision 255"),
 ]
 
 
