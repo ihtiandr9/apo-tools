@@ -641,18 +641,43 @@ static void parse_statement(Parser *self, Lexer *lexer)
         break;
     case INT:
     {
-        Node *internal = node_create_label("ENDPRG");
         m_token = lexer->token;
-        if (m_token.type == TOK_END)
+        if (m_token.type == TOK_INCLUDE)
         {
-            internal->u.label.target = register_create(TOK_REGPC, "PC");
-            internal->u.label.target_type = TOK_REGPC;
-            ast_add_statement(internal, self->ast); /* add standart label */
-            lexer->skipOne(lexer);
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
-            parse_statement(self, lexer); /* parse remain part of string */
-            internal = NULL;              /* nothing to return, all parts were parsed */
+            m_token = lexer->token;
+            if (m_token.kind != STRING)
+            {
+                self->error = E_SYNTAXERROR;
+                fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
+                throw_error(E_SYNTAXERROR, "expected filename after INCLUDE");
+                exit_nicely(E_SYNTAXERROR);
+            }
+            if (inbuf_push_file(m_token.ident) != 0)
+            {
+                self->error = E_SYNTAXERROR;
+                fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
+                fprintf(stderr, "Error: Cannot open include file: %s\n", m_token.ident);
+                exit_nicely(E_SYNTAXERROR);
+            }
+            free(m_token.ident);
+            lexer->ch = CH_NULL;
+            break;
+        }
+        {
+            Node *internal = node_create_label("ENDPRG");
+            if (m_token.type == TOK_END)
+            {
+                internal->u.label.target = register_create(TOK_REGPC, "PC");
+                internal->u.label.target_type = TOK_REGPC;
+                ast_add_statement(internal, self->ast); /* add standart label */
+                lexer->skipOne(lexer);
+                lexer->skipWhile(lexer, ' ');
+                lexer->nextTok(lexer);
+                parse_statement(self, lexer); /* parse remain part of string */
+                internal = NULL;              /* nothing to return, all parts were parsed */
+            }
         }
     }
     break;

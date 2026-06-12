@@ -51,6 +51,7 @@ typedef enum _eIdentType
     TOK_DW,
     TOK_EI,
     TOK_END,
+    TOK_INCLUDE,
     TOK_EQU,
     TOK_HLT,
     TOK_IN,

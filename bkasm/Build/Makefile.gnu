@@ -44,7 +44,7 @@ OBJS=\
 HDRS=\
 	 $(wildcard src/*.h)
 
-.PHONY: all clean setup_venv run_tests test_opcodes test_opcodes_errors test_org_equ_range unittest valgrind
+.PHONY: all clean setup_venv run_tests test_opcodes test_opcodes_errors test_db_strings test_org_equ_range test_include test_errors unittest valgrind
 
 all: $(OUTDIR)/$(APP)
 
@@ -90,7 +90,9 @@ run_tests: $(OUTDIR)/$(APP) setup_venv
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/tests.py
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes.py
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes_errors.py
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_db_strings.py
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_org_equ_range.py
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_include.py
 
 test_opcodes: $(OUTDIR)/$(APP) setup_venv
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes.py
@@ -98,8 +100,17 @@ test_opcodes: $(OUTDIR)/$(APP) setup_venv
 test_opcodes_errors: $(OUTDIR)/$(APP) setup_venv
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes_errors.py
 
+test_db_strings: $(OUTDIR)/$(APP) setup_venv
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_db_strings.py
+
 test_org_equ_range: $(OUTDIR)/$(APP) setup_venv
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_org_equ_range.py
+
+test_include: $(OUTDIR)/$(APP) setup_venv
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_include.py
+
+test_errors: $(OUTDIR)/$(APP) setup_venv
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/tests.py
 
 ## valgrind test
 

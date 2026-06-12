@@ -115,6 +115,7 @@ static const Lexema words[] =
     {REG, TOK_REGSP, "SP", 0x6, 2},
     {REG, TOK_PSW, "PSW", 0x6, 3},   /* PSW register pair (AF), same encoding as SP */
     {INT, TOK_END, "END", 0, 3},
+    {INT, TOK_INCLUDE, "INCLUDE", 0, 7},
     {KIND_NONE, TOK_NONE, 0, 0, 0},
 };
 
