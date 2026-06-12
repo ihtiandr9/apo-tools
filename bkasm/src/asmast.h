@@ -10,7 +10,15 @@
 <operands> ::= <lvalue> <comma> <rvalue> | <lvalue>
 <lvalue>   ::= <reg> | <expr>
 <rvalue>   ::= <reg> | <expr>
-<expr>     ::= <int>
+<expr>     ::= <addition-expr>
+<addition-expr> ::= <multiplication-expr> |
+                    <addition-expr> <addop> <multiplication-expr>
+<multiplication-expr> ::= <term> |
+                          <multiplication-expr> <mulop> <term>
+<term>     ::= <int> | <id> | <paren-expr> | <addop> <term>
+<paren-expr> ::= "(" <expr> ")"
+<addop>    ::= "+" | "-"
+<mulop>    ::= "*"
 <label>    ::= <id> <colon>
 <id>       ::= <alfa> { <alfa> }
 <alfa>     ::= "a" | "b" | ... | "z"
@@ -18,8 +26,6 @@
 <digit>    ::= "0" | "1" | ... | "9"
 <colon>    ::= ":"
 <semicolon>::= ";"
-TODO define it
-<term>     ::= <id> | <int> | <paren-expr>
 */
 #ifndef H_ASTREE_H
 #define H_ASTREE_H

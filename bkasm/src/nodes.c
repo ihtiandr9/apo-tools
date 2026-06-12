@@ -18,19 +18,27 @@ Node *node_create_instruction(const char *ident, eIdentType instr_type, ExprValu
     if (len > MAX_LABEL_SIZE)
         len = MAX_LABEL_SIZE;
     node = (Node *)malloc(sizeof(Node));
-    if(node)
+    if (!node)
     {
-        node->type = NODE_INSTRUCTION;
-        node->u.op.instr_type = instr_type;
-        node->u.op.opcode = opcode;
-        node->u.op.lparam = NULL;
-        node->u.op.rparam = NULL;
-        node->u.op.immediate = NULL;
-        node->ident = (char *)malloc(len + 1);
-        strncpy(node->ident, ident, len);
-        node->ident[len] = '\0';
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
     }
-    return (Node *)node;
+    node->type = NODE_INSTRUCTION;
+    node->u.op.instr_type = instr_type;
+    node->u.op.opcode = opcode;
+    node->u.op.lparam = NULL;
+    node->u.op.rparam = NULL;
+    node->u.op.immediate = NULL;
+    node->ident = (char *)malloc(len + 1);
+    if (!node->ident)
+    {
+        free(node);
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
+    }
+    strncpy(node->ident, ident, len);
+    node->ident[len] = '\0';
+    return node;
 }
 
 void node_clear_instruction(Instruction *op)
@@ -56,16 +64,24 @@ Node *node_create_label(const char *ident)
     if (len > MAX_LABEL_SIZE)
         len = MAX_LABEL_SIZE;
     node = (Node *)malloc(sizeof(Node));
-    if(node)
+    if (!node)
     {
-        node->type = NODE_VAR;
-        node->u.label.target = NULL;
-        node->u.label.target_type = 0;
-        node->ident = (char *)malloc(len + 1);
-        strncpy(node->ident, ident, len);
-        node->ident[len] = '\0';
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
     }
-    return (Node *)node;
+    node->type = NODE_VAR;
+    node->u.label.target = NULL;
+    node->u.label.target_type = 0;
+    node->ident = (char *)malloc(len + 1);
+    if (!node->ident)
+    {
+        free(node);
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
+    }
+    strncpy(node->ident, ident, len);
+    node->ident[len] = '\0';
+    return node;
 }
 
 void node_clear_label(Label *label)
@@ -131,6 +147,11 @@ NodeList *nodelist_alloc()
 {
     NodeList *nodeList;
     nodeList = (NodeList *)malloc(sizeof(NodeList));
+    if (!nodeList)
+    {
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
+    }
     nodeList->next = 0;
     nodeList->node.type = NODE_EMPTY;
     return nodeList;

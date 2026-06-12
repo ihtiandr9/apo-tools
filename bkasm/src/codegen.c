@@ -63,7 +63,7 @@ void codegen_generate(Node *node, int pc, int size)
                 prog[pc - code_org + 1] = immediate_value / 256;
                 break;
 
-            case TOK_ORG: /* non-executable instructions - implement later TODO */
+            case TOK_ORG: /* non-executable instruction */
                 break;
             default:
                 if (size > 1)
@@ -330,13 +330,13 @@ unsigned char* codegen_link(ASTree* ast)
     int instrSize;
     NodeList *it;
     FILE *file;
+    char err_msg[MAX_ERR_MSG_LEN];
 
     for(bkasm_stage = EVAL_STAGE; bkasm_stage <= GENERATE_STAGE; bkasm_stage ++)
     {
         for(it = ast->firstNode; it; it = it -> next)
         {
             instrSize = codegen_evaluate_ast(&it->node, pc, ast);
-            // printf("DEBUG: instruction size: %d pc: %d\n", instrSize, pc); // FIXME remove
             if (it->node.type == NODE_PSEUDO && it->node.u.op.instr_type == TOK_ORG)
                 pc = code_org;
             else
@@ -351,6 +351,12 @@ unsigned char* codegen_link(ASTree* ast)
         fwrite(prog, 1, pc - code_org, outfile);
     } else {
         file = fopen("prog.bin", "wb");
+        if (!file)
+        {
+            sprintf(err_msg, "\nCannot create prog.bin\n");
+            throw_error(E_LINKERERROR, err_msg);
+            exit_nicely(E_LINKERERROR);
+        }
         fwrite(prog, 1, pc - code_org, file);
         fclose(file);
     }

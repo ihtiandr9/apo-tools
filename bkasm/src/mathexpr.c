@@ -20,6 +20,11 @@ static ExprValue const_evaluate(Expr *self)
 Expr *const_create(ExprValue const_value)
 {
     Expr *expr = (Expr *)malloc(sizeof(Expr));
+    if (!expr)
+    {
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
+    }
     expr->type = EXPR_CONST;
     expr->ident = NULL;
     expr->op.evaluate = const_evaluate;
@@ -43,20 +48,28 @@ static ExprValue register_evaluate(Expr *self)
 
 Expr *register_create(ExprValue value, const char *ident)
 {
-    Expr *expr = (Expr *)malloc(sizeof(Expr));
     int len = strlen(ident);
-    if (expr)
+    Expr *expr = (Expr *)malloc(sizeof(Expr));
+    if (!expr)
     {
-        expr->type = EXPR_REG;
-        expr->op.evaluate = register_evaluate;
-        if (len > MAX_LABEL_SIZE)
-            len = MAX_LABEL_SIZE;
-        expr->ident = (char *)malloc(len + 1);
-        strncpy(expr->ident, ident, len);
-        expr->ident[len] = '\0';
-        expr->data.value = value;
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
     }
-    return (Expr *)expr;
+    expr->type = EXPR_REG;
+    expr->op.evaluate = register_evaluate;
+    if (len > MAX_LABEL_SIZE)
+        len = MAX_LABEL_SIZE;
+    expr->ident = (char *)malloc(len + 1);
+    if (!expr->ident)
+    {
+        free(expr);
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
+    }
+    strncpy(expr->ident, ident, len);
+    expr->ident[len] = '\0';
+    expr->data.value = value;
+    return expr;
 }
 
 void register_destroy(Expr *expr)
@@ -89,18 +102,28 @@ static ExprValue var_evaluate(Expr *self)
 
 Expr *var_create(const char *ident)
 {
-
     int len = strlen(ident);
     Expr *expr = (Expr *)malloc(sizeof(Expr));
+    if (!expr)
+    {
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
+    }
     expr->type = EXPR_VAR;
     expr->op.evaluate = var_evaluate;
     if (len > MAX_LABEL_SIZE)
         len = MAX_LABEL_SIZE;
     expr->ident = (char *)malloc(len + 1);
+    if (!expr->ident)
+    {
+        free(expr);
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
+    }
     strncpy(expr->ident, ident, len);
     expr->ident[len] = '\0';
     expr->data.value = 0;
-    return (Expr *)expr;
+    return expr;
 }
 
 void var_free(Expr *expr)
@@ -134,16 +157,18 @@ static Expr *math_create(ExprValue opcode)
 {
     MathExpr props;
     Expr *expr = (Expr *)malloc(sizeof(Expr));
-    if (expr)
+    if (!expr)
     {
-        props.opcode = opcode;
-        props.lparam = NULL;
-        props.rparam = NULL;
-        expr->type = EXPR_MATH;
-        expr->ident = NULL;
-        expr->op = mathops;
-        expr->data.mathExpr = props;
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
     }
+    props.opcode = opcode;
+    props.lparam = NULL;
+    props.rparam = NULL;
+    expr->type = EXPR_MATH;
+    expr->ident = NULL;
+    expr->op = mathops;
+    expr->data.mathExpr = props;
     return expr;
 }
 
