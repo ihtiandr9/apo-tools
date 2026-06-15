@@ -87,7 +87,7 @@ setup_venv:
 	test -f $(PYTHON) || python3 -m venv --without-pip tests/python
 
 run_tests: $(OUTDIR)/$(APP) setup_venv
-	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/tests.py
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_errors.py
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes.py
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_opcodes_errors.py
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_db_strings.py
@@ -110,7 +110,7 @@ test_include: $(OUTDIR)/$(APP) setup_venv
 	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_include.py
 
 test_errors: $(OUTDIR)/$(APP) setup_venv
-	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/tests.py
+	BKASM_BINARY=$(abspath $(OUTDIR)/$(APP)) $(PYTHON) $(PROJECT_DIR)/tests/test_errors.py
 
 ## valgrind test
 

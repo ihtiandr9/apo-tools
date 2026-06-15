@@ -20,27 +20,6 @@ class TestUM(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_apipe(self):
-        if(self.osname == "nt"):
-            cmd_str = ['C:\\windows\\system32\\cmd.exe', '/c', 'dir']
-            enc = 'cp866'
-        else:
-            cmd_str = ['ls', '-la']
-            enc = 'utf-8'
-
-        process = subprocess.Popen(cmd_str,
-            stdout = subprocess.PIPE)
-
-        if process.stdout:
-            output = process.stdout.readlines()
-            process.stdout.close()
-            for i in output:
-                print( i.decode(encoding = enc).replace("\r", "").replace("\n", ""))
-
-        process.wait()
-        self.assertEqual(0, 0)
-        print('\ntest_pipes')
-    
     def test_executeProgram(self):
         err_count = 0
         log_path = abspath(join(BKASM_DIR, "test_log.txt"))
@@ -54,14 +33,8 @@ class TestUM(unittest.TestCase):
 
         exe_path = BKASM_BINARY
         for num in range(len(errors)):
-            expected_error = errors[num].replace('\n','')
-            semicolon_pos = expected_error.find(';')
-            expected_error = expected_error[semicolon_pos + 1:]
-            print('line '+ str(num + 1) + ': ' 
-                           + errors[num][:semicolon_pos] )
-            log_file.write('line '+ str(num + 1) + ': ' 
-                           + errors[num][:semicolon_pos] + '\n')
-            log_file.flush()
+            line = errors[num].replace('\n','')
+            instr_part, expected_error = line.split(";", 1)
             process = subprocess.Popen([exe_path],
                 universal_newlines = True,
                 stdin = subprocess.PIPE,
@@ -81,11 +54,14 @@ class TestUM(unittest.TestCase):
                     err_msg = 'Nozero exitcode in ' + errors[num]
 
             if (err_msg == expected_error):
-                print("Passed\n-----------\n")
-                log_file.write("Pass\n-----------\n")
+                print("Passed    line "+ str(num + 1)
+                          + ": " + instr_part)
+                log_file.write("Passed    line "+ str(num + 1)
+                          + ": " + instr_part)
             else:
                 err_count = err_count + 1
-                print('Failed')
+                print("Failed    line "+ str(num + 1)
+                          + ": " + instr_part)
                 print('Unexpexted msg!!!Expect: ' + str(expected_error) )
                 print('    Got: ' + str(err_msg) + '\n-----------\n')
                 log_file.write('Unexpexted msg!!!Expect: ' + str(expected_error) + '\n')
