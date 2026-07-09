@@ -1,10 +1,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <inttypes.h>
 
-wchar_t getUnicodeSymbol(uint8_t chr);
-
+wchar_t getUnicodeSymbol(unsigned char chr);
 
 typedef struct t_edb
 {
