@@ -12,7 +12,8 @@ typedef enum _eIdentKind
     CONST,
     VAR,
     INT,
-    CHAR,
+    STRING,
+    // CHAR,
 } eIdentKind;
 
 typedef enum _eIdentType
@@ -50,6 +51,7 @@ typedef enum _eIdentType
     TOK_DW,
     TOK_EI,
     TOK_END,
+    TOK_INCLUDE,
     TOK_EQU,
     TOK_HLT,
     TOK_IN,
@@ -130,7 +132,6 @@ typedef enum _eIdentType
     TOK_EQ,
     TOK_GT,
     TOK_LT,
-    TOK_DOUBLEQUOT,
     TOK_SEMICOLON,
     TOK_COLON,
     TOK_COMMA,

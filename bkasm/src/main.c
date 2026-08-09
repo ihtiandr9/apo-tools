@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
         exit_nicely(-1);
     }
 
-    bufsize = fread(buf, 1, MAX_PROG_SIZE, infile);
+    bufsize = (int)fread(buf, 1, MAX_PROG_SIZE, infile);
     printf("program text size=%d\n", bufsize);
 
     inbuf_init(buf, bufsize);

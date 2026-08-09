@@ -11,6 +11,7 @@
 #include "bkasm.h"
 #include "asmast.h"
 #include "asmvars.h"
+#include "errors.h"
 #include "mathexpr.h"
 #include "nodes.h"
 
@@ -69,6 +70,11 @@ void ast_add_statement(Node *statement, ASTree *astree)
 ASTree *ast_create()
 {
     ASTree *astree = (ASTree *)malloc(sizeof(ASTree));
+    if (!astree)
+    {
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
+    }
     ast_init(astree);
     return astree;
 }
@@ -77,15 +83,6 @@ void ast_init(ASTree* astree)
 {
     astree->firstNode = NULL;
     astree->lastNode = NULL;
-}
-
-void ast_free(ASTree *astree)
-{
-    if (astree)
-    {
-        ast_destroy(astree);
-        free(astree);
-    }
 }
 
 void ast_destroy(ASTree *astree)

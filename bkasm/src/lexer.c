@@ -115,6 +115,7 @@ static const Lexema words[] =
     {REG, TOK_REGSP, "SP", 0x6, 2},
     {REG, TOK_PSW, "PSW", 0x6, 3},   /* PSW register pair (AF), same encoding as SP */
     {INT, TOK_END, "END", 0, 3},
+    {INT, TOK_INCLUDE, "INCLUDE", 0, 7},
     {KIND_NONE, TOK_NONE, 0, 0, 0},
 };
 
@@ -131,7 +132,6 @@ static const Lexema symbols[] =
     {SYM, TOK_ASTERISK, "*", 0, 1},
     {SYM, TOK_LPAREN, "(", 0, 1},
     {SYM, TOK_RPAREN, ")", 0, 1},
-    {SYM, TOK_DOUBLEQUOT, "\"", 0, 1},
     {SYM, L_EOL, (char *)&eol_sym, 0, 1},
     {SYM, L_EOF, (char *)&eof_sym, 0, 1},
     {KIND_NONE, TOK_NONE, 0, 0, 0},
@@ -237,14 +237,29 @@ static int lexer_next_tok(Lexer *self)
             throw_error(E_UNKIDENT, ident);
             exit_nicely(E_UNKIDENT);
         }
-        if(self->string_state)
+	if(m_ch == '"')
         {
-            char *ident = (char*) malloc(sizeof (char));
-            *ident = m_ch;
-            self->token.kind = CHAR;
+            char *ident = 0;
+	    int len = 0;
+	    m_ch = inbuf_next_char();
+            for ( ;m_ch != '"' && m_ch != eof_sym; )
+            {
+                /* collect identifier */
+                ident = (char *)realloc(ident, len + 2);
+                ident[len++] = m_ch;
+                ident[len] = 0;
+                m_ch = inbuf_next_char();
+            }
+            if (m_ch == eof_sym)
+            {
+                free(ident);
+                throw_error(E_UNEXPSYM, "\"");
+                exit_nicely(E_UNEXPSYM);
+            }
+            self->token.kind = STRING;
             self->token.type = TOK_NONE;
             self->token.ident = ident;
-            self->token.len = 0;
+            self->token.len = len;
             break;
         }
         fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
@@ -318,6 +333,11 @@ int lexer_init(Lexer *lexer)
 Lexer *lexer_create(void)
 {
     Lexer *m_lexer = (Lexer *)malloc(sizeof(Lexer));
+    if (!m_lexer)
+    {
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
+    }
     lexer_init(m_lexer);
     return m_lexer;
 }

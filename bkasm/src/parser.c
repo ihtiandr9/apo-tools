@@ -224,43 +224,28 @@ static Expr *parse_db_param(Parser *self, Lexer *lexer)
     Node *node = NULL;
     Instruction *op = NULL;
     char mbs[MAX_VAR_COUNT]; /* multibyte string */
+    char *src, *dst;
     int mbs_size = 0;
-    int string_started = 0;
 
-    if(m_token.type == TOK_DOUBLEQUOT)
+    if(m_token.kind == STRING)
     {
-        lexer->toggleStringState(lexer);
-        string_started = 1;
-    }
-    while (lexer->string_state)
-    {
-        lexer->skipOne(lexer);
-        if (lexer->ch == '"')
-            lexer->toggleStringState(lexer);
-        else
+        src = m_token.ident;
+        dst = mbs + mbs_size;
+        for (mbs_size = 0; mbs_size < MAX_VAR_COUNT && mbs_size < m_token.len; ++mbs_size)
         {
-            if (mbs_size < MAX_VAR_COUNT - 1) {
-                mbs[mbs_size++] = lexer->ch;
-            } else if (mbs_size == MAX_VAR_COUNT - 1) {
-                fprintf(stderr, "\nString truncated (max %d chars)\n", MAX_VAR_COUNT - 1);
-                mbs_size++;
-            }
+            *dst++ = *src++;
         }
-    }
 
-    if (string_started)
-    {
-        int i = 0;
-        for (i = 0; i < mbs_size - 1; i++)
+        for (src = mbs; mbs_size > 0 && src < mbs + (mbs_size - 1); src++)
         {
-            expr = const_create(mbs[i]);
+            expr = const_create(*src);
             node = node_create_instruction("DB", TOK_DB, 0);
             op = &node->u.op;
             op->lparam = expr;
             ast_add_statement(node, self->ast);
         }
 
-        if (mbs_size > 1)
+        if (mbs_size > 0)
             expr = const_create(mbs[mbs_size - 1]);
         lexer->skipOne(lexer);
     }
@@ -370,6 +355,11 @@ static Node *parse_op(Parser *self, Lexer *lexer)
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
         }
+        if (node) {
+            node_clear(node);
+            free(node);
+            node = NULL;
+        }
         break;
 
     /* multiword arrays */
@@ -391,6 +381,11 @@ static Node *parse_op(Parser *self, Lexer *lexer)
             lexer->skipWhile(lexer, ',');
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
+        }
+        if (node) {
+            node_clear(node);
+            free(node);
+            node = NULL;
         }
         break;
 
@@ -630,7 +625,6 @@ static void parse_statement(Parser *self, Lexer *lexer)
             lexer->skipOne(lexer);
             break;
         case L_EOF:
-            printf(INDENT "< EOF >\n");
             lexer->skipOne(lexer);
             break;
         default:
@@ -647,18 +641,43 @@ static void parse_statement(Parser *self, Lexer *lexer)
         break;
     case INT:
     {
-        Node *internal = node_create_label("ENDPRG");
         m_token = lexer->token;
-        if (m_token.type == TOK_END)
+        if (m_token.type == TOK_INCLUDE)
         {
-            internal->u.label.target = register_create(TOK_REGPC, "PC");
-            internal->u.label.target_type = TOK_REGPC;
-            ast_add_statement(internal, self->ast); /* add standart label */
-            lexer->skipOne(lexer);
             lexer->skipWhile(lexer, ' ');
             lexer->nextTok(lexer);
-            parse_statement(self, lexer); /* parse remain part of string */
-            internal = NULL;              /* nothing to return, all parts were parsed */
+            m_token = lexer->token;
+            if (m_token.kind != STRING)
+            {
+                self->error = E_SYNTAXERROR;
+                fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
+                throw_error(E_SYNTAXERROR, "expected filename after INCLUDE");
+                exit_nicely(E_SYNTAXERROR);
+            }
+            if (inbuf_push_file(m_token.ident) != 0)
+            {
+                self->error = E_SYNTAXERROR;
+                fprintf(stderr, "In string: %d %s\n", currstr->num, currstr->str);
+                fprintf(stderr, "Error: Cannot open include file: %s\n", m_token.ident);
+                exit_nicely(E_SYNTAXERROR);
+            }
+            free(m_token.ident);
+            lexer->ch = CH_NULL;
+            break;
+        }
+        {
+            Node *internal = node_create_label("ENDPRG");
+            if (m_token.type == TOK_END)
+            {
+                internal->u.label.target = register_create(TOK_REGPC, "PC");
+                internal->u.label.target_type = TOK_REGPC;
+                ast_add_statement(internal, self->ast); /* add standart label */
+                lexer->skipOne(lexer);
+                lexer->skipWhile(lexer, ' ');
+                lexer->nextTok(lexer);
+                parse_statement(self, lexer); /* parse remain part of string */
+                internal = NULL;              /* nothing to return, all parts were parsed */
+            }
         }
     }
     break;
@@ -695,6 +714,11 @@ int parser_init(Parser *parser)
 Parser *parser_create(void)
 {
     Parser *m_parser = (Parser *)malloc(sizeof(Parser));
+    if (!m_parser)
+    {
+        throw_error(E_INTERNALERROR, "Out of memory");
+        exit_nicely(E_INTERNALERROR);
+    }
     parser_init(m_parser);
     return m_parser;
 }
