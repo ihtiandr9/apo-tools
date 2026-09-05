@@ -1,0 +1,44 @@
+name: FreeBSD Jail Local Build
+
+on:
+  pull_request:
+    branches:
+      [ "main", "master"]
+  workflow_dispatch:
+
+jobs:
+  build-project:
+    runs-on: freebsd-jail
+    env:
+      PATH: /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+      version: 0.0.0.1
+        
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build and test bkasm
+        working-directory: bkasm
+        run: |
+          set -e
+          cmake -S Build -B build
+          cmake --build build --target run_tests
+
+      - name: Upload bkasm artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: bkasm
+          path: bkasm/build/bkasm
+
+      - name: Build and test rkaexchange
+        working-directory: rkaexchange
+        run: |
+          set -e
+          cmake -S . -B build
+          cmake --build build --target run_tests
+
+      - name: Upload rkaexchange artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: rkaexchange
+          path: rkaexchange/build/rkaexchange
