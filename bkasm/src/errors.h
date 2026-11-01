@@ -21,6 +21,7 @@ STRUCT(Error)
 
 typedef void (*fn_error_dispatcher)(Error *);
 
+void setup_clogs();
 void throw_error(eErrorType etype, void *data);
 void throw_error_disp(eErrorType type, void *data, fn_error_dispatcher dispatcher);
 

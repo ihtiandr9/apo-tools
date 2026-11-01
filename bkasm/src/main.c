@@ -15,6 +15,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "inbuf.h"
+#include "errors.h"
 
 int main(int argc, char *argv[])
 {
@@ -56,6 +57,7 @@ int main(int argc, char *argv[])
         exit_nicely(-1);
     }
 
+    setup_clogs();
     bufsize = (int)fread(buf, 1, MAX_PROG_SIZE, infile);
     printf("program text size=%d\n", bufsize);
 

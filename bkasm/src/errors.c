@@ -3,6 +3,13 @@
 #include "errors.h"
 #include "clog.h"
 
+void setup_clogs()
+{
+    clog_init();
+    clog_set_output(stderr);
+    clog_set_show_location(false);
+}
+
 static void default_error_dispatcher(Error *e)
 {
     switch (e->type)
