@@ -29,6 +29,9 @@ CC=$(PREFIX)/bin/gcc
 CFLAGS= -Isrc -I$(PREFIX)/include
 ifeq ($(DETECTED_OS),Windows)
 CFLAGS+= -m32
+else
+# glibc hides localtime_r/fileno in strict ANSI mode (-std=c11), breaking clog.h
+CFLAGS+= -D_POSIX_C_SOURCE=200809L
 endif
 
 ifndef RELEASE

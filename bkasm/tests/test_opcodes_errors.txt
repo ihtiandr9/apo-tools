@@ -17,4 +17,4 @@ DB 1000H                 ;DB value 4096 out of range -128-255
 ADI -129                 ;Immediate value -129 out of range -128-255 for ADI
 MVI A, -129              ;Immediate value -129 out of range -128-255 for MVI
 DB -129                  ;DB value -129 out of range -128-255
-ADI (1+2                 ;Error: Syntax error in expression: ) expected
+ADI (1+2                 ;Syntax error in expression: ) expected

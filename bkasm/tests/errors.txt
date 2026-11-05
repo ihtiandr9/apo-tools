@@ -257,10 +257,10 @@ START:  NOP                 ;None
 ORG     1100H               ;None
 START:  EQU START-2         ;None
 INTS:   EQU START-2         ;Undefined variable START
-mov a,b                     ;Error: Unexpected symbol: "m" (may be in lowercase)
+mov a,b                     ;Unexpected symbol: "m" (may be in lowercase)
 START:  JMP EXIT1           ;Undefined variable EXIT1
 START:  JMP START + 100H    ;None
-START:  JMP EXIT1, 8        ;Error: Unexpected symbol: "," (may be in lowercase)
+START:  JMP EXIT1, 8        ;Unexpected symbol: "," (may be in lowercase)
 START:  MVI 29H, B          ;Left operand of MVI must be a register
 START:  MVI B, C            ;Right operand of MVI must be an immediate value
 START:  MOV B, 29H          ;Both operands of MOV must be registers
@@ -275,10 +275,10 @@ START:  LDA NONEXIST        ;Undefined variable NONEXIST
 START:  STA NOWHERE         ;Undefined variable NOWHERE
 START:  LHLD GONE           ;Undefined variable GONE
 START:  SHLD LOST           ;Undefined variable LOST
-mov b,c                     ;Error: Unexpected symbol: "m" (may be in lowercase)
-jmp start, 5                ;Error: Unexpected symbol: "j" (may be in lowercase)
-mvi a, b, c                 ;Error: Unexpected symbol: "m" (may be in lowercase)
-add a, b                    ;Error: Unexpected symbol: "a" (may be in lowercase)
+mov b,c                     ;Unexpected symbol: "m" (may be in lowercase)
+jmp start, 5                ;Unexpected symbol: "j" (may be in lowercase)
+mvi a, b, c                 ;Unexpected symbol: "m" (may be in lowercase)
+add a, b                    ;Unexpected symbol: "a" (may be in lowercase)
 START:  MVI A, B            ;Right operand of MVI must be an immediate value
 START:  MVI H, D            ;Right operand of MVI must be an immediate value
 START:  MVI M, E            ;Right operand of MVI must be an immediate value

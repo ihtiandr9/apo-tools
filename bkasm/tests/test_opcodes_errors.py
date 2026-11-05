@@ -5,6 +5,7 @@ Reads test_opcodes_errors.txt, feeds each line
 to bkasm via stdin and compares stderr with expected error.
 """
 
+import re
 import subprocess
 import os
 import sys
@@ -17,6 +18,37 @@ if not os.path.exists(BIN_PATH):
     BIN_PATH = _OLD_BIN
 BIN_DIR = dirname(BIN_PATH)
 ERRORS_PATH = abspath(join(dirname(__file__), "test_opcodes_errors.txt"))
+
+# Logger writes "YYYY-MM-DD HH:MM:SS [LEVEL] " in front of every message.
+LOG_PREFIX_RE = re.compile(
+    r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} "
+    r"\[(?:TRACE|DEBUG|INFO|WARN|ERROR|FATAL)\] "
+)
+
+
+def parse_logged_message(stderr):
+    """Return the first log record without its timestamp/level prefix.
+
+    Some errors are logged as a header ("Linker:", "Syntax error ...")
+    followed by the actual message on the next line, so the last
+    non-empty line of the record is returned.
+    """
+    record = None
+    for line in stderr.splitlines():
+        match = LOG_PREFIX_RE.match(line)
+        if match:
+            if record is not None:
+                break
+            record = [line[match.end():]]
+        elif record is not None:
+            record.append(line)
+
+    if record is None:
+        return None
+    for line in reversed(record):
+        if line.strip():
+            return line.strip()
+    return None
 
 
 def run_assembler(asm_source: str):
@@ -66,13 +98,7 @@ def main():
 
             stderr, _ = run_assembler(instr_part)
 
-            err_msg = None
-            if stderr:
-                err_stream = stderr.strip().split("\n")
-                if len(err_stream) >= 2:
-                    err_msg = err_stream[1]
-                else:
-                    err_msg = err_stream[0]
+            err_msg = parse_logged_message(stderr) if stderr else None
 
             if err_msg == expected_error or (expected_error is None and not stderr):
                 print(f"OK   line {line_num}: {instr_part}")

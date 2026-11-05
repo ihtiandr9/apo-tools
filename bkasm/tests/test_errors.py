@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 ## Test script on python
+import re
 import subprocess
 import unittest
 from os.path import abspath, dirname, join
@@ -8,6 +9,38 @@ import os
 
 BKASM_BINARY = os.environ["BKASM_BINARY"]
 BKASM_DIR = dirname(BKASM_BINARY)
+
+# Logger writes "YYYY-MM-DD HH:MM:SS [LEVEL] " in front of every message.
+LOG_PREFIX_RE = re.compile(
+    r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} "
+    r"\[(?:TRACE|DEBUG|INFO|WARN|ERROR|FATAL)\] "
+)
+
+
+def parse_logged_message(stderr):
+    """Return the first log record without its timestamp/level prefix.
+
+    Some errors are logged as a header ("Linker:", "Syntax error ...")
+    followed by the actual message on the next line, so the last
+    non-empty line of the record is returned.
+    """
+    record = None
+    for line in stderr.splitlines():
+        match = LOG_PREFIX_RE.match(line)
+        if match:
+            if record is not None:
+                break
+            record = [line[match.end():]]
+        elif record is not None:
+            record.append(line)
+
+    if record is None:
+        return None
+    for line in reversed(record):
+        if line.strip():
+            return line.strip()
+    return None
+
 
 class TestUM(unittest.TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
@@ -45,13 +78,9 @@ class TestUM(unittest.TestCase):
             if(expected_error == 'None'):
                 expected_error = None
 
-            err_msg = None;
-            if stderr:
-                err_stream = stderr.split('\n')
-                err_msg = err_stream[1]
-            else:
-                if (process.returncode != 0):
-                    err_msg = 'Nozero exitcode in ' + errors[num]
+            err_msg = parse_logged_message(stderr) if stderr else None
+            if not stderr and (process.returncode != 0):
+                err_msg = 'Nozero exitcode in ' + errors[num]
 
             if (err_msg == expected_error):
                 print("Passed    line "+ str(num + 1)
